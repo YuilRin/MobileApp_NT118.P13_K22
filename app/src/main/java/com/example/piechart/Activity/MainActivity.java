@@ -1,7 +1,8 @@
-package com.example.piechart;
+package com.example.piechart.Activity;
 
 import android.os.Bundle;
 
+import com.example.piechart.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
