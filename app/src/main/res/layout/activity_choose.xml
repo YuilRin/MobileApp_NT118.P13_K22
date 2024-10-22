@@ -21,7 +21,7 @@
         android:layout_width="100dp"
         android:layout_height="70dp"
         android:layout_marginStart="68dp"
-        android:layout_marginTop="156dp"
+        android:layout_marginTop="148dp"
         android:text="Doanh nghiệp "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
@@ -42,7 +42,7 @@
         android:id="@+id/imageView2"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="84dp"
+        android:layout_marginTop="52dp"
         android:background="@drawable/rounded_image"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,8 +73,8 @@
 
     <TextView
         android:id="@+id/textView7"
-        android:layout_width="279dp"
-        android:layout_height="202dp"
+        android:layout_width="326dp"
+        android:layout_height="145dp"
         android:layout_marginTop="24dp"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel bibendum ex, quis mollis arcu. Maeceis odio. Etiam commodo congue augue a eleifend. Donec turpis lacus, iaculis sed sagittis vitae, gravida ac ex."
         android:textSize="20dp"
