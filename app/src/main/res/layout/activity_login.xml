@@ -6,38 +6,30 @@
     android:background="@drawable/gradient_background"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="244dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_corners"
-        android:hint="    Nhập họ và tên"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
-
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Họ tên "
-        android:textSize="20dp"
+        android:layout_marginTop="250dp"
+        android:text="Tài khoản"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/logan" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText2"
-        android:layout_width="246dp"
+        android:id="@+id/editText"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_corners"
-        android:hint="    Nhập mật khẩu"
-        app:layout_constraintStart_toStartOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/tv_pass" />
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_edittext"
+        android:hint="   Nhập tên người dùng"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_name" />
 
     <TextView
         android:id="@+id/tv_pass"
@@ -45,64 +37,203 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="Mật khẩu"
-        android:textSize="20dp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/editText2"
         app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_edittext"
+        android:hint="   Nhập mật khẩu"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pass" />
+
+
+
 
     <TextView
         android:id="@+id/logan"
         android:layout_width="312dp"
         android:layout_height="79dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="20dp"
         android:text="Quản lý tài chính chưa bao giờ là dễ đến thế"
         android:textAlignment="center"
         android:textSize="25dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gr_name" />
 
-    <Button
+ <!-- Nút đang nhap -->
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login"
-        android:layout_width="250dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/rounded_corners"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="46dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_corners_login"
+        android:textColor="#ffffff"
+        android:textSize="12sp"
         android:text="Đăng nhập"
-        android:textSize="20dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintTop_toBottomOf="@id/editText2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <Button
+
+
+<!-- Tao tai khoan -->
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button3"
-        android:layout_width="250dp"
-        android:layout_height="0dp"
-
-        android:layout_marginBottom="76dp"
-        android:background="@drawable/rounded_corners"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_corners_register"
+        android:textColor="@android:color/black"
         android:text="Tạo tài khoản"
-        android:textSize="20dp"
+        android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
-
         app:layout_constraintStart_toStartOf="parent" />
+  <!-- Divider -->
+    <TextView
+        android:id="@+id/dividerMid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hay"
+        android:textColor="#BDBDBD"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
+
+    <!-- View (Đường kẻ trái) -->
+    <View
+        android:id="@+id/dividerLeft"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="#D3D3D3"
+        app:layout_constraintTop_toTopOf="@id/dividerMid"
+        app:layout_constraintBottom_toBottomOf="@id/dividerMid"
+        app:layout_constraintEnd_toStartOf="@id/dividerMid"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- View (Đường kẻ phải) -->
+    <View
+        android:id="@+id/dividerRight"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="#D3D3D3"
+        app:layout_constraintTop_toTopOf="@id/dividerMid"
+        app:layout_constraintBottom_toBottomOf="@id/dividerMid"
+        app:layout_constraintStart_toEndOf="@id/dividerMid"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp" />
+
+
+    <!-- Dang nhap qua google -->
+    <LinearLayout
+        android:id="@+id/linearLayoutGoogle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:padding="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_corners_google"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dividerMid"
+        android:layout_marginTop="20dp">
+
+        <!-- Icon Google -->
+        <ImageView
+            android:id="@+id/googleIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_google_logo" />
+
+        <!-- Text "Đăng nhập qua Google" -->
+        <TextView
+            android:id="@+id/googleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng nhập qua Google"
+            android:textColor="#FF0000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="28dp"/>
+
+    </LinearLayout>
+
+    <!-- Dang nhap qua facebook -->
+    <LinearLayout
+        android:id="@+id/linearLayoutFacebook"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:padding="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/rounded_corners_facebook"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutGoogle"
+        android:layout_marginTop="20dp">
+
+        <!-- Icon facebook -->
+        <ImageView
+            android:id="@+id/facebookIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_facebook_logo" />
+
+        <!-- Text "Đăng nhập qua facebook" -->
+        <TextView
+            android:id="@+id/FacbookText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng nhập qua Facebook"
+            android:textColor="#2C5CCD"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gr_name"
         android:layout_width="242dp"
         android:layout_height="89dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="40dp"
         android:background="@drawable/border_background"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -134,7 +265,8 @@
             app:layout_constraintHorizontal_bias="0.802"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.526" />
+            app:layout_constraintVertical_bias="0.526"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

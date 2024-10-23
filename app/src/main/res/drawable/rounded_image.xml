@@ -4,4 +4,22 @@
     <stroke
         android:width="1dp"
         android:color="#000000" /> <!-- Màu viền -->
+    <vector
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:aapt="http://schemas.android.com/aapt"
+        android:width="81dp"
+        android:height="74dp"
+        android:viewportWidth="81"
+        android:viewportHeight="74"
+        >
+        <group>
+            <clip-path
+                android:pathData="M7 0H74C77.866 0 81 3.13401 81 7V67C81 70.866 77.866 74 74 74H7C3.13401 74 0 70.866 0 67V7C0 3.13401 3.13401 0 7 0Z"
+                />
+            <path
+                android:pathData="M0 0V74H81V0"
+                android:fillColor="#D9D9D9"
+                />
+        </group>
+    </vector>
 </shape>
