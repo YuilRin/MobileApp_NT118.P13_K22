@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_pass" />
 
 
-    <!-- Nút đang nhap -->
+    <!-- Heading -->
     <TextView
         android:id="@+id/logan"
         android:layout_width="312dp"
