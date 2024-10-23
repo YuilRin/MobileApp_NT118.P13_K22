@@ -10,7 +10,7 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="228dp"
         android:text="Tài khoản"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -35,7 +35,7 @@
         android:id="@+id/tv_pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:text="Mật khẩu"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -57,60 +57,59 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_pass" />
 
 
-
-
+    <!-- Nút đang nhap -->
     <TextView
         android:id="@+id/logan"
         android:layout_width="312dp"
         android:layout_height="79dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:text="Quản lý tài chính chưa bao giờ là dễ đến thế"
         android:textAlignment="center"
         android:textSize="25dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gr_name" />
 
- <!-- Nút đang nhap -->
+
+    <!-- Tao tai khoan -->
+
+    <!-- Divider -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="46dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_corners_login"
+        android:text="Đăng nhập"
         android:textColor="#ffffff"
         android:textSize="12sp"
-        android:text="Đăng nhập"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/editText2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText2" />
 
-
-
-<!-- Tao tai khoan -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_corners_register"
-        android:textColor="@android:color/black"
         android:text="Tạo tài khoản"
+        android:textColor="@android:color/black"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/login"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
-  <!-- Divider -->
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login" />
+
     <TextView
         android:id="@+id/dividerMid"
         android:layout_width="wrap_content"
@@ -229,11 +228,11 @@
         android:id="@+id/gr_name"
         android:layout_width="242dp"
         android:layout_height="89dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="28dp"
         android:background="@drawable/border_background"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -265,8 +264,7 @@
             app:layout_constraintHorizontal_bias="0.802"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.526"
-            />
+            app:layout_constraintVertical_bias="0.526" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
