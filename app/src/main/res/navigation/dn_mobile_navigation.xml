@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dn_mobile_navigation"
+    app:startDestination="@id/homeDnFragment">
+
+    <fragment
+        android:id="@+id/homeDnFragment"
+        android:name="com.example.piechart.uidn.home.HomeDnFragment"
+        android:label="fragment_home_dn"
+        tools:layout="@layout/fragment_home_dn" />
+    <fragment
+        android:id="@+id/moreFragment"
+        android:name="com.example.piechart.uidn.more.MoreFragment"
+        android:label="fragment_more"
+        tools:layout="@layout/fragment_more" />
+    <fragment
+        android:id="@+id/quanLyFragment"
+        android:name="com.example.piechart.uidn.QuanLy.QuanLyFragment"
+        android:label="fragment_quan_ly"
+        tools:layout="@layout/fragment_quan_ly" />
+</navigation>

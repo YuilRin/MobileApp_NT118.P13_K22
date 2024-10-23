@@ -26,6 +26,10 @@
             android:exported="true">
         </activity>
         <activity
+            android:name=".Activity.Main_DN_Activity"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".Activity.LoginActivity"
             android:exported="true">
         </activity>
