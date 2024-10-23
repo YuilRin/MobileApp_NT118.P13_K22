@@ -32,7 +32,8 @@
 
         <activity
             android:name=".Activity.ChooseActivity"
-            android:exported="true">
+            android:exported="true"
+            android:label="">
     </activity>
     </application>
 
