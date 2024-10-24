@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
+        android:id="@+id/navigation_budget"
+        android:name="com.example.piechart.ui.budget.BudgetFragment"
+        android:label="@string/title_budget"
+        tools:layout="@layout/fragment_budget" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.piechart.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"

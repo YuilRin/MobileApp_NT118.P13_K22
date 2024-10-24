@@ -20,7 +20,7 @@ public class RegisterActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener()
         {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 Intent mainIntent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(mainIntent);
                 finish();
@@ -29,4 +29,5 @@ public class RegisterActivity extends AppCompatActivity {
 
         });
     }
+
 }
