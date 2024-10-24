@@ -3,18 +3,182 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/gradient_background"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background">
 
 
-    <Button
-        android:id="@+id/button4"
+    <!-- Thu chi header -->
+    <TextView
+        android:id="@+id/tvThuChi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="148dp"
-        android:text="Button"
+        android:background="@drawable/border_background"
+        android:text="  Thu-chi = 0  "
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layoutTongThuChi"
+        android:layout_marginTop="16dp" />
+
+    <!-- Tổng thu và tổng chi layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutTongThuChi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvThuChi"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvTongThu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/gradient_background"
+            android:gravity="center"
+            android:text="Tổng thu"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tvTongChi"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.5" />
+
+        <TextView
+            android:id="@+id/tvTongChi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/gradient_background"
+            android:text="Tổng chi"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvTongThu"
+            app:layout_constraintTop_toTopOf="@+id/tvTongThu"
+            app:layout_constraintWidth_percent="0.5" />
+
+        <!-- Giá trị Tổng thu và Tổng chi -->
+        <TextView
+            android:id="@+id/tvGiaTriTongThu"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/tvTongThu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvGiaTriTongChi"
+            app:layout_constraintWidth_percent="0.5"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/tvGiaTriTongChi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/tvTongChi"
+            app:layout_constraintStart_toEndOf="@+id/tvGiaTriTongThu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintWidth_percent="0.5"
+            android:gravity="center" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Danh sách khoản thu chi -->
+    <TextView
+        android:id="@+id/tvKhoanThuChi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Các khoản thu chi"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/layoutTongThuChi"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
+    <TableLayout
+        android:id="@+id/tblKhoanThuChi"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvKhoanThuChi">
+
+
+        <!-- Table header -->
+        <TableRow
+            android:layout_width="match_parent"
+            android:background="@drawable/gradient_background"
+            android:layout_height="188dp">
+
+            <TextView
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Tất cả"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Khoản thu"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Khoản chi"
+                android:textStyle="bold" />
+        </TableRow>
+        <!-- Thêm các row cho dữ liệu tương ứng -->
+    </TableLayout>
+
+    <!-- Các nút khoản thu, khoản chi -->
+
+    <Button
+        android:id="@+id/btnKhoanThu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="Khoản thu"
+        app:layout_constraintBottom_toBottomOf="@+id/btnKhoanChi"
+        app:layout_constraintEnd_toStartOf="@+id/btnKhoanChi"
+
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <Button
+        android:id="@+id/btnKhoanChi"
+        android:layout_width="0dp"
+        android:layout_marginBottom="60dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:text="Khoản chi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+
+        app:layout_constraintWidth_percent="0.5" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/ListCN"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnKhoanChi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tblKhoanThuChi"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

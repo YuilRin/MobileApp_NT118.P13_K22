@@ -53,7 +53,7 @@ public class ChooseActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mainIntent = new Intent(ChooseActivity.this, Main_DN_Activity.class);
+                Intent mainIntent = new Intent(ChooseActivity.this, InfoDnActivity.class);
                 startActivity(mainIntent);
                 finish();
             }

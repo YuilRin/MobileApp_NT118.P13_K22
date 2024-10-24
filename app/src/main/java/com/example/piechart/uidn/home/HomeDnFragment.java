@@ -1,11 +1,14 @@
 package com.example.piechart.uidn.home;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -13,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.piechart.Activity.ChooseActivity;
+import com.example.piechart.Activity.InfoDnActivity;
 import com.example.piechart.databinding.FragmentHomeBinding;
 import com.example.piechart.databinding.FragmentHomeDnBinding;
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -44,6 +49,22 @@ public class HomeDnFragment extends Fragment {
 
         binding = FragmentHomeDnBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        ImageButton btnBack = binding.btnCaidat;
+
+        // Xử lý sự kiện khi nhấn button
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Chuyển sang Activity khác
+                Intent intent = new Intent(getActivity(), InfoDnActivity.class);
+                startActivity(intent);
+                // Optional: kết thúc Fragment hoặc Activity hiện tại
+                getActivity().finish();
+            }
+        });
+
+
         combinedChart = binding.Chart;
 
         // Configure the chart
