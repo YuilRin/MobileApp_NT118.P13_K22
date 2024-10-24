@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.budget.BudgetFragment">
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollViewDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#333333"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- LinearLayout chứa các Button, có thể cuộn ngang -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Nút đầu tiên --> <!-- có thể tùy chỉnh thêm-->
+            <Button
+                android:id="@+id/btnFirt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Tháng này"
+                android:textColor="@android:color/white"
+                android:background="?attr/selectableItemBackground"
+                android:textStyle="bold"/>
+
+            <!-- Nút thứ hai -->
+            <Button
+                android:id="@+id/btnSecond"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Tuần này"
+                android:textColor="@android:color/white"
+                android:background="?attr/selectableItemBackground"/>
+
+            <!-- Nút thứ ba -->
+            <Button
+                android:id="@+id/btnThird"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Ngày"
+                android:textColor="@android:color/white"
+                android:background="?attr/selectableItemBackground"/>
+
+            <!-- Nút thứ tư -->
+            <Button
+                android:id="@+id/btnFourth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="16dp"
+                android:text="Năm này"
+                android:textColor="@android:color/white" />
+
+            <!-- Nút thứ năm -->
+            <Button
+                android:id="@+id/btnFifth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="16dp"
+                android:text="Năm này"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnSixth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="16dp"
+                android:text="Năm này"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnSeventh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="16dp"
+                android:text="Năm này"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnEighth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="16dp"
+                android:text="Năm này"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnTenth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="16dp"
+                android:text="Năm này"
+                android:textColor="@android:color/white" />
+
+            <!-- có thể thêm nhiều nút hơn vào đây -->
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
