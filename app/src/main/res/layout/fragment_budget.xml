@@ -8,112 +8,77 @@
     tools:context=".ui.budget.BudgetFragment">
 
     <HorizontalScrollView
-        android:id="@+id/horizontalScrollViewDate"
+        android:id="@+id/horizontalScrollViewOption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#333333"
         android:scrollbars="none"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <!-- LinearLayout chứa các Button, có thể cuộn ngang -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:weightSum="3">
 
-            <!-- Nút đầu tiên --> <!-- có thể tùy chỉnh thêm-->
+            <!-- Nút đầu tiên -->
             <Button
-                android:id="@+id/btnFirt"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnBudget"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="Tháng này"
-                android:textColor="@android:color/white"
+                android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
-                android:textStyle="bold"/>
+                android:padding="18dp"
+                android:text="@string/title_budget"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/txt_size_10sp"
+                android:textStyle="bold" />
 
             <!-- Nút thứ hai -->
             <Button
-                android:id="@+id/btnSecond"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnStatistics"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="Tuần này"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:padding="18dp"
+                android:text="@string/statistics"
                 android:textColor="@android:color/white"
-                android:background="?attr/selectableItemBackground"/>
+                android:textSize="@dimen/txt_size_10sp" />
 
             <!-- Nút thứ ba -->
             <Button
-                android:id="@+id/btnThird"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnPayment"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="Ngày"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:padding="18dp"
+                android:text="@string/Advance_payment_and_reimbursement"
                 android:textColor="@android:color/white"
-                android:background="?attr/selectableItemBackground"/>
-
-            <!-- Nút thứ tư -->
-            <Button
-                android:id="@+id/btnFourth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:padding="16dp"
-                android:text="Năm này"
-                android:textColor="@android:color/white" />
-
-            <!-- Nút thứ năm -->
-            <Button
-                android:id="@+id/btnFifth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:padding="16dp"
-                android:text="Năm này"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/btnSixth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:padding="16dp"
-                android:text="Năm này"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/btnSeventh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:padding="16dp"
-                android:text="Năm này"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/btnEighth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:padding="16dp"
-                android:text="Năm này"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/btnTenth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:padding="16dp"
-                android:text="Năm này"
-                android:textColor="@android:color/white" />
+                android:textSize="@dimen/txt_size_10sp" />
 
             <!-- có thể thêm nhiều nút hơn vào đây -->
 
         </LinearLayout>
     </HorizontalScrollView>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:layout_constraintTop_toBottomOf="@id/horizontalScrollViewOption"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

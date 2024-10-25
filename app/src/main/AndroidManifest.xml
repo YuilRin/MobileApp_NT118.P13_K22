@@ -37,11 +37,6 @@
             android:name=".Activity.LoginActivity"
             android:exported="true">
         </activity>
-
-        <activity
-            android:name=".Activity.SanPhamActivity"
-            android:exported="true">
-        </activity>
         <activity
             android:name=".Activity.RegisterActivity"
             android:exported="true">

@@ -1,11 +1,22 @@
 <resources>
     <string name="app_name">FC</string>
+
     <string name="title_home">Thống kê</string>
+
     <string name="title_dashboard">Danh sách</string>
+
     <string name="title_notifications">Thông tin</string>
+    <!--Files are using: fragment_budget.xml, -->
     <string name="title_budget">Ngân sách</string>
+
     <string name="sub_heading_page_choose">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel bibendum ex, quis mollis arcu. Maeceis odio. Etiam commodo congue augue a eleifend. Donec turpis lacus, iaculis sed sagittis vitae, gravida ac ex.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--Files are using: fragment_budget.xml, -->
+    <string name="statistics">Thống kê ngân sách</string>
+
+    <!--Files are using: fragment_budget.xml, -->
+    <string name="Advance_payment_and_reimbursement">Tạm ứng/hoàn ứng</string>
 
 </resources>
