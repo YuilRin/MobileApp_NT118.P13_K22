@@ -38,6 +38,10 @@
             android:exported="true">
         </activity>
         <activity
+            android:name=".Activity.DonHangActivity"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".Activity.RegisterActivity"
             android:exported="true">
         </activity>

@@ -17,7 +17,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.piechart.Activity.ChooseActivity;
+import com.example.piechart.Activity.DonHangActivity;
 import com.example.piechart.Activity.InfoDnActivity;
+import com.example.piechart.Activity.Main_DN_Activity;
 import com.example.piechart.databinding.FragmentHomeBinding;
 import com.example.piechart.databinding.FragmentHomeDnBinding;
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -42,7 +44,7 @@ public class HomeDnFragment extends Fragment {
 
     private FragmentHomeDnBinding binding;
     private CombinedChart combinedChart;
-
+    ImageButton btnCaidat,btnDonHang;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,14 +52,27 @@ public class HomeDnFragment extends Fragment {
         binding = FragmentHomeDnBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        ImageButton btnBack = binding.btnCaidat;
+         btnCaidat = binding.btnCaidat;
 
         // Xử lý sự kiện khi nhấn button
-        btnBack.setOnClickListener(new View.OnClickListener() {
+        btnCaidat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Chuyển sang Activity khác
                 Intent intent = new Intent(getActivity(), InfoDnActivity.class);
+                startActivity(intent);
+                // Optional: kết thúc Fragment hoặc Activity hiện tại
+                getActivity().finish();
+            }
+        });
+        btnDonHang = binding.btnDonhang;
+
+        // Xử lý sự kiện khi nhấn button
+        btnDonHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Chuyển sang Activity khác
+                Intent intent = new Intent(getActivity(), DonHangActivity.class);
                 startActivity(intent);
                 // Optional: kết thúc Fragment hoặc Activity hiện tại
                 getActivity().finish();
