@@ -6,25 +6,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
-import com.example.piechart.Activity.ChooseActivity;
-import com.example.piechart.Activity.DonHangActivity;
 import com.example.piechart.Activity.InfoDnActivity;
-import com.example.piechart.Activity.Main_DN_Activity;
-import com.example.piechart.databinding.FragmentHomeBinding;
+import com.example.piechart.R;
 import com.example.piechart.databinding.FragmentHomeDnBinding;
 import com.github.mikephil.charting.charts.CombinedChart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -33,10 +25,6 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
@@ -44,7 +32,7 @@ public class HomeDnFragment extends Fragment {
 
     private FragmentHomeDnBinding binding;
     private CombinedChart combinedChart;
-    ImageButton btnCaidat,btnDonHang;
+    ImageButton btnCaidat,btnDonHang,btnSanPham;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -71,11 +59,20 @@ public class HomeDnFragment extends Fragment {
         btnDonHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Chuyển sang Activity khác
-                Intent intent = new Intent(getActivity(), DonHangActivity.class);
-                startActivity(intent);
-                // Optional: kết thúc Fragment hoặc Activity hiện tại
-                getActivity().finish();
+
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_donHangFragment);
+            }
+        });
+        btnSanPham = binding.btnSanPham;
+
+        // Xử lý sự kiện khi nhấn button
+        btnSanPham.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_sanPhamFragment);
+
             }
         });
 

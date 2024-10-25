@@ -37,8 +37,9 @@
             android:name=".Activity.LoginActivity"
             android:exported="true">
         </activity>
+
         <activity
-            android:name=".Activity.DonHangActivity"
+            android:name=".Activity.SanPhamActivity"
             android:exported="true">
         </activity>
         <activity

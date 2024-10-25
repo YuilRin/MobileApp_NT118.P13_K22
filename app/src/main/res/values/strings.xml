@@ -5,5 +5,7 @@
     <string name="title_notifications">Thông tin</string>
     <string name="title_budget">Ngân sách</string>
     <string name="sub_heading_page_choose">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel bibendum ex, quis mollis arcu. Maeceis odio. Etiam commodo congue augue a eleifend. Donec turpis lacus, iaculis sed sagittis vitae, gravida ac ex.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

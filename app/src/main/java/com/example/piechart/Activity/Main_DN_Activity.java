@@ -31,6 +31,7 @@ public class Main_DN_Activity extends AppCompatActivity {
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main2);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
         NavigationUI.setupWithNavController(navView, navController);
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.homeDnFragment) {
@@ -41,6 +42,21 @@ public class Main_DN_Activity extends AppCompatActivity {
                 getSupportActionBar().setTitle("Thông tin thêm");
             }
         });
+        navView.setOnNavigationItemSelectedListener(item -> {
+
+            if (item.getItemId() == R.id.homeDnFragment) {
+                navController.navigate(R.id.homeDnFragment);
+                return true;
+            } else if (item.getItemId() == R.id.quanLyFragment) {
+                navController.navigate(R.id.quanLyFragment);
+                return true;
+            } else if (item.getItemId() == R.id.moreFragment) {
+                navController.navigate(R.id.moreFragment);
+                return true;
+            }
+            return false;
+        });
+
     }
 
 }

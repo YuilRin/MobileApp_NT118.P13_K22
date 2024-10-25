@@ -9,7 +9,15 @@
         android:id="@+id/homeDnFragment"
         android:name="com.example.piechart.uidn.home.HomeDnFragment"
         android:label="fragment_home_dn"
-        tools:layout="@layout/fragment_home_dn" />
+        tools:layout="@layout/fragment_home_dn" >
+
+        <action
+            android:id="@+id/action_homeDnFragment_to_donHangFragment"
+            app:destination="@id/donHangFragment" />
+        <action
+            android:id="@+id/action_homeDnFragment_to_sanPhamFragment"
+            app:destination="@id/sanPhamFragment" />
+    </fragment>
     <fragment
         android:id="@+id/moreFragment"
         android:name="com.example.piechart.uidn.more.MoreFragment"
@@ -20,4 +28,18 @@
         android:name="com.example.piechart.uidn.QuanLy.QuanLyFragment"
         android:label="fragment_quan_ly"
         tools:layout="@layout/fragment_quan_ly" />
+    <fragment
+        android:id="@+id/donHangFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.DonHangFragment"
+        android:label="fragment_don_hang"
+        >
+    <action
+        android:id="@+id/action_donHangFragment_to_homeDnFragment"
+        app:destination="@id/homeDnFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/sanPhamFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.SanPhamFragment"
+        android:label="SanPhamFragment" />
+
 </navigation>
