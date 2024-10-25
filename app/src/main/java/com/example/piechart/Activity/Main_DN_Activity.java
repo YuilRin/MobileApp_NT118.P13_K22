@@ -32,6 +32,15 @@ public class Main_DN_Activity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main2);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.homeDnFragment) {
+                getSupportActionBar().setTitle("Trang chủ");
+            } else if (destination.getId() == R.id.quanLyFragment) {
+                getSupportActionBar().setTitle("Quản lý");
+            } else if (destination.getId() == R.id.moreFragment) {
+                getSupportActionBar().setTitle("Thông tin thêm");
+            }
+        });
     }
 
 }

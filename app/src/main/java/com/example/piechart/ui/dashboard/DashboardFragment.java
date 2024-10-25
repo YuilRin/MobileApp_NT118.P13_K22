@@ -10,10 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,8 +35,7 @@ public class DashboardFragment extends Fragment {
     Spinner monthSpinner;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        DashboardViewModel dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -77,7 +74,7 @@ public class DashboardFragment extends Fragment {
         };
 
         // Khởi tạo CustomAdapter và gán cho GridView
-       CustomAdapter_Grid adapter2 = new CustomAdapter_Grid(getContext(), data);
+        CustomAdapter_Grid adapter2 = new CustomAdapter_Grid(getContext(), data);
         gridView.setAdapter(adapter2);
 
         buttonInput = root.findViewById(R.id.buttonInput);
@@ -104,6 +101,7 @@ public class DashboardFragment extends Fragment {
 
         return root;
     }
+
     private void showNumberInputDialog() {
         // Tạo một AlertDialog Builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
