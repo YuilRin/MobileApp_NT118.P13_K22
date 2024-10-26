@@ -17,6 +17,24 @@
         <action
             android:id="@+id/action_homeDnFragment_to_sanPhamFragment"
             app:destination="@id/sanPhamFragment" />
+        <action
+            android:id="@+id/action_homeDnFragment_to_baoCaoFragment"
+            app:destination="@id/baoCaoFragment" />
+        <action
+            android:id="@+id/action_homeDnFragment_to_nhaCungCapFragment"
+            app:destination="@id/nhaCungCapFragment" />
+        <action
+            android:id="@+id/action_homeDnFragment_to_khoHangFragment"
+            app:destination="@id/khoHangFragment" />
+        <action
+            android:id="@+id/action_homeDnFragment_to_nhanVienFragment"
+            app:destination="@id/nhanVienFragment" />
+        <action
+            android:id="@+id/action_homeDnFragment_to_thongBaoFragment"
+            app:destination="@id/thongBaoFragment" />
+        <action
+            android:id="@+id/action_homeDnFragment_to_caiDatFragment"
+            app:destination="@id/caiDatFragment" />
     </fragment>
     <fragment
         android:id="@+id/moreFragment"
@@ -41,5 +59,29 @@
         android:id="@+id/sanPhamFragment"
         android:name="com.example.piechart.uidn.FragmentButton.SanPhamFragment"
         android:label="SanPhamFragment" />
+    <fragment
+        android:id="@+id/baoCaoFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.BaoCaoFragment"
+        android:label="BaoCaoFragment" />
+    <fragment
+        android:id="@+id/caiDatFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.CaiDatFragment"
+        android:label="CaiDatFragment" />
+    <fragment
+        android:id="@+id/khoHangFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.KhoHangFragment"
+        android:label="KhoHangFragment" />
+    <fragment
+        android:id="@+id/nhaCungCapFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.NhaCungCapFragment"
+        android:label="NhaCungCapFragment" />
+    <fragment
+        android:id="@+id/nhanVienFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.NhanVienFragment"
+        android:label="NhanVienFragment" />
+    <fragment
+        android:id="@+id/thongBaoFragment"
+        android:name="com.example.piechart.uidn.FragmentButton.ThongBaoFragment"
+        android:label="ThongBaoFragment" />
 
 </navigation>

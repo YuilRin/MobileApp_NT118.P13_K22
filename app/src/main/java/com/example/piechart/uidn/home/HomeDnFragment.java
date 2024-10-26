@@ -32,7 +32,7 @@ public class HomeDnFragment extends Fragment {
 
     private FragmentHomeDnBinding binding;
     private CombinedChart combinedChart;
-    ImageButton btnCaidat,btnDonHang,btnSanPham;
+    ImageButton btnCaidat,btnDonHang,btnSanPham,btnBaoCao,btnNhaCungCap,btnKhoHang,btnNhanVien,btnThongBao;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,20 +40,25 @@ public class HomeDnFragment extends Fragment {
         binding = FragmentHomeDnBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-         btnCaidat = binding.btnCaidat;
+        btnCaidat = binding.btnCaidat;
+        btnDonHang = binding.btnDonhang;
+        btnSanPham = binding.btnSanPham;
+        btnNhaCungCap = binding.btnNhacungcap;
+        btnBaoCao = binding.btnBaocao;
+        btnKhoHang = binding.btnKhohang;
+        btnNhanVien = binding.btnNhanvien;
+        btnThongBao = binding.btnThongbao;
 
         // Xử lý sự kiện khi nhấn button
         btnCaidat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Chuyển sang Activity khác
-                Intent intent = new Intent(getActivity(), InfoDnActivity.class);
-                startActivity(intent);
-                // Optional: kết thúc Fragment hoặc Activity hiện tại
-                getActivity().finish();
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_caiDatFragment);
             }
         });
-        btnDonHang = binding.btnDonhang;
+
+
 
         // Xử lý sự kiện khi nhấn button
         btnDonHang.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +69,7 @@ public class HomeDnFragment extends Fragment {
                 navController.navigate(R.id.action_homeDnFragment_to_donHangFragment);
             }
         });
-        btnSanPham = binding.btnSanPham;
+
 
         // Xử lý sự kiện khi nhấn button
         btnSanPham.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +81,48 @@ public class HomeDnFragment extends Fragment {
             }
         });
 
+        // Xử lý sự kiện khi nhấn button
+        btnNhaCungCap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_nhaCungCapFragment);
+
+            }
+        });
+
+        btnKhoHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_khoHangFragment);
+
+            }
+        });
+        btnBaoCao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_baoCaoFragment);
+
+            }
+        });
+        btnNhanVien.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_nhanVienFragment);
+
+            }
+        });
+        btnThongBao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_homeDnFragment_to_thongBaoFragment);
+
+            }
+        });
 
         combinedChart = binding.Chart;
 
