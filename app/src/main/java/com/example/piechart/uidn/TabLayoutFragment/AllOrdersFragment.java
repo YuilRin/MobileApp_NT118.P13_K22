@@ -18,6 +18,6 @@ public class AllOrdersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Nạp layout cho Fragment
-        return inflater.inflate(R.layout.fragment_all_orders, container, false);
+        return inflater.inflate(R.layout.business_order_fragment_all_orders, container, false);
     }
 }

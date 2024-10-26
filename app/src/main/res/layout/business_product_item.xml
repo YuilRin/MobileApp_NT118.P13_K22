@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginTop="10dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lb_tensp"
+        android:text="Tên sản phẩm"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lb_ncc"
+        android:text="Nhà cung cấp: 0"
+        android:layout_marginStart="40dp"
+        app:layout_constraintStart_toStartOf="@id/lb_tensp"
+        app:layout_constraintTop_toBottomOf="@+id/lb_tensp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lb_phanloaisp"
+        android:text="Phan loai"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lb_ncc"
+
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lb_giavon"
+        android:text="Giá vốn: 0"
+        app:layout_constraintStart_toStartOf="@id/lb_ncc"
+        app:layout_constraintTop_toBottomOf="@+id/lb_ncc"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lb_tinhtrangtt"
+        android:text="Tình trạng thanh toán"
+        app:layout_constraintStart_toStartOf="@id/lb_tensp"
+        app:layout_constraintTop_toBottomOf="@+id/lb_giavon"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/l_tongtien"
+        android:text="Tổng tiền"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/lb_tinhtrangtt" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/date"
+        android:text="Mã sản phẩm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/lb_tensp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="0dp"
-    android:background="@drawable/gradient_background">
+    android:background="@drawable/business_background_gradient">
 
     <!-- TabLayout for Tabs -->
     <com.google.android.material.tabs.TabLayout
@@ -18,7 +18,7 @@
             android:id="@+id/tab_all"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Tất cả" />
+            android:text="Tất cả"/>
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab_paid"
@@ -64,7 +64,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/edit_btn" />
+            android:src="@drawable/business_ic_edit" />
 
         <ImageButton
             android:id="@+id/search_button"
@@ -73,7 +73,7 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/search" />
+            android:src="@drawable/business_ic_search" />
 
         <ImageButton
             android:id="@+id/add_button"
@@ -82,7 +82,7 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_add" />
+            android:src="@drawable/business_ic_add" />
     </LinearLayout>
 
 </LinearLayout>
