@@ -22,7 +22,7 @@ public class KhoHangFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Nén layout cho fragment
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.dn_khohangbtn, container, false);
+        View view = inflater.inflate(R.layout.business_button_storage, container, false);
 
         // Thiết lập ActionBar với nút quay lại
         if (getActivity() != null) {

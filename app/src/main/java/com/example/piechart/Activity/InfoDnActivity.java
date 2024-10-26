@@ -18,7 +18,7 @@ public class InfoDnActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_dn);
+        setContentView(R.layout.business_activity_info);
         Button button=findViewById(R.id.confirm_button);
 
         button.setOnClickListener(new View.OnClickListener()

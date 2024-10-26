@@ -1,15 +1,12 @@
 package com.example.piechart.uidn.QuanLy;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,15 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.piechart.Custom.CustomAdapter_Money;
 import com.example.piechart.R;
-import com.example.piechart.databinding.FragmentHomeBinding;
 import com.example.piechart.databinding.FragmentHomeDnBinding;
 import com.example.piechart.databinding.FragmentQuanLyBinding;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;public class QuanLyFragment extends Fragment {
 
@@ -87,7 +77,7 @@ import java.util.ArrayList;public class QuanLyFragment extends Fragment {
         builder.setTitle("Khoản Thu");
 
         // Sử dụng đúng context cho LayoutInflater
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.khoanthu, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.business_item_khoanthu, null);
         builder.setView(view);
 
         // Thêm nút Save
@@ -107,7 +97,7 @@ import java.util.ArrayList;public class QuanLyFragment extends Fragment {
         builder.setTitle("Khoản Chi");
 
         // Sử dụng đúng context cho LayoutInflater
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.khoanchi, null);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.business_item_khoanchi, null);
         builder.setView(view);
 
         // Thêm nút Save

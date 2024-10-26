@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background">
+    android:background="@drawable/background_gradient">
 
 
     <!-- Thu chi header -->
@@ -37,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/gradient_background"
+            android:background="@drawable/background_gradient"
             android:gravity="center"
             android:text="Tổng thu"
             android:textSize="18sp"
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@drawable/gradient_background"
+            android:background="@drawable/background_gradient"
             android:text="Tổng chi"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -115,7 +115,7 @@
         <!-- Table header -->
         <TableRow
             android:layout_width="match_parent"
-            android:background="@drawable/gradient_background"
+            android:background="@drawable/background_gradient"
             android:layout_height="188dp">
 
             <TextView

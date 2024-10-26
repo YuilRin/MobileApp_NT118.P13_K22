@@ -33,7 +33,7 @@ public class DonHangFragment extends Fragment {
         // Nén layout cho fragment
 
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.dn_donhangbtn, container, false);
+        View view = inflater.inflate(R.layout.business_button_order, container, false);
 
         // Thiết lập ActionBar với nút quay lại
         if (getActivity() != null) {

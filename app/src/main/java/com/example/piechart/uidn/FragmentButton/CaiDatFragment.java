@@ -22,7 +22,7 @@ public class CaiDatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Nén layout cho fragment
         setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.dn_caidatbtn, container, false);
+        View view = inflater.inflate(R.layout.business_button_setting, container, false);
 
         // Thiết lập ActionBar với nút quay lại
         if (getActivity() != null) {
