@@ -27,7 +27,6 @@
                 android:id="@+id/llBudget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -161,14 +160,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Thông tin thu nhập"
-                    android:textSize="14dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="800dp"
+                android:layout_height="wrap_content"
                 android:background="#333333"
-                android:orientation="vertical" />
+                android:padding="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tổng thu nhập: 10,0000.000 đ"
+                    android:textColor="#3194D1"
+                    android:textSize="20sp"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="8dp"/>
+
+            </LinearLayout>
+
 
         </LinearLayout>
     </ScrollView>
