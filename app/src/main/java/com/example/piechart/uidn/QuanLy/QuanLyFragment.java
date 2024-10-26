@@ -14,12 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.piechart.Custom.CustomAdapter_Money;
 import com.example.piechart.R;
-import com.example.piechart.databinding.FragmentHomeDnBinding;
-import com.example.piechart.databinding.FragmentQuanLyBinding;
+import com.example.piechart.databinding.BusinessFragmentHomeBinding;
+import com.example.piechart.databinding.BusinessFragmentQuanlyBinding;
 
 import java.util.ArrayList;public class QuanLyFragment extends Fragment {
 
-    private @NonNull FragmentQuanLyBinding binding;
+    private @NonNull BusinessFragmentQuanlyBinding binding;
     ListView listView;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -27,7 +27,7 @@ import java.util.ArrayList;public class QuanLyFragment extends Fragment {
         QuanLyViewModel homeViewModel =
                 new ViewModelProvider(this).get(QuanLyViewModel.class);
 
-        binding = FragmentQuanLyBinding.inflate(inflater, container, false);
+        binding = BusinessFragmentQuanlyBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         listView = root.findViewById(R.id.ListCN);
