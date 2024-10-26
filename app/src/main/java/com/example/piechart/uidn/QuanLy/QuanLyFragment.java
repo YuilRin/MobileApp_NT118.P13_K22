@@ -11,110 +11,108 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.piechart.Custom.CustomAdapter_Money;
 import com.example.piechart.R;
 import com.example.piechart.databinding.BusinessFragmentHomeBinding;
 import com.example.piechart.databinding.BusinessFragmentQuanlyBinding;
+import com.example.piechart.uidn.TabLayoutFragment.AllOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.OtherOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.PaidOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.QuanLy.BusinessQuanLyAll;
+import com.example.piechart.uidn.TabLayoutFragment.QuanLy.BusinessQuanLyKhoanChi;
+import com.example.piechart.uidn.TabLayoutFragment.QuanLy.BusinessQuanLyKhoanThu;
+import com.example.piechart.uidn.TabLayoutFragment.UnpaidOrdersFragment;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;public class QuanLyFragment extends Fragment {
 
-    private @NonNull BusinessFragmentQuanlyBinding binding;
-    ListView listView;
+    private BusinessFragmentQuanlyBinding binding;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        QuanLyViewModel homeViewModel =
-                new ViewModelProvider(this).get(QuanLyViewModel.class);
-
         binding = BusinessFragmentQuanlyBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        listView = root.findViewById(R.id.ListCN);
+        // Thiết lập ViewPager2 và TabLayout
+        setupViewPagerAndTabLayout();
 
-        // Dữ liệu cho ListView
-        ArrayList<String> listItems = new ArrayList<>();
+        // Thiết lập sự kiện click cho các nút
+        setupButtonListeners();
 
-        listItems.add("Ăn uống - 400k");
-        listItems.add("Dịch vụ - 250k");
-        listItems.add("Thuê nhà - 200k");
-        listItems.add("Di chuyển - 150k");
-
-        // Các icon tương ứng cho từng item (đây là các icon mẫu, bạn thay thế bằng icon của bạn)
-        int[] icons = {
-                R.drawable.ic_launcher_foreground, // Giới thiệu bạn bè
-                R.drawable.ic_launcher_foreground,   // Đánh giá
-                R.drawable.ic_launcher_foreground,  // Thông tin nhóm
-                R.drawable.ic_launcher_foreground // Cài đặt
-        };
-
-        // Tạo CustomAdapter và gán cho ListView
-        CustomAdapter_Money adapter = new CustomAdapter_Money(getContext(), listItems, icons);
-        listView.setAdapter(adapter);
-
-        // Tìm nút btnKhoanThu từ view binding
-        binding.btnKhoanThu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Khi nút btnKhoanThu được bấm, hiển thị AlertDialog
-                showKhoanThuDialog();
-            }
-        });
-        binding.btnKhoanChi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Khi nút btnKhoanThu được bấm, hiển thị AlertDialog
-                showKhoanChiDialog();
-            }
-        });
         return root;
     }
 
-    // Hàm hiển thị AlertDialog
-    private void showKhoanThuDialog() {
-        // Sử dụng getContext() cho AlertDialog
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Khoản Thu");
+    private void setupViewPagerAndTabLayout() {
+        ViewPager2 viewPager = binding.viewPager;
+        TabLayout tabLayout = binding.tabLayout;
 
-        // Sử dụng đúng context cho LayoutInflater
+        // Thiết lập Adapter cho ViewPager2
+        viewPager.setAdapter(new FragmentStateAdapter(this) {
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                switch (position) {
+                    case 0: return new BusinessQuanLyAll();
+                    case 1: return new BusinessQuanLyKhoanThu();
+                    case 2: return new BusinessQuanLyKhoanChi();
+                    default: return new Fragment();
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return 3; // Số lượng tab
+            }
+        });
+
+        // Kết nối TabLayout với ViewPager2
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0: tab.setText("Tất cả"); break;
+                case 1: tab.setText("Khoan Thu"); break;
+                case 2: tab.setText("Khoan Chi"); break;
+            }
+        }).attach();
+
+    }
+
+    private void setupButtonListeners() {
+        binding.btnKhoanThu.setOnClickListener(v -> showKhoanThuDialog());
+        binding.btnKhoanChi.setOnClickListener(v -> showKhoanChiDialog());
+    }
+
+    // Hàm hiển thị AlertDialog cho Khoản Thu
+    private void showKhoanThuDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Khoản Thu");
         View view = LayoutInflater.from(getContext()).inflate(R.layout.business_item_khoanthu, null);
         builder.setView(view);
-
-        // Thêm nút Save
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Code xử lý khi nhấn Save
-            }
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            // Code xử lý khi nhấn Save
         });
-
-        // Hiển thị AlertDialog
         builder.create().show();
     }
-    private void showKhoanChiDialog() {
-        // Sử dụng getContext() cho AlertDialog
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Khoản Chi");
 
-        // Sử dụng đúng context cho LayoutInflater
+    // Hàm hiển thị AlertDialog cho Khoản Chi
+    private void showKhoanChiDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Khoản Chi");
         View view = LayoutInflater.from(getContext()).inflate(R.layout.business_item_khoanchi, null);
         builder.setView(view);
-
-        // Thêm nút Save
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Code xử lý khi nhấn Save
-            }
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            // Code xử lý khi nhấn Save
         });
-
-        // Hiển thị AlertDialog
         builder.create().show();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        binding = null; // Giải phóng binding
     }
 }

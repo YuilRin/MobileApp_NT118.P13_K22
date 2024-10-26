@@ -24,9 +24,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 public class DonHangFragment extends Fragment {
-
-    private ViewPager2 viewPager;
-    private TabLayout tabLayout;
     @Override
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,12 +88,11 @@ public class DonHangFragment extends Fragment {
                 }
             }
         }).attach();
-
-
-
-
         return view; // Trả về view đã nén
     }
+
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
 
     @Override
     public void onDestroyView() {

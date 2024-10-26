@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -101,89 +102,53 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp" />
 
-    <TableLayout
-        android:id="@+id/tblKhoanThuChi"
-        android:layout_width="0dp"
-        android:layout_height="25dp"
-        android:layout_marginTop="8dp"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvKhoanThuChi">
 
+    </com.google.android.material.tabs.TabLayout>
 
-        <!-- Table header -->
-        <TableRow
-            android:layout_width="match_parent"
-            android:background="@drawable/background_gradient"
-            android:layout_height="188dp"
-            android:backgroundTint="@color/white">
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        app:layout_constraintTop_toBottomOf="@+id/tab_layout"
+        app:layout_constraintBottom_toTopOf="@+id/btnKhoanChi">
+        <!-- Horizontal ScrollView for Headers -->
 
-            <TextView
-                android:layout_width="137dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Tất cả"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="137dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Khoản thu"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="137dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Khoản chi"
-                android:textStyle="bold" />
-        </TableRow>
-        <!-- Thêm các row cho dữ liệu tương ứng -->
-    </TableLayout>
-
+    </androidx.viewpager2.widget.ViewPager2>
     <!-- Các nút khoản thu, khoản chi -->
 
     <Button
         android:id="@+id/btnKhoanThu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_green"
-        android:textColor="@color/black"
-        android:text="Khoản thu"
         android:layout_marginStart="35dp"
-        android:layout_marginTop="25dp"
         android:layout_marginBottom="50dp"
-        app:layout_constraintTop_toBottomOf="@id/ListCN"
+        android:backgroundTint="@color/light_green"
+        android:text="Khoản thu"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.5"/>
+        app:layout_constraintWidth_percent="0.5" />
 
     <Button
         android:id="@+id/btnKhoanChi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/light_red"
-        android:textColor="@color/black"
-        android:text="Khoản chi"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="50dp"
         android:layout_marginEnd="35dp"
-        app:layout_constraintTop_toBottomOf="@id/ListCN"
+        android:layout_marginBottom="50dp"
+        android:backgroundTint="@color/light_red"
+        android:text="Khoản chi"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.5" />
-
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:id="@+id/ListCN"
-        android:background="@drawable/business_shape_white"
-        app:layout_constraintBottom_toTopOf="@+id/btnKhoanChi"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tblKhoanThuChi"
-        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

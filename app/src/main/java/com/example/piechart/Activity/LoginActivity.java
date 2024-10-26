@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.piechart.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -23,11 +21,8 @@ public class LoginActivity extends AppCompatActivity {
                     Intent mainIntent = new Intent(LoginActivity.this, ChooseActivity.class);
                     startActivity(mainIntent);
                     finish();
-
             }
-
         });
-
 
         btn_ttk.setOnClickListener(new View.OnClickListener()
         {
@@ -36,9 +31,7 @@ public class LoginActivity extends AppCompatActivity {
                 Intent mainIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(mainIntent);
                 finish();
-
             }
-
         });
     }
 }
