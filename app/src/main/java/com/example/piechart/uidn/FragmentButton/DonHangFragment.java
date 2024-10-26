@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -14,12 +16,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.piechart.R;
+import com.example.piechart.uidn.TabLayoutFragment.AllOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.OtherOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.PaidOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.UnpaidOrdersFragment;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+
 public class DonHangFragment extends Fragment {
 
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
     @Override
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Nén layout cho fragment
+
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.dn_donhangbtn, container, false);
 
@@ -31,6 +43,55 @@ public class DonHangFragment extends Fragment {
                 activity.getSupportActionBar().setTitle("Đơn hàng"); // Đặt tiêu đề cho ActionBar
             }
         }
+        viewPager = view.findViewById(R.id.view_pager);
+        tabLayout = view.findViewById(R.id.tab_layout);
+
+        // Thiết lập Adapter cho ViewPager2
+        viewPager.setAdapter(new FragmentStateAdapter(this) {
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                switch (position) {
+                    case 0:
+                        return new AllOrdersFragment();
+                    case 1:
+                        return new PaidOrdersFragment();
+                    case 2:
+                        return new UnpaidOrdersFragment();
+                    case 3:
+                        return new OtherOrdersFragment();
+                    default:
+                        return new Fragment();
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return 4; // Số lượng tab
+            }
+        });
+
+        // Kết nối TabLayout với ViewPager2 bằng TabLayoutMediator
+        new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                switch (position) {
+                    case 0:
+                        tab.setText("Tất cả");
+                        break;
+                    case 1:
+                        tab.setText("Đã thanh toán");
+                        break;
+                    case 2:
+                        tab.setText("Chưa thanh toán");
+                        break;
+                    case 3:
+                        tab.setText("Khác");
+                        break;
+                }
+            }
+        }).attach();
+
 
 
 
@@ -60,6 +121,7 @@ public class DonHangFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
 
