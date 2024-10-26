@@ -15,7 +15,7 @@ import androidx.navigation.Navigation;
 
 import com.example.piechart.Activity.InfoDnActivity;
 import com.example.piechart.R;
-import com.example.piechart.databinding.FragmentHomeDnBinding;
+import com.example.piechart.databinding.BusinessFragmentHomeBinding;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
@@ -30,14 +30,14 @@ import java.util.ArrayList;
 
 public class HomeDnFragment extends Fragment {
 
-    private FragmentHomeDnBinding binding;
+    private BusinessFragmentHomeBinding binding;
     private CombinedChart combinedChart;
     ImageButton btnCaidat,btnDonHang,btnSanPham,btnBaoCao,btnNhaCungCap,btnKhoHang,btnNhanVien,btnThongBao;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentHomeDnBinding.inflate(inflater, container, false);
+        binding = BusinessFragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         btnCaidat = binding.btnCaidat;

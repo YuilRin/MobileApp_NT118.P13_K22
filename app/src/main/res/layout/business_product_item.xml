@@ -6,11 +6,12 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="10dp"
+    android:id="@+id/item_product">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_tensp"
+        android:id="@+id/lb_product_tensp"
         android:text="Tên sản phẩm"
         android:textStyle="bold"
         android:textSize="15dp"
@@ -19,47 +20,40 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_ncc"
-        android:text="Nhà cung cấp: 0"
+        android:id="@+id/lb_product_ncc"
+        android:text="Nhà cung cấp: "
         android:layout_marginStart="40dp"
-        app:layout_constraintStart_toStartOf="@id/lb_tensp"
-        app:layout_constraintTop_toBottomOf="@+id/lb_tensp"/>
+        app:layout_constraintStart_toStartOf="@id/lb_product_tensp"
+        app:layout_constraintTop_toBottomOf="@+id/lb_product_tensp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_phanloaisp"
+        android:id="@+id/lb_product_phanloaisp"
         android:text="Phan loai"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/lb_ncc"
-
+        app:layout_constraintTop_toTopOf="@id/lb_product_ncc"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_giavon"
+        android:id="@+id/lb_product_giavon"
         android:text="Giá vốn: 0"
-        app:layout_constraintStart_toStartOf="@id/lb_ncc"
-        app:layout_constraintTop_toBottomOf="@+id/lb_ncc"/>
+        app:layout_constraintStart_toStartOf="@id/lb_product_ncc"
+        app:layout_constraintTop_toBottomOf="@+id/lb_product_ncc"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_tinhtrangtt"
-        android:text="Tình trạng thanh toán"
-        app:layout_constraintStart_toStartOf="@id/lb_tensp"
-        app:layout_constraintTop_toBottomOf="@+id/lb_giavon"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/l_tongtien"
-        android:text="Tổng tiền"
+        android:id="@+id/lb_product_giaban"
+        android:text="Giá bán: 0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/lb_tinhtrangtt" />
+        app:layout_constraintStart_toEndOf="@id/lb_product_giavon"
+        app:layout_constraintBottom_toBottomOf="@id/lb_product_giavon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/date"
+        android:id="@+id/lb_product_masp"
         android:text="Mã sản phẩm"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/lb_tensp"/>
+        app:layout_constraintTop_toTopOf="@id/lb_product_tensp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

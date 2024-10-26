@@ -30,7 +30,9 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_edit" />
+            android:src="@drawable/business_ic_edit"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/search_button"
@@ -39,7 +41,8 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_search" />
+            android:src="@drawable/business_ic_search"
+            android:layout_marginTop="10dp"/>
 
         <ImageButton
             android:id="@+id/add_button"
@@ -48,6 +51,7 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_add" />
+            android:src="@drawable/business_ic_add"
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
 </LinearLayout>

@@ -6,7 +6,7 @@
 
     <!-- Nội dung, ví dụ ListView -->
     <ListView
-        android:id="@+id/order_unpaid_list"
+        android:id="@+id/lv_order_unpaid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@android:color/darker_gray"

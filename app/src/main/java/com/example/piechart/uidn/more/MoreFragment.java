@@ -17,8 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.piechart.Activity.ChooseActivity;
 import com.example.piechart.Custom.CustomAdapter;
 import com.example.piechart.databinding.FragmentHomeBinding;
-import com.example.piechart.databinding.FragmentHomeDnBinding;
-import com.example.piechart.databinding.FragmentMoreBinding;
+import com.example.piechart.databinding.BusinessFragmentHomeBinding;
+import com.example.piechart.databinding.BusinessFragmentMoreBinding;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -30,13 +30,13 @@ import java.util.ArrayList;
 
 public class MoreFragment extends Fragment {
 
-    private FragmentMoreBinding binding;
+    private BusinessFragmentMoreBinding binding;
     ListView listView;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentMoreBinding.inflate(inflater, container, false);
+        binding = BusinessFragmentMoreBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         Button btnBack = binding.btnBack;
 

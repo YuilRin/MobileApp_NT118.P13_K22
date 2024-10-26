@@ -8,36 +8,36 @@
 
 
     <!-- Thu chi header -->
+
+    <!-- Tổng thu và tổng chi layout -->
+
     <TextView
         android:id="@+id/tvThuChi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_background"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/business_shape_blue"
         android:text="  Thu-chi = 0  "
-        android:textSize="40sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/layoutTongThuChi"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Tổng thu và tổng chi layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutTongThuChi"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintTop_toBottomOf="@+id/tvThuChi"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/business_shape_white">
 
         <TextView
             android:id="@+id/tvTongThu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/background_gradient"
             android:gravity="center"
             android:text="Tổng thu"
             android:textSize="18sp"
@@ -52,7 +52,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@drawable/background_gradient"
             android:text="Tổng chi"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -116,7 +115,8 @@
         <TableRow
             android:layout_width="match_parent"
             android:background="@drawable/background_gradient"
-            android:layout_height="188dp">
+            android:layout_height="188dp"
+            android:backgroundTint="@color/white">
 
             <TextView
                 android:layout_width="137dp"
@@ -146,34 +146,39 @@
 
     <Button
         android:id="@+id/btnKhoanThu"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/holo_green_light"
+        android:backgroundTint="@color/light_green"
+        android:textColor="@color/black"
         android:text="Khoản thu"
-        app:layout_constraintBottom_toBottomOf="@+id/btnKhoanChi"
-        app:layout_constraintEnd_toStartOf="@+id/btnKhoanChi"
-
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintTop_toBottomOf="@id/ListCN"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintWidth_percent="0.5"/>
 
     <Button
         android:id="@+id/btnKhoanChi"
-        android:layout_width="0dp"
-        android:layout_marginBottom="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/holo_red_light"
+        android:backgroundTint="@color/light_red"
+        android:textColor="@color/black"
         android:text="Khoản chi"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginEnd="35dp"
+        app:layout_constraintTop_toBottomOf="@id/ListCN"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintWidth_percent="0.5" />
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/ListCN"
-        android:layout_marginTop="16dp"
+        android:background="@drawable/business_shape_white"
         app:layout_constraintBottom_toTopOf="@+id/btnKhoanChi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

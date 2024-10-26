@@ -1,6 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:weightSum="10"
+    android:background="@drawable/business_background_gradient">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:weightSum="4">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp">
+            <TextView
+                android:layout_width="89dp"
+                android:layout_height="49dp"
+                android:id="@+id/lb_storage_slpham"
+                android:text="Số sản phẩm 0"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:background="@drawable/business_shape_green"
+                android:layout_margin="5dp"/>
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp">
+            <TextView
+                android:layout_width="89dp"
+                android:layout_height="49dp"
+                android:id="@+id/lb_storage_slton"
+                android:text="Số lượng tồn 0"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:background="@drawable/business_shape_red"
+                android:layout_margin="5dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_marginStart="5dp">
+            <TextView
+                android:layout_width="159dp"
+                android:layout_height="49dp"
+                android:id="@+id/lb_storgae_gtton"
+                android:text="Số lượng tồn                     0"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:background="@drawable/business_shape_blue"
+                android:layout_marginStart="20dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7"
+        android:layout_marginTop="10dp">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lv_storage"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:layout_marginTop="16dp"
+        android:clipChildren="true"
+        android:gravity="right"
+        android:background="#2fc5bf">
+
+        <ImageButton
+            android:id="@+id/edit_button"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/business_ic_edit"
+            android:layout_marginTop="10dp"/>
+
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_width="35dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/business_ic_search"
+            android:layout_marginTop="10dp"/>
+
+        <ImageButton
+            android:id="@+id/add_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/business_ic_add"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+</LinearLayout>
