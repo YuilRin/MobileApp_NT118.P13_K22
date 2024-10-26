@@ -55,5 +55,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation (libs.mpandroidchart)
+    implementation (libs.mpandroidchart);
+    implementation("com.airbnb.android:lottie:5.2.0") // thư viện hỗ trợ file Json animation
+
+
 }

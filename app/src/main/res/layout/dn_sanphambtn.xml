@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:background="@drawable/gradient_background">
+
+
+
+    <HorizontalScrollView
+        android:id="@+id/combined_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/header_order_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mã nhà cc"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tên nhà cc"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số sp cc"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_payment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số điện thoại"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đại diện"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_statu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_stat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ngày hợp tác"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_sta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tình trạng"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/header_st"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ghi chú"
+                android:padding="16dp"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="16dp"
+        android:clipChildren="true"
+        android:gravity="right"
+        android:background="#2fc5bf">
+
+        <ImageButton
+            android:id="@+id/edit_button"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/edit_btn" />
+
+        <ImageButton
+            android:id="@+id/search_button"
+            android:layout_width="35dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/search" />
+
+        <ImageButton
+            android:id="@+id/add_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_add" />
+    </LinearLayout>
+
+</LinearLayout>
