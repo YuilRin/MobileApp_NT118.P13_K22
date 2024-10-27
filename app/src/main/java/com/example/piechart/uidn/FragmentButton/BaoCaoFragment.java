@@ -33,15 +33,6 @@ public class BaoCaoFragment extends Fragment {
                 activity.getSupportActionBar().setTitle("Bao cao"); // Đặt tiêu đề cho ActionBar
             }
         }
-        ImageButton btnReport;
-        btnReport=view.findViewById(R.id.fragment_button);
-        btnReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
-                navController.navigate(R.id.action_baoCaoFragment_to_reportFragment);
-            }
-        });
 
         return view; // Trả về view đã nén
 

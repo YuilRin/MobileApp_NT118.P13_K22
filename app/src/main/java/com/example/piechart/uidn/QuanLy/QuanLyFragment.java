@@ -74,8 +74,8 @@ import java.util.ArrayList;public class QuanLyFragment extends Fragment {
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
                 case 0: tab.setText("Tất cả"); break;
-                case 1: tab.setText("Khoan Thu"); break;
-                case 2: tab.setText("Khoan Chi"); break;
+                case 1: tab.setText("Khoản Thu"); break;
+                case 2: tab.setText("Khoản Chi"); break;
             }
         }).attach();
 
