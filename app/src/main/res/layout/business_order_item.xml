@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_order_madonhang"
+        android:id="@+id/tv_order_madonhang"
         android:text="Mã đơn hàng"
         android:textStyle="bold"
         android:textSize="15dp"
@@ -20,38 +20,38 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_sosanpham"
+        android:id="@+id/tv_sosanpham"
         android:text="Số sản phẩm: 0"
         android:layout_marginStart="40dp"
-        app:layout_constraintStart_toStartOf="@id/lb_order_madonhang"
-        app:layout_constraintTop_toBottomOf="@+id/lb_order_madonhang"/>
+        app:layout_constraintStart_toStartOf="@id/tv_order_madonhang"
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_madonhang"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_order_tongsl"
+        android:id="@+id/tv_order_tongsl"
         android:text="Tổng số lượng: 0"
-        app:layout_constraintStart_toStartOf="@id/lb_sosanpham"
-        app:layout_constraintTop_toBottomOf="@+id/lb_sosanpham"/>
+        app:layout_constraintStart_toStartOf="@id/tv_sosanpham"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sosanpham"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_order_tinhtrangtt"
+        android:id="@+id/tv_order_tinhtrangtt"
         android:text="Tình trạng thanh toán"
-        app:layout_constraintStart_toStartOf="@id/lb_order_madonhang"
-        app:layout_constraintTop_toBottomOf="@+id/lb_order_tongsl"/>
+        app:layout_constraintStart_toStartOf="@id/tv_order_madonhang"
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_tongsl"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_order_tongtien"
+        android:id="@+id/tv_order_tongtien"
         android:text="Tổng tiền"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/lb_order_tinhtrangtt" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_order_tinhtrangtt" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lb_order_date"
+        android:id="@+id/tv_order_date"
         android:text="DD/MM/YYYY"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/lb_order_madonhang"/>
+        app:layout_constraintTop_toTopOf="@id/tv_order_madonhang"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

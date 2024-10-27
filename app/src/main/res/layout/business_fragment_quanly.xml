@@ -20,6 +20,7 @@
         android:background="@drawable/business_shape_blue"
         android:text="  Thu-chi = 0  "
         android:textStyle="bold"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/layoutTongThuChi"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -43,6 +44,7 @@
             android:text="Tổng thu"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toStartOf="@+id/tvTongChi"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,6 +58,7 @@
             android:text="Tổng chi"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvTongThu"
             app:layout_constraintTop_toTopOf="@+id/tvTongThu"
@@ -69,6 +72,7 @@
             android:text="0"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@+id/tvTongThu"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvGiaTriTongChi"
@@ -82,6 +86,7 @@
             android:text="0"
             android:textSize="30sp"
             android:textStyle="bold"
+            android:textColor="@color/black"
             app:layout_constraintTop_toBottomOf="@+id/tvTongChi"
             app:layout_constraintStart_toEndOf="@+id/tvGiaTriTongThu"
             app:layout_constraintEnd_toEndOf="parent"
@@ -107,6 +112,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvKhoanThuChi">
@@ -115,11 +121,13 @@
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_width="413dp"
+        android:layout_height="408dp"
+        android:layout_marginBottom="15dp"
         android:layout_weight="2"
+        app:layout_constraintBottom_toTopOf="@+id/btnKhoanChi"
         app:layout_constraintTop_toBottomOf="@+id/tab_layout"
-        app:layout_constraintBottom_toTopOf="@+id/btnKhoanChi">
+        tools:layout_editor_absoluteX="-2dp">
         <!-- Horizontal ScrollView for Headers -->
 
     </androidx.viewpager2.widget.ViewPager2>
@@ -129,26 +137,30 @@
         android:id="@+id/btnKhoanThu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
+        android:layout_marginStart="32dp"
         android:layout_marginBottom="50dp"
         android:backgroundTint="@color/light_green"
         android:text="Khoản thu"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btnKhoanChi"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnKhoanChi"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintWidth_percent="0.5" />
 
     <Button
         android:id="@+id/btnKhoanChi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="35dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="50dp"
         android:backgroundTint="@color/light_red"
         android:text="Khoản chi"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tab_layout"
+        app:layout_constraintVertical_bias="0.957"
         app:layout_constraintWidth_percent="0.5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

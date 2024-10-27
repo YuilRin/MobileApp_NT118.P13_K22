@@ -22,11 +22,13 @@
                 android:layout_width="89dp"
                 android:layout_height="49dp"
                 android:id="@+id/lb_storage_slpham"
-                android:text="Số sản phẩm 0"
+                android:text="Số sản phẩm
+                0"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:background="@drawable/business_shape_green"
-                android:layout_margin="5dp"/>
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -38,11 +40,13 @@
                 android:layout_width="89dp"
                 android:layout_height="49dp"
                 android:id="@+id/lb_storage_slton"
-                android:text="Số lượng tồn 0"
+                android:text="Số lượng tồn
+                0"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:background="@drawable/business_shape_red"
-                android:layout_margin="5dp"/>
+                android:layout_marginEnd="3dp"
+                android:layout_marginStart="3dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -54,7 +58,7 @@
                 android:layout_width="159dp"
                 android:layout_height="49dp"
                 android:id="@+id/lb_storgae_gtton"
-                android:text="Số lượng tồn                     0"
+                android:text="Số lượng tồn 0"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:background="@drawable/business_shape_blue"
@@ -79,8 +83,7 @@
         android:layout_weight="2"
         android:layout_marginTop="16dp"
         android:clipChildren="true"
-        android:gravity="right"
-        android:background="#2fc5bf">
+        android:gravity="right">
 
         <ImageButton
             android:id="@+id/edit_button"
