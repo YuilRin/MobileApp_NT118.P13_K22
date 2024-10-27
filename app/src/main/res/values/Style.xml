@@ -8,4 +8,7 @@
     <style name="button">
 
     </style>
+    <style name="Theme.App.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

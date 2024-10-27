@@ -7,12 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-
 import com.example.piechart.R;
-
 import java.util.ArrayList;
 
 public class CustomAdapter extends ArrayAdapter<String> {

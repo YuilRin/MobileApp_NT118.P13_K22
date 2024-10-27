@@ -62,7 +62,11 @@
     <fragment
         android:id="@+id/baoCaoFragment"
         android:name="com.example.piechart.uidn.FragmentButton.BaoCaoFragment"
-        android:label="BaoCaoFragment" />
+        android:label="BaoCaoFragment" >
+        <action
+            android:id="@+id/action_baoCaoFragment_to_reportFragment"
+            app:destination="@id/reportFragment" />
+    </fragment>
     <fragment
         android:id="@+id/caiDatFragment"
         android:name="com.example.piechart.uidn.FragmentButton.CaiDatFragment"
@@ -83,5 +87,9 @@
         android:id="@+id/thongBaoFragment"
         android:name="com.example.piechart.uidn.FragmentButton.ThongBaoFragment"
         android:label="ThongBaoFragment" />
+    <fragment
+        android:id="@+id/reportFragment"
+        android:name="com.example.piechart.uidn.TabLayoutFragment.ReportFragment.ReportFragment"
+        android:label="ReportFragment" />
 
 </navigation>
