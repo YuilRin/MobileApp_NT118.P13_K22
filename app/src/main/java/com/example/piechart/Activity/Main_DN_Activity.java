@@ -9,8 +9,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.piechart.R;
-
-import com.example.piechart.databinding.ActivityMainDnBinding;
+import com.example.piechart.databinding.BusinessActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
@@ -20,7 +19,7 @@ public class Main_DN_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        com.example.piechart.databinding.ActivityMainDnBinding binding = ActivityMainDnBinding.inflate(getLayoutInflater());
+        com.example.piechart.databinding.BusinessActivityMainBinding binding = BusinessActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         BottomNavigationView navView = binding.navView2;
