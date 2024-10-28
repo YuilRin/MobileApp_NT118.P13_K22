@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Spinner
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/sp_order_edit_sp_sanpham"
+        android:layout_marginStart="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/et_order_edit_sp_sl"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_order_edit_sp_sl"
+        android:hint="Số lượng"
+        app:layout_constraintBottom_toBottomOf="@+id/sp_order_edit_sp_sanpham"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sp_order_edit_sp_sanpham"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_order_edit_sp_dongia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Đơn giá"
+        app:layout_constraintBottom_toBottomOf="@id/tv_order_edit_sp_tongtien"
+        app:layout_constraintStart_toStartOf="@id/sp_order_edit_sp_sanpham"
+        app:layout_constraintTop_toBottomOf="@id/sp_order_edit_sp_sanpham"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/tv_order_edit_sp_tongtien"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:text="Tổng tiền"
+        app:layout_constraintEnd_toEndOf="@id/et_order_edit_sp_sl"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/tv_order_edit_sp_dongia"
+        app:layout_constraintTop_toBottomOf="@id/et_order_edit_sp_sl" />
+</androidx.constraintlayout.widget.ConstraintLayout>
