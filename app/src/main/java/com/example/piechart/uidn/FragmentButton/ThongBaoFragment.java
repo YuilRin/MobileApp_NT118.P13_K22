@@ -12,8 +12,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
+import com.example.piechart.Class.BusinessNotification;
+import com.example.piechart.Custom.BusinessNotificationAdapter;
 import com.example.piechart.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ThongBaoFragment extends Fragment {
 
@@ -32,20 +38,22 @@ public class ThongBaoFragment extends Fragment {
                 activity.getSupportActionBar().setTitle("Thông báo"); // Đặt tiêu đề cho ActionBar
             }
         }
+        ListView notificationListView = view.findViewById(R.id.notification_list_view);
+
+        // Tạo danh sách thông báo mẫu
+        List<BusinessNotification> notificationList = new ArrayList<>();
+        notificationList.add(new BusinessNotification("Thông báo 1", "2023-10-28", "Nội dung thông báo 1"));
+        notificationList.add(new BusinessNotification("Thông báo 2", "2023-10-29", "Nội dung thông báo 2"));
+        // Thêm thông báo khác nếu cần...
+
+        // Thiết lập adapter cho ListView
+        BusinessNotificationAdapter notificationAdapter = new BusinessNotificationAdapter(requireContext(), notificationList);
+        notificationListView.setAdapter(notificationAdapter);
+
         return view; // Trả về view đã nén
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Bỏ hiển thị nút quay lại khi rời khỏi fragment
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            if (activity.getSupportActionBar() != null) {
-                activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-        }
-    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

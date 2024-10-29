@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.example.piechart.R;
+import com.example.piechart.uidn.Dialog.OrderListDialogFragment;
 import com.example.piechart.uidn.TabLayoutFragment.AllOrdersFragment;
 import com.example.piechart.uidn.TabLayoutFragment.OtherOrdersFragment;
 import com.example.piechart.uidn.TabLayoutFragment.PaidOrdersFragment;
@@ -88,23 +90,22 @@ public class DonHangFragment extends Fragment {
                 }
             }
         }).attach();
+        add=view.findViewById(R.id.add_button);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OrderListDialogFragment dialogFragment = new OrderListDialogFragment();
+                dialogFragment.show(getParentFragmentManager(), "OrderListDialog");
+
+            }
+        });
         return view; // Trả về view đã nén
     }
 
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
+    private ImageButton add;
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Bỏ hiển thị nút quay lại khi rời khỏi fragment
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            if (activity.getSupportActionBar() != null) {
-                activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-        }
-    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

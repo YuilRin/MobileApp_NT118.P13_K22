@@ -1,5 +1,6 @@
 package com.example.piechart.uidn.FragmentButton;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.example.piechart.R;
 
@@ -31,21 +33,36 @@ public class KhoHangFragment extends Fragment {
                 activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Hiển thị nút quay lại
                 activity.getSupportActionBar().setTitle("Kho hàng"); // Đặt tiêu đề cho ActionBar
             }
-        }
+        } ImageButton btnReport;
+        btnReport=view.findViewById(R.id.fragment_button);
+        btnReport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_activity_main2);
+                navController.navigate(R.id.action_khoHangFragment_to_storageFragment);
+            }
+        });
+        ImageButton Add;
+        Add=view.findViewById(R.id.add_button);
+        Add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.business_storage_edit_item, null);
+                builder.setView(view);
+                builder.setPositiveButton("Save", (dialog, which) -> {
+                    // Code xử lý khi nhấn Save
+                });
+                builder.create().show();
+
+            }
+        });
         return view; // Trả về view đã nén
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Bỏ hiển thị nút quay lại khi rời khỏi fragment
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            if (activity.getSupportActionBar() != null) {
-                activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-        }
-    }
+
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

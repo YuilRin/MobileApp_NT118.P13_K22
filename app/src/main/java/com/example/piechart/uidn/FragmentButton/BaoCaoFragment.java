@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -15,9 +17,19 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.example.piechart.R;
+import com.example.piechart.uidn.TabLayoutFragment.AllOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.OtherOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.PaidOrdersFragment;
+import com.example.piechart.uidn.TabLayoutFragment.Report.ReportFragmentFinance;
+import com.example.piechart.uidn.TabLayoutFragment.Report.ReportFragmentSale;
+import com.example.piechart.uidn.TabLayoutFragment.Report.ReportFragmentStorage;
+import com.example.piechart.uidn.TabLayoutFragment.UnpaidOrdersFragment;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class BaoCaoFragment extends Fragment {
-
+    private ViewPager2 viewPager;
+    private TabLayout tabLayout;
     @Override
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,21 +45,55 @@ public class BaoCaoFragment extends Fragment {
                 activity.getSupportActionBar().setTitle("Bao cao"); // Đặt tiêu đề cho ActionBar
             }
         }
+        viewPager = view.findViewById(R.id.view_pager);
+        tabLayout = view.findViewById(R.id.tab_layout);
+
+        viewPager.setAdapter(new FragmentStateAdapter(this) {
+            @NonNull
+            @Override
+            public Fragment createFragment(int position) {
+                switch (position) {
+                    case 0:
+                        return new ReportFragmentSale();
+                    case 1:
+                        return new ReportFragmentFinance();
+                    case 2:
+                        return new ReportFragmentStorage();
+                    default:
+                        return new Fragment();
+                }
+            }
+
+            @Override
+            public int getItemCount() {
+                return 3; // Số lượng tab
+            }
+        });
+
+        // Kết nối TabLayout với ViewPager2 bằng TabLayoutMediator
+        new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                switch (position) {
+                    case 0:
+                        tab.setText("Bán hàng");
+                        break;
+                    case 1:
+                        tab.setText("Tài chính");
+                        break;
+                    case 2:
+                        tab.setText("Kho hàng");
+                        break;
+
+                }
+            }
+        }).attach();
 
         return view; // Trả về view đã nén
 
     }
 
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Bỏ hiển thị nút quay lại khi rời khỏi fragment
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-
-        }
-    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -60,7 +106,4 @@ public class BaoCaoFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 }
