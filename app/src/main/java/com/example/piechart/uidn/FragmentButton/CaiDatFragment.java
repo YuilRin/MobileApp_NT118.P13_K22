@@ -35,17 +35,7 @@ public class CaiDatFragment extends Fragment {
         return view; // Trả về view đã nén
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Bỏ hiển thị nút quay lại khi rời khỏi fragment
-        if (getActivity() != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            if (activity.getSupportActionBar() != null) {
-                activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            }
-        }
-    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
