@@ -87,13 +87,14 @@
 
         <ImageButton
             android:id="@+id/fragment_button"
-            android:layout_width="64dp"
-            android:layout_height="58dp"
+            android:layout_width="45dp"
+            android:layout_height="48dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="0dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_edit" />
+            android:src="@drawable/business_ic_edit"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/edit_button"
@@ -102,7 +103,8 @@
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
             android:src="@drawable/business_ic_edit"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/search_button"

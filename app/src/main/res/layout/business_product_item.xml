@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginTop="10dp"
+    android:background="@drawable/business_shape_white"
     android:id="@+id/item_product">
     <TextView
         android:layout_width="wrap_content"
@@ -15,6 +13,9 @@
         android:text="Tên sản phẩm"
         android:textStyle="bold"
         android:textSize="15dp"
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     <TextView
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/lb_product_ncc"
         android:text="Nhà cung cấp: "
+        android:textColor="@color/black"
         android:layout_marginStart="40dp"
         app:layout_constraintStart_toStartOf="@id/lb_product_tensp"
         app:layout_constraintTop_toBottomOf="@+id/lb_product_tensp"/>
@@ -30,6 +32,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/lb_product_phanloaisp"
         android:text="Phan loai"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/lb_product_ncc"
         />
@@ -38,6 +42,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/lb_product_giavon"
         android:text="Giá vốn: 0"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/lb_product_ncc"
         app:layout_constraintTop_toBottomOf="@+id/lb_product_ncc"/>
     <TextView
@@ -45,6 +50,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/lb_product_giaban"
         android:text="Giá bán: 0"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/lb_product_giavon"
         app:layout_constraintBottom_toBottomOf="@id/lb_product_giavon" />
@@ -54,6 +60,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_product_masp"
         android:text="Mã sản phẩm"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/lb_product_tensp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginTop="16dp"
         />
 
     <LinearLayout
@@ -19,8 +18,7 @@
         android:layout_height="120dp"
         android:layout_marginTop="16dp"
         android:clipChildren="true"
-        android:gravity="right"
-        android:background="#2fc5bf">
+        android:gravity="right">
 
         <ImageButton
             android:id="@+id/edit_button"
@@ -28,7 +26,8 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_edit" />
+            android:src="@drawable/business_ic_edit"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/search_button"
