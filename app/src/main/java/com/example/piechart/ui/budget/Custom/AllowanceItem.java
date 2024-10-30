@@ -3,22 +3,16 @@ package com.example.piechart.ui.budget.Custom;
 public class AllowanceItem {
     private int avatarResId;
     private String position;
-    private String allowance;
-    private String color;
+    private String money;
+    private String titlemoney;
 
-    public AllowanceItem(int avatarResId, String position, String allowance) {
+    public AllowanceItem(int avatarResId, String position, String money, String titlemoney) {
         this.avatarResId = avatarResId;
         this.position = position;
-        this.allowance = allowance;
-
+        this.money = money;
+        this.titlemoney = titlemoney;
     }
 
-    public AllowanceItem(int avatarResId, String position, String allowance, String color) {
-        this.avatarResId = avatarResId;
-        this.position = position;
-        this.allowance = allowance;
-        this.color = color;
-    }
 
     public int getAvatarResId() {
         return avatarResId;
@@ -28,8 +22,13 @@ public class AllowanceItem {
         return position;
     }
 
-    public String getAllowance() {
-        return allowance;
+    public String getMoney() {
+        return money;
     }
+
+    public String getMoneyTitle() {
+        return titlemoney;
+    }
+
 }
 

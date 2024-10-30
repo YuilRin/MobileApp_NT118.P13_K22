@@ -35,6 +35,11 @@ public class SalaryAdapter extends RecyclerView.Adapter<SalaryAdapter.SalaryView
         AllowanceAdapter allowanceAdapter = new AllowanceAdapter(salaryItem.getAllowanceItems());
         holder.rvAllowance.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.rvAllowance.setAdapter(allowanceAdapter);
+
+        // Chỉnh màu cho kết quả
+
+
+
     }
 
     @Override
@@ -43,13 +48,14 @@ public class SalaryAdapter extends RecyclerView.Adapter<SalaryAdapter.SalaryView
     }
 
     public static class SalaryViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMainTitle;
+        TextView tvMainTitle, tvResult;
         RecyclerView rvAllowance;
 
         public SalaryViewHolder(@NonNull View itemView) {
             super(itemView);
             tvMainTitle = itemView.findViewById(R.id.tvMainTitle);
             rvAllowance = itemView.findViewById(R.id.rvAllowance);
+            tvResult = itemView.findViewById(R.id.income_amount);
         }
     }
 }
