@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:padding="4dp"
-    android:background="#333333">
+    android:background="#333333"
+    app:layoutDescription="@xml/item_expenditure_personal_scene"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tvMainTitle"
@@ -15,26 +16,25 @@
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:padding="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAllowance"
+        android:id="@+id/rvExpenditure"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false" />
+        android:nestedScrollingEnabled="false"/>
 
     <TextView
-        android:id="@+id/income_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Text"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:id="@+id/expenditure_amount"
+        android:text="Tổng chi phí: -8,000,000.000 đ"
         android:layout_gravity="end"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"/>
+        android:textColor="#FF0000"/>
 
     <!-- Dòng phân cách -->
     <View
@@ -42,6 +42,9 @@
         android:layout_height="1dp"
         android:background="#FFFFFF"
         android:layout_marginTop="8dp" />
+
+
+
 
 
 

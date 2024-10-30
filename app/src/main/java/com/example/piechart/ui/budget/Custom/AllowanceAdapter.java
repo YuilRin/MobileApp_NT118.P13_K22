@@ -33,7 +33,8 @@ public class AllowanceAdapter extends RecyclerView.Adapter<AllowanceAdapter.Allo
         AllowanceItem allowanceItem = allowanceItems.get(position);
         holder.imgAvatar.setImageResource(allowanceItem.getAvatarResId());
         holder.tvPosition.setText(allowanceItem.getPosition());
-        holder.tvAllowance.setText(allowanceItem.getAllowance());
+        holder.tvMoney.setText(allowanceItem.getMoney());
+        holder.tvMoneyTitle.setText(allowanceItem.getMoneyTitle());
     }
 
     @Override
@@ -43,13 +44,14 @@ public class AllowanceAdapter extends RecyclerView.Adapter<AllowanceAdapter.Allo
 
     public static class AllowanceViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatar;
-        TextView tvPosition, tvAllowance;
+        TextView tvPosition, tvMoney, tvMoneyTitle;
 
         public AllowanceViewHolder(@NonNull View itemView) {
             super(itemView);
             imgAvatar = itemView.findViewById(R.id.imgAvatar);
             tvPosition = itemView.findViewById(R.id.tvPosition);
-            tvAllowance = itemView.findViewById(R.id.tvAllowance);
+            tvMoney = itemView.findViewById(R.id.tvMoney);
+            tvMoneyTitle = itemView.findViewById(R.id.tvMoneyTitle);
         }
     }
 }

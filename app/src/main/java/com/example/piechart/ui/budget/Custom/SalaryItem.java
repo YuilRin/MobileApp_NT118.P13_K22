@@ -1,10 +1,13 @@
 package com.example.piechart.ui.budget.Custom;
 
+import android.graphics.Color;
+
 import java.util.List;
 
 public class SalaryItem {
     private String mainTitle;
     private List<AllowanceItem> allowanceItems;
+
 
     public SalaryItem(String mainTitle, List<AllowanceItem> allowanceItems) {
         this.mainTitle = mainTitle;
@@ -18,5 +21,6 @@ public class SalaryItem {
     public List<AllowanceItem> getAllowanceItems() {
         return allowanceItems;
     }
+
 }
 
