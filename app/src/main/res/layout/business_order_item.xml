@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginTop="10dp"
+    android:background="@drawable/business_shape_white"
     android:id="@+id/item_order">
     <TextView
         android:layout_width="wrap_content"
@@ -15,6 +13,9 @@
         android:text="Mã đơn hàng"
         android:textStyle="bold"
         android:textSize="15dp"
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     <TextView
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_sosanpham"
         android:text="Số sản phẩm: 0"
+        android:textColor="@color/black"
         android:layout_marginStart="40dp"
         app:layout_constraintStart_toStartOf="@id/tv_order_madonhang"
         app:layout_constraintTop_toBottomOf="@+id/tv_order_madonhang"/>
@@ -30,6 +32,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_order_tongsl"
         android:text="Tổng số lượng: 0"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/tv_sosanpham"
         app:layout_constraintTop_toBottomOf="@+id/tv_sosanpham"/>
     <TextView
@@ -37,6 +40,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_order_tinhtrangtt"
         android:text="Tình trạng thanh toán"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/tv_order_madonhang"
         app:layout_constraintTop_toBottomOf="@+id/tv_order_tongsl"/>
     <TextView
@@ -44,6 +48,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_order_tongtien"
         android:text="Tổng tiền"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tv_order_tinhtrangtt" />
 
@@ -52,6 +58,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_order_date"
         android:text="DD/MM/YYYY"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_order_madonhang"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,7 +34,7 @@ public class BusinessEmployeeAdapter extends ArrayAdapter<BusinessEmployee> {
         TextView employeeEmail = convertView.findViewById(R.id.employee_email);
         TextView employeeType = convertView.findViewById(R.id.employee_type);
         TextView employeeStatus = convertView.findViewById(R.id.employee_status);
-        TextView employeeEvaluation = convertView.findViewById(R.id.employee_evaluation);
+        TextView employeeEvaluation = convertView.findViewById(R.id.employee_date);
         TextView employeeNote = convertView.findViewById(R.id.employee_note);
 
         employeeId.setText(emp.getEmployeeId());

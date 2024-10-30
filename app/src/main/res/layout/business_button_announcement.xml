@@ -4,14 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="0dp"
-    android:background="@drawable/background_gradient">
+    android:background="@drawable/business_background_gradient">
 
     <ListView
         android:id="@+id/notification_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginTop="16dp"
         />
 
     <LinearLayout
@@ -19,8 +18,7 @@
         android:layout_height="120dp"
         android:layout_marginTop="16dp"
         android:clipChildren="true"
-        android:gravity="right"
-        android:background="#2fc5bf">
+        android:gravity="right">
 
         <ImageButton
             android:id="@+id/edit_button"
@@ -28,7 +26,8 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_edit" />
+            android:src="@drawable/business_ic_edit"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/search_button"
@@ -37,7 +36,8 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_search" />
+            android:src="@drawable/business_ic_search"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/add_button"
@@ -46,7 +46,8 @@
             android:layout_marginStart="16dp"
             android:background="?attr/selectableItemBackground"
             android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_add" />
+            android:src="@drawable/business_ic_add"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </LinearLayout>

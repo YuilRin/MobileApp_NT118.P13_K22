@@ -28,7 +28,7 @@ public class BusinessProviderAdapter extends ArrayAdapter<BusinessProvider> {
 
         TextView providerId = convertView.findViewById(R.id.provider_id);
         TextView providerName = convertView.findViewById(R.id.provider_name);
-        TextView providerProductId = convertView.findViewById(R.id.provider_product_id);
+        TextView providerProductId = convertView.findViewById(R.id.provider_product_number);
         TextView providerPhone = convertView.findViewById(R.id.provider_phone);
         TextView providerHead = convertView.findViewById(R.id.provider_head);
         TextView providerEmail = convertView.findViewById(R.id.provider_email);

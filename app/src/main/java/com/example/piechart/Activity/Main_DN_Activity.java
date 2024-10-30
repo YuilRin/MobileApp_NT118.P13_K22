@@ -21,6 +21,7 @@ public class Main_DN_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         com.example.piechart.databinding.BusinessActivityMainBinding binding = BusinessActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
