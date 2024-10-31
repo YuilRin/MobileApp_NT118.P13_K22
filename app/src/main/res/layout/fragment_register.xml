@@ -67,11 +67,12 @@
 
 
     <!-- Exit -->
-    <ImageView
+    <ImageButton
         android:id="@+id/exit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_exit"
+
+        android:background="@drawable/ic_exit"
         app:layout_constraintTop_toTopOf="@id/logan"
         app:layout_constraintBottom_toBottomOf="@id/logan"
         app:layout_constraintStart_toStartOf="parent" />

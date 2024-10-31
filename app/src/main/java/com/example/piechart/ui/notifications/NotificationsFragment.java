@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.piechart.Activity.ChooseActivity;
+
+import com.example.piechart.Activity.LoginActivity;
 import com.example.piechart.Custom.CustomAdapter;
 import com.example.piechart.databinding.FragmentNotificationsBinding;
 
@@ -38,7 +37,7 @@ public class NotificationsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Chuyển sang Activity khác
-                Intent intent = new Intent(getActivity(), ChooseActivity.class);
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 // Optional: kết thúc Fragment hoặc Activity hiện tại
                 getActivity().finish();

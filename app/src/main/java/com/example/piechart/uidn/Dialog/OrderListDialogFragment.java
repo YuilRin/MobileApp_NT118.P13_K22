@@ -22,7 +22,7 @@ import java.util.List;
 public class OrderListDialogFragment extends DialogFragment {
 
     private ListView listView;
-    private Button btnAdd;
+    private Button btnAdd,Save;
 
     @Nullable
     @Override
@@ -47,7 +47,7 @@ public class OrderListDialogFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                builder.setTitle("Sản phẩm");
+                builder.setTitle("Sản phẩm2");
                 View view2 = LayoutInflater.from(getContext()).inflate(R.layout.business_edit_sp_item, null);
                 builder.setView(view2);
                 builder.setPositiveButton("Save", (dialog, which) -> {
@@ -56,6 +56,15 @@ public class OrderListDialogFragment extends DialogFragment {
                 builder.create().show();
             }
         });
+        Save=rootView.findViewById(R.id.btn_Save);
+        Save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Thực hiện lưu thông tin nếu cần và sau đó thoát dialog
+                dismiss(); // Thoát dialog
+            }
+        });
+
 
         return rootView;
     }

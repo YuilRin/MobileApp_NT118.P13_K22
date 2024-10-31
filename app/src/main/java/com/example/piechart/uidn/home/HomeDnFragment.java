@@ -1,6 +1,5 @@
 package com.example.piechart.uidn.home;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.example.piechart.Activity.InfoDnActivity;
 import com.example.piechart.R;
 import com.example.piechart.databinding.BusinessFragmentHomeBinding;
 import com.github.mikephil.charting.charts.CombinedChart;
