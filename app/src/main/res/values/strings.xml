@@ -15,6 +15,8 @@
 
     <!--Files are using: fragment_budget.xml, -->
     <string name="statistics">Thống kê ngân sách</string>
+    <string name="debt">Quản lý nợ và trả nợ</string>
+    <string name="financial_goals">Mục Tiêu Tài Chính</string>
 
     <!--Files are using: fragment_budget.xml, -->
     <string name="Advance_payment_and_reimbursement">Tạm ứng/hoàn ứng</string>
