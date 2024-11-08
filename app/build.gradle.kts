@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -52,11 +53,13 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.gridlayout)
     implementation(libs.legacy.support.v4)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation (libs.mpandroidchart);
     implementation("com.airbnb.android:lottie:5.2.0") // thư viện hỗ trợ file Json animation
-
-
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.firebase:firebase-auth:21.0.6")
 }
