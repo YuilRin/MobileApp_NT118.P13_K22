@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.piechart"
+    namespace = "com.example.mobileapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.piechart"
+        applicationId = "com.example.mobileapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
