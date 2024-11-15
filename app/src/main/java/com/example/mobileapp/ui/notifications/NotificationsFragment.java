@@ -10,11 +10,14 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 
 import com.example.mobileapp.Activity.LoginActivity;
+import com.example.mobileapp.Activity.LoginFragment.ChooseFragment;
 import com.example.mobileapp.Custom.CustomAdapter;
+import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentNotificationsBinding;
 
 import java.util.ArrayList;
@@ -39,9 +42,15 @@ public class NotificationsFragment extends Fragment {
                 // Chuyển sang Activity khác
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
-                // Optional: kết thúc Fragment hoặc Activity hiện tại
+
                 getActivity().finish();
             }
+            /*public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.putExtra("openChooseFragment", true);
+                startActivity(intent);
+                getActivity().finish(); // Kết thúc Activity hiện tại nếu cần
+            }*/
         });
 
         //final TextView textView = binding.textNotifications;
