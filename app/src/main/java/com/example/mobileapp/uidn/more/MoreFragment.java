@@ -75,6 +75,7 @@ public class MoreFragment extends Fragment {
         // Dữ liệu cho ListView
         ArrayList<String> listItems = new ArrayList<>();
         listItems.add("Giới thiêu bạn bè");
+        listItems.add("Đổi tên");
         listItems.add("Đánh giá");
         listItems.add("Thông tin nhóm");
         listItems.add("Cài đặt");
