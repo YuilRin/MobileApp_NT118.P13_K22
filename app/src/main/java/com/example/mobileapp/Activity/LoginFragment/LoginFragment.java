@@ -1,5 +1,7 @@
 package com.example.mobileapp.Activity.LoginFragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,6 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-
         mAuth = FirebaseAuth.getInstance();
         // Xử lý các sự kiện của nút trong LoginFragment
         Button loginButton = view.findViewById(R.id.login);
@@ -30,7 +31,6 @@ public class LoginFragment extends Fragment {
         EditText passwordEditText=view.findViewById(R.id.editText2);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-
             public void onClick(View v) {
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
@@ -39,13 +39,13 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getActivity(), "Vui lòng nhập email và mật khẩu", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 // Đăng nhập vào Firebase
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(getActivity(), task -> {
                             if (task.isSuccessful()) {
                                 // Đăng nhập thành công
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                saveUserEmail(email);
                                 Toast.makeText(getActivity(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                                 // Chuyển sang ChooseFragment
@@ -73,7 +73,15 @@ public class LoginFragment extends Fragment {
                 transaction.commit();
             }
         });
-
         return view;
     }
+    private void saveUserEmail(String email) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("USER_EMAIL", email);
+        editor.apply();
+    }
+
+
+
 }

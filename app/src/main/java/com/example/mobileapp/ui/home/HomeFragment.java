@@ -1,10 +1,13 @@
 package com.example.mobileapp.ui.home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,6 +40,12 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        TextView tvName =binding.idCustomer;
+        String userName = getUserName();
+
+        if (userName!= null) {
+            tvName.setText(userName);
+        }
         //final TextView textView = binding.textHome;
         //homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
@@ -104,5 +113,9 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    private String getUserName() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("USER_NAME", null);
     }
 }

@@ -1,6 +1,9 @@
 package com.example.mobileapp.Activity.LoginFragment;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -9,6 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -20,7 +27,29 @@ public class ChooseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_choose, container, false);
+
         setHasOptionsMenu(true);
+        if (getUserName() == null) {
+            saveUserName(getUserEmail());
+        }
+
+
+        TextView userNameTextView = view.findViewById(R.id.emailTextView);
+        String userName = getUserName();
+        if (userName != null) {
+            userNameTextView.setText("Welcome, " + userName + "!");
+        }
+
+        /*Button changeNameButton = view.findViewById(R.id.btn_change_name);
+
+        changeNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showChangeNameDialog();
+                updateUserName();
+            }
+        });*/
+
         // Xử lý sự kiện khi nhấn vào nút "individual"
         Button individualButton = view.findViewById(R.id.individual);
         individualButton.setOnClickListener(new View.OnClickListener() {
@@ -52,13 +81,15 @@ public class ChooseFragment extends Fragment {
         if (getActivity() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-    }
-    @Override
+    }@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        // Hiển thị nút quay lại trên ActionBar
+
         if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            boolean canGoBack = getParentFragmentManager().getBackStackEntryCount() > 0;
+
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setDisplayHomeAsUpEnabled(canGoBack);
         }
     }
 
@@ -71,4 +102,24 @@ public class ChooseFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private String getUserEmail() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("USER_EMAIL", null); // Trả về email, null nếu không có
+    }
+    private void saveUserName(String userName) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("USER_NAME", userName);
+        editor.apply();
+    }
+
+
+
+    // Lấy tên người dùng từ SharedPreferences
+    private String getUserName() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("USER_NAME", null);
+    }
+
 }
