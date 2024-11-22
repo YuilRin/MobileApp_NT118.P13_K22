@@ -1,6 +1,8 @@
 package com.example.mobileapp.ui.notifications;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +18,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mobileapp.Activity.LoginActivity;
 import com.example.mobileapp.Activity.LoginFragment.ChooseFragment;
+import com.example.mobileapp.Activity.LoginFragment.LoginFragment;
 import com.example.mobileapp.Custom.CustomAdapter;
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentNotificationsBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -49,10 +53,12 @@ public class NotificationsFragment extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                clearUserEmail(); // Xóa email đã lưu
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.putExtra("Choose", false); // Truyền flag
                 startActivity(intent);
-                getActivity().finish(); // Kết thúc Activity hiện tại nếu cần
+                getActivity().finish();
             }
         });
         listView = binding.ListCN;
@@ -76,5 +82,11 @@ public class NotificationsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    private void clearUserEmail() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("USER_EMAIL");
+        editor.apply();
     }
 }

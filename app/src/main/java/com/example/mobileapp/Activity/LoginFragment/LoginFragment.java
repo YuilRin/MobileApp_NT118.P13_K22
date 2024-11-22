@@ -1,5 +1,7 @@
 package com.example.mobileapp.Activity.LoginFragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +45,7 @@ public class LoginFragment extends Fragment {
                             if (task.isSuccessful()) {
                                 // Đăng nhập thành công
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                saveUserEmail(email);
                                 Toast.makeText(getActivity(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                                 // Chuyển sang ChooseFragment
@@ -72,4 +75,13 @@ public class LoginFragment extends Fragment {
         });
         return view;
     }
+    private void saveUserEmail(String email) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("USER_EMAIL", email);
+        editor.apply();
+    }
+
+
+
 }

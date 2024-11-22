@@ -1,6 +1,8 @@
 package com.example.mobileapp.uidn.more;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,11 @@ import androidx.fragment.app.Fragment;
 
 
 import com.example.mobileapp.Activity.LoginActivity;
+import com.example.mobileapp.Activity.LoginFragment.LoginFragment;
 import com.example.mobileapp.Custom.CustomAdapter;
+import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.BusinessFragmentMoreBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -32,17 +37,6 @@ public class MoreFragment extends Fragment {
         Button btnLogout= binding.btnLogout;
 
 
-        // Xử lý sự kiện khi nhấn button
-        /*btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Chuyển sang Activity khác
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-                // Optional: kết thúc Fragment hoặc Activity hiện tại
-                getActivity().finish();
-            }
-        });*/
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,10 +49,12 @@ public class MoreFragment extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                clearUserEmail(); // Xóa email đã lưu
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.putExtra("Choose", false); // Truyền flag
                 startActivity(intent);
-                getActivity().finish(); // Kết thúc Activity hiện tại nếu cần
+                getActivity().finish();
             }
         });
 
@@ -83,5 +79,11 @@ public class MoreFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+    private void clearUserEmail() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("USER_EMAIL");
+        editor.apply();
     }
 }

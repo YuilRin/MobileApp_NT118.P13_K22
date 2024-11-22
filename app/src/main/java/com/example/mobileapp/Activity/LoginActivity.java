@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mobileapp.Activity.LoginFragment.ChooseFragment;
 import com.example.mobileapp.Activity.LoginFragment.LoginFragment;
 import com.example.mobileapp.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -27,7 +28,16 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Kiểm tra flag từ Intent
+        // Kiểm tra trạng thái đăng nhập
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getCurrentUser() != null) {
+            // Người dùng đã đăng nhập, chuyển trực tiếp sang ChooseFragment
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new ChooseFragment())
+                    .commit();
+            return;
+        }
+
         boolean skipLoginFragment = getIntent().getBooleanExtra("Choose", false);
 
         if (savedInstanceState == null) {
