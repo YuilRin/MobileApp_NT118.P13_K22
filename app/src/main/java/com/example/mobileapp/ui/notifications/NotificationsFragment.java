@@ -95,6 +95,9 @@ public class NotificationsFragment extends Fragment {
                     showChangeNameDialog();
                     updateUserName();
                 }
+                if (position == 0) {  // chia se
+                    shareOnOtherApps();
+                }
             }
         });
         return root;
@@ -166,5 +169,13 @@ public class NotificationsFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("USER_NAME", userName);
         editor.apply();
+    }
+    public void shareOnOtherApps() {
+        String message = "Mình muốn giới thiệu một ứng dụng tuyệt vời với bạn! Tải ngay để thử nhé!";
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
     }
 }

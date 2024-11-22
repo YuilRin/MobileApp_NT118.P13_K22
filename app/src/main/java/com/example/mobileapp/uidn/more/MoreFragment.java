@@ -91,6 +91,10 @@ public class MoreFragment extends Fragment {
                     showChangeNameDialog();
                     updateUserName();
                 }
+                if (position == 0) {  // chia se
+                    shareOnOtherApps();
+                }
+
             }
         });
         return root;
@@ -162,4 +166,35 @@ public class MoreFragment extends Fragment {
         editor.putString("USER_NAME", userName);
         editor.apply();
     }
+    public void shareOnFacebook() {
+        String message = "Mình muốn giới thiệu một ứng dụng tuyệt vời với bạn! Tải ngay để thử nhé!";
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+
+        // Đặt message cho việc chia sẻ
+        shareIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        // Kiểm tra xem Facebook có cài đặt trên thiết bị không
+        shareIntent.setPackage("com.facebook.katana");  // Facebook package name
+
+        // Kiểm tra xem có ứng dụng nào có thể xử lý Intent này không
+        if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(shareIntent);
+        } else {
+            // Nếu không có Facebook, có thể chia sẻ với ứng dụng khác
+            Toast.makeText(getContext(), "Facebook không được cài đặt, chia sẻ qua ứng dụng khác.", Toast.LENGTH_SHORT).show();
+            startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
+        }
+    }
+
+    public void shareOnOtherApps() {
+        String message = "Mình muốn giới thiệu một ứng dụng tuyệt vời với bạn! Tải ngay để thử nhé!";
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, message);
+
+        startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
+    }
+
+
 }
