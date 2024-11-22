@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeDnFragment"
-        android:name="com.example.piechart.uidn.home.HomeDnFragment"
+        android:name="com.example.mobileapp.uidn.home.HomeDnFragment"
         android:label="fragment_home_dn"
         tools:layout="@layout/business_fragment_home" >
 
@@ -38,17 +38,17 @@
     </fragment>
     <fragment
         android:id="@+id/moreFragment"
-        android:name="com.example.piechart.uidn.more.MoreFragment"
+        android:name="com.example.mobileapp.uidn.more.MoreFragment"
         android:label="fragment_more"
         tools:layout="@layout/business_fragment_more" />
     <fragment
         android:id="@+id/quanLyFragment"
-        android:name="com.example.piechart.uidn.QuanLy.QuanLyFragment"
+        android:name="com.example.mobileapp.uidn.QuanLy.QuanLyFragment"
         android:label="fragment_quan_ly"
         tools:layout="@layout/business_fragment_quanly" />
     <fragment
         android:id="@+id/donHangFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.DonHangFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.DonHangFragment"
         android:label="fragment_don_hang"
         >
     <action
@@ -57,19 +57,19 @@
     </fragment>
     <fragment
         android:id="@+id/sanPhamFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.SanPhamFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.SanPhamFragment"
         android:label="SanPhamFragment" />
     <fragment
         android:id="@+id/baoCaoFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.BaoCaoFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.BaoCaoFragment"
         android:label="BaoCaoFragment" />
     <fragment
         android:id="@+id/caiDatFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.CaiDatFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.CaiDatFragment"
         android:label="CaiDatFragment" />
     <fragment
         android:id="@+id/khoHangFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.KhoHangFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.KhoHangFragment"
         android:label="KhoHangFragment" >
         <action
             android:id="@+id/action_khoHangFragment_to_storageFragment"
@@ -77,19 +77,19 @@
     </fragment>
     <fragment
         android:id="@+id/nhaCungCapFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.NhaCungCapFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.NhaCungCapFragment"
         android:label="NhaCungCapFragment" />
     <fragment
         android:id="@+id/nhanVienFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.NhanVienFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.NhanVienFragment"
         android:label="NhanVienFragment" />
     <fragment
         android:id="@+id/thongBaoFragment"
-        android:name="com.example.piechart.uidn.FragmentButton.ThongBaoFragment"
+        android:name="com.example.mobileapp.uidn.FragmentButton.ThongBaoFragment"
         android:label="ThongBaoFragment" />
     <fragment
         android:id="@+id/storageFragment"
-        android:name="com.example.piechart.uidn.TabLayoutFragment.Fragment.StorageFragment"
+        android:name="com.example.mobileapp.uidn.TabLayoutFragment.Fragment.StorageFragment"
         android:label="StorageFragment" />
 
 </navigation>

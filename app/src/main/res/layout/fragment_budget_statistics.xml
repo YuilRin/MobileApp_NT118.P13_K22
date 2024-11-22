@@ -6,15 +6,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.budget.BudgetFragmentStatistics">
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="this is fragment statistics"
-        android:textSize="50dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
 
-    </EditText>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#333333"
+        android:padding="16dp"
+        >
+
+        <!-- Tabs - Nợ / Lịch sử -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:background="@drawable/tab_background">
+
+            <TextView
+                android:id="@+id/tab_no"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="Nợ"
+                android:textColor="@color/white"
+                android:background="@drawable/tab_selected_background"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tab_lich_su"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="Lịch sử"
+                android:textColor="@color/gray"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- RecyclerView hiển thị danh sách các khoản chi tiêu -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp" />
+
+        <!-- Nút Thêm Nợ -->
+        <Button
+            android:id="@+id/btn_add_debt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Thêm nợ cho tháng này"
+            android:textStyle="bold"
+            android:backgroundTint="@color/gray"
+            android:textColor="@color/black"
+            android:padding="16dp" />
+
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

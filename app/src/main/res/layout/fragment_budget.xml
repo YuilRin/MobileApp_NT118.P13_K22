@@ -47,7 +47,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
                 android:padding="18dp"
-                android:text="@string/statistics"
+                android:text="@string/debt"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_size_10sp" />
 
@@ -59,7 +59,7 @@
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
                 android:padding="18dp"
-                android:text="@string/Advance_payment_and_reimbursement"
+                android:text="@string/financial_goals"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/txt_size_10sp" />
 
