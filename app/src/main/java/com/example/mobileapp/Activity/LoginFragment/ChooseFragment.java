@@ -40,7 +40,7 @@ public class ChooseFragment extends Fragment {
             userNameTextView.setText("Welcome, " + userName + "!");
         }
 
-        Button changeNameButton = view.findViewById(R.id.btn_change_name);
+        /*Button changeNameButton = view.findViewById(R.id.btn_change_name);
 
         changeNameButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,7 +48,7 @@ public class ChooseFragment extends Fragment {
                 showChangeNameDialog();
                 updateUserName();
             }
-        });
+        });*/
 
         // Xử lý sự kiện khi nhấn vào nút "individual"
         Button individualButton = view.findViewById(R.id.individual);
@@ -107,35 +107,6 @@ public class ChooseFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         return sharedPreferences.getString("USER_EMAIL", null); // Trả về email, null nếu không có
     }
-    private void showChangeNameDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_change_name, null);
-        builder.setView(dialogView);
-
-        EditText editName = dialogView.findViewById(R.id.edit_name);
-        Button saveNameButton = dialogView.findViewById(R.id.btn_save_name);
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        // Xử lý khi bấm nút Save
-        saveNameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String newName = editName.getText().toString().trim();
-                if (newName.isEmpty()) {
-                    Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
-                } else {
-                    saveUserName(newName); // Lưu tên người dùng
-                    updateUserName();
-                    Toast.makeText(getContext(), "Name updated to " + newName, Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-
-
-                }
-            }
-        });
-    }
     private void saveUserName(String userName) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -144,24 +115,7 @@ public class ChooseFragment extends Fragment {
     }
 
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateUserName();
-    }
 
-    // Cập nhật TextView với tên đã lưu
-    private void updateUserName() {
-        if (getView() != null) {
-            TextView userNameTextView = getView().findViewById(R.id.emailTextView);
-            String userName = getUserName();
-            if (userName != null) {
-                userNameTextView.setText("Welcome, " + userName + "!");
-            } else {
-                userNameTextView.setText("Welcome, User!");
-            }
-        }
-    }
     // Lấy tên người dùng từ SharedPreferences
     private String getUserName() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
