@@ -21,7 +21,6 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-
         mAuth = FirebaseAuth.getInstance();
         // Xử lý các sự kiện của nút trong LoginFragment
         Button loginButton = view.findViewById(R.id.login);
@@ -30,7 +29,6 @@ public class LoginFragment extends Fragment {
         EditText passwordEditText=view.findViewById(R.id.editText2);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
-
             public void onClick(View v) {
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
@@ -39,7 +37,6 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getActivity(), "Vui lòng nhập email và mật khẩu", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 // Đăng nhập vào Firebase
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(getActivity(), task -> {
@@ -73,7 +70,6 @@ public class LoginFragment extends Fragment {
                 transaction.commit();
             }
         });
-
         return view;
     }
 }

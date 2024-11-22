@@ -20,5 +20,7 @@
 
     <!--Files are using: fragment_budget.xml, -->
     <string name="Advance_payment_and_reimbursement">Tạm ứng/hoàn ứng</string>
+    <string name="logout">Logout</string>
+    <string name="i_vai_tr">Đổi vai trò</string>
 
 </resources>

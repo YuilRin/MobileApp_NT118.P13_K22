@@ -52,13 +52,15 @@ public class ChooseFragment extends Fragment {
         if (getActivity() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-    }
-    @Override
+    }@Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        // Hiển thị nút quay lại trên ActionBar
+
         if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            boolean canGoBack = getParentFragmentManager().getBackStackEntryCount() > 0;
+
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setDisplayHomeAsUpEnabled(canGoBack);
         }
     }
 

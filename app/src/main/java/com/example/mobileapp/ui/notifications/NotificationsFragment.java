@@ -34,27 +34,27 @@ public class NotificationsFragment extends Fragment {
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         Button btnBack = binding.btnBack;
+        Button btnLogout= binding.btnLogout;
 
-        // Xử lý sự kiện khi nhấn button
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Chuyển sang Activity khác
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-
-                getActivity().finish();
-            }
-            /*public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                intent.putExtra("openChooseFragment", true);
+                intent.putExtra("Choose", true); // Truyền flag
                 startActivity(intent);
                 getActivity().finish(); // Kết thúc Activity hiện tại nếu cần
-            }*/
+            }
         });
 
-        //final TextView textView = binding.textNotifications;
-        //notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.putExtra("Choose", false); // Truyền flag
+                startActivity(intent);
+                getActivity().finish(); // Kết thúc Activity hiện tại nếu cần
+            }
+        });
         listView = binding.ListCN;
 
         // Dữ liệu cho ListView
