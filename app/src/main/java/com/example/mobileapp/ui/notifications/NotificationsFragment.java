@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,6 +38,14 @@ public class NotificationsFragment extends Fragment {
 
         binding = FragmentNotificationsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        TextView tvName =binding.tvName;
+        String name = getUserName();
+
+        if (name != null) {
+            tvName.setText(name);
+        }
+
         Button btnBack = binding.btnBack;
         Button btnLogout= binding.btnLogout;
 
@@ -88,5 +97,10 @@ public class NotificationsFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove("USER_EMAIL");
         editor.apply();
+    }
+
+    private String getUserName() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("USER_NAME", null);
     }
 }
