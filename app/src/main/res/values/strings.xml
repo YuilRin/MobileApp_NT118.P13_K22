@@ -10,7 +10,7 @@
     <string name="title_budget">Ngân sách</string>
 
     <string name="sub_heading_page_choose">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel bibendum ex, quis mollis arcu. Maeceis odio. Etiam commodo congue augue a eleifend. Donec turpis lacus, iaculis sed sagittis vitae, gravida ac ex.</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Files are using: fragment_budget.xml, -->
@@ -20,7 +20,25 @@
 
     <!--Files are using: fragment_budget.xml, -->
     <string name="Advance_payment_and_reimbursement">Tạm ứng/hoàn ứng</string>
+
+
     <string name="logout">Logout</string>
     <string name="i_vai_tr">Đổi vai trò</string>
+
+    <string name="welcome">Welcome!</string>
+
+
+    <!--Files are using: business_activity_info.xml, -->
+    <string name="hoten">Họ và tên</string>
+    <string name="thong_tin_doanh_nghiep">Thông tin doanh nghiệp</string>
+    <string name="nhaphoten">Nhập họ và tên</string>
+    <string name="lienhe">Liên hệ</string>
+    <string name="nhap_lien_he">Nhập liên hệ</string>
+    <string name="loai_hinh_kinh_doanh">Loại hình kinh doanh</string>
+    <string name="ten_doanh_nghiep">Tên doanh nghiệp</string>
+    <string name="nhap_ten_doanh_nghiep">Nhập tên doanh nghiệp</string>
+    <string name="dia_chi">Địa chỉ</string>
+    <string name="nhap_dia_chi">Nhập địa chỉ</string>
+    <string name="xac_nhan">Xác nhận</string>
 
 </resources>
