@@ -25,8 +25,13 @@ import com.example.mobileapp.Custom.CustomAdapter;
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.BusinessFragmentMoreBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.auth.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MoreFragment extends Fragment {
 
@@ -134,6 +139,7 @@ public class MoreFragment extends Fragment {
                 if (newName.isEmpty()) {
                     Toast.makeText(getContext(), "Name cannot be empty", Toast.LENGTH_SHORT).show();
                 } else {
+                    updateNameInFirestore(newName);
                     saveUserName(newName); // Lưu tên người dùng
                     updateUserName();
                     Toast.makeText(getContext(), "Name updated to " + newName, Toast.LENGTH_SHORT).show();
@@ -195,6 +201,51 @@ public class MoreFragment extends Fragment {
 
         startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
     }
+
+    private void updateNameInFirestore(String newName) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userId = user.getUid();  // Lấy UID của người dùng
+
+            // Kiểm tra nếu người dùng đã tồn tại trong Firestore
+            db.collection("users").document(userId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            // Cập nhật tên người dùng nếu đã tồn tại
+                            db.collection("users").document(userId)
+                                    .update("username", newName)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Cập nhật thành công
+                                        Toast.makeText(getContext(), "Tên người dùng đã được cập nhật trên Firestore", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Xử lý lỗi nếu không thể cập nhật
+                                        Toast.makeText(getContext(), "Lỗi khi cập nhật tên: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Map<String, Object> userMap = new HashMap<>();
+                            userMap.put("username", newName);
+
+                            db.collection("users").document(userId)
+                                    .set(userMap)  // Lưu mới tài liệu
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Tạo mới thành công
+                                        Toast.makeText(getContext(), "Tạo mới tên người dùng trên Firestore", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Xử lý lỗi nếu không thể tạo mới
+                                        Toast.makeText(getContext(), "Lỗi khi tạo mới tên: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Xử lý lỗi nếu không thể truy vấn dữ liệu
+                        Toast.makeText(getContext(), "Lỗi khi truy vấn Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
+    }
+
 
 
 }
