@@ -25,7 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 public class RegisterFragment extends Fragment {
@@ -82,9 +86,7 @@ public class RegisterFragment extends Fragment {
                 if (!password.equals(confirmPassword)) {
                     Toast.makeText(getActivity(), "Mật khẩu và xác nhận mật khẩu không khớp", Toast.LENGTH_SHORT).show();
                     return;
-                }
-
-                // Tạo tài khoản mới với email và mật khẩu
+                }// Tạo tài khoản mới với email và mật khẩu
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                             @Override
@@ -92,22 +94,69 @@ public class RegisterFragment extends Fragment {
                                 if (task.isSuccessful()) {
                                     // Đăng ký thành công
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(getActivity(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-                                    saveUserEmail(email);
-                                    saveUserName(name);
-                                    ChooseFragment chooseFragment = new ChooseFragment();
-                                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.fragment_container, chooseFragment);
-                                    transaction.addToBackStack(null);
-                                    transaction.commit();
+                                    if (user != null) {
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                                        // Kiểm tra xem người dùng đã tồn tại trong Firestore chưa
+                                        db.collection("users").document(user.getUid()).get()
+                                                .addOnSuccessListener(documentSnapshot -> {
+                                                    if (documentSnapshot.exists()) {
+                                                        // Nếu người dùng đã tồn tại, cập nhật tên người dùng
+                                                        db.collection("users").document(user.getUid())
+                                                                .update("username", name)
+                                                                .addOnSuccessListener(aVoid -> {
+                                                                    // Cập nhật thành công
+                                                                    saveUserEmail(email);
+                                                                    saveUserName(name);
+                                                                    Toast.makeText(getActivity(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+
+                                                                    // Chuyển sang ChooseFragment sau khi đăng ký thành công
+                                                                    ChooseFragment chooseFragment = new ChooseFragment();
+                                                                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                                                                    transaction.replace(R.id.fragment_container, chooseFragment);
+                                                                    transaction.addToBackStack(null);
+                                                                    transaction.commit();
+                                                                })
+                                                                .addOnFailureListener(e -> {
+                                                                    Toast.makeText(getActivity(), "Lỗi khi cập nhật tên người dùng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                });
+                                                    } else {
+                                                        // Nếu người dùng chưa tồn tại, tạo mới tài liệu
+                                                        Map<String, Object> userMap = new HashMap<>();
+                                                        userMap.put("username", name);
+                                                        userMap.put("email", email);
+
+                                                        db.collection("users").document(user.getUid())
+                                                                .set(userMap)
+                                                                .addOnSuccessListener(aVoid -> {
+                                                                    // Tạo mới thành công
+                                                                    saveUserEmail(email);
+                                                                    saveUserName(name);
+                                                                    Toast.makeText(getActivity(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+
+                                                                    // Chuyển sang ChooseFragment sau khi đăng ký thành công
+                                                                    ChooseFragment chooseFragment = new ChooseFragment();
+                                                                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                                                                    transaction.replace(R.id.fragment_container, chooseFragment);
+                                                                    transaction.addToBackStack(null);
+                                                                    transaction.commit();
+                                                                })
+                                                                .addOnFailureListener(e -> {
+                                                                    Toast.makeText(getActivity(), "Lỗi khi lưu thông tin người dùng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                });
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Toast.makeText(getActivity(), "Lỗi khi kiểm tra người dùng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                });
+                                    }
                                 } else {
-                                    // Lỗi khi đăng ký
+                                    // Đăng ký thất bại
                                     String errorMessage = task.getException().getMessage();
                                     Toast.makeText(getActivity(), "Đăng ký thất bại: " + errorMessage, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-
             }
         });
 

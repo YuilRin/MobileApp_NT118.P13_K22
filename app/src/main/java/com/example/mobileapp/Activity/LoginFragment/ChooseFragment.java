@@ -40,15 +40,6 @@ public class ChooseFragment extends Fragment {
             userNameTextView.setText("Welcome, " + userName + "!");
         }
 
-        /*Button changeNameButton = view.findViewById(R.id.btn_change_name);
-
-        changeNameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showChangeNameDialog();
-                updateUserName();
-            }
-        });*/
 
         // Xử lý sự kiện khi nhấn vào nút "individual"
         Button individualButton = view.findViewById(R.id.individual);
