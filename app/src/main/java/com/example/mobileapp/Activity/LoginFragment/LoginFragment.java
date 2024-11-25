@@ -100,8 +100,20 @@ public class LoginFragment extends Fragment {
                                             transaction.addToBackStack(null);
                                             transaction.commit();
                                         } else {
-                                            // Nếu không tìm thấy người dùng trong Firestore
-                                            Toast.makeText(getActivity(), "Không tìm thấy tên người dùng trong Firestore", Toast.LENGTH_SHORT).show();
+
+                                            saveUserEmail(userEmail);
+                                            saveUserName("username");
+
+                                            // Thông báo đăng nhập thành công
+                                            Toast.makeText(getActivity(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                                            // Chuyển sang ChooseFragment
+                                            ChooseFragment chooseFragment = new ChooseFragment();
+                                            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                                            transaction.replace(R.id.fragment_container, chooseFragment);
+                                            transaction.addToBackStack(null);
+                                            transaction.commit();
+
                                         }
                                     })
                                     .addOnFailureListener(e -> {

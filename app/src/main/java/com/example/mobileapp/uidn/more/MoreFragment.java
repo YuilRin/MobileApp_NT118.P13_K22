@@ -226,7 +226,7 @@ public class MoreFragment extends Fragment {
                         } else {
                             Map<String, Object> userMap = new HashMap<>();
                             userMap.put("username", newName);
-
+                            userMap.put("email", getUserEmail());
                             db.collection("users").document(userId)
                                     .set(userMap)  // Lưu mới tài liệu
                                     .addOnSuccessListener(aVoid -> {
@@ -244,6 +244,11 @@ public class MoreFragment extends Fragment {
                         Toast.makeText(getContext(), "Lỗi khi truy vấn Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
+    }
+    private String getUserEmail() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
+        // Lấy email từ SharedPreferences, nếu không có thì trả về null hoặc giá trị mặc định khác
+        return sharedPreferences.getString("USER_EMAIL", null);  // Hoặc có thể thay `null` bằng giá trị mặc định nếu cần
     }
 
 
