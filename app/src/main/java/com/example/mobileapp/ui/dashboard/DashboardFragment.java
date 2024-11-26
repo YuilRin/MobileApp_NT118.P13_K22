@@ -22,6 +22,7 @@ import com.example.mobileapp.Custom.CustomAdapter_Grid;
 import com.example.mobileapp.Custom.CustomAdapter_Money;
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentDashboardBinding;
+import com.example.mobileapp.ui.add.ExpenseManager;
 
 import java.util.ArrayList;
 
@@ -40,13 +41,27 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        buttonInput = root.findViewById(R.id.buttonInput);
+
+        // Thiết lập sự kiện nhấn nút
+        buttonInput.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ExpenseManager expenseManager = new ExpenseManager(requireContext(), new ExpenseManager.OnExpenseSavedListener() {
+                        @Override
+                        public void onExpenseSaved() {
+                            // This code will run after the expense is saved
+
+                        }
+                    });
+                    expenseManager.showAddExpenseDialog();
+                }
+            });
 
 
         listView = root.findViewById(R.id.ListCN);
-
         // Dữ liệu cho ListView
         ArrayList<String> listItems = new ArrayList<>();
-
         listItems.add("Ăn uống - 400k");
         listItems.add("Dịch vụ - 250k");
         listItems.add("Thuê nhà - 200k");
@@ -64,6 +79,7 @@ public class DashboardFragment extends Fragment {
         CustomAdapter_Money adapter = new CustomAdapter_Money(getContext(), listItems, icons);
         listView.setAdapter(adapter);
 
+        ////////////////////////////////////////////////////////////////////
         gridView = root.findViewById(R.id.grid);
 
         // Dữ liệu cần hiển thị trong GridView
@@ -77,22 +93,13 @@ public class DashboardFragment extends Fragment {
         CustomAdapter_Grid adapter2 = new CustomAdapter_Grid(getContext(), data);
         gridView.setAdapter(adapter2);
 
-        buttonInput = root.findViewById(R.id.buttonInput);
 
-        // Thiết lập sự kiện nhấn nút
-        buttonInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Hiển thị AlertDialog với EditText để nhập số
-                showNumberInputDialog();
-            }
-        });
         monthSpinner=root.findViewById(R.id.month_spinner);
         String[] months = {"Tháng 1", "Tháng 2", "Tháng 3",
                 "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7",
                 "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"};
 
-        // Tạo ArrayAdapter với mảng tháng
+
         ArrayAdapter<String> adapter3 = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, months);
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -102,39 +109,7 @@ public class DashboardFragment extends Fragment {
         return root;
     }
 
-    private void showNumberInputDialog() {
-        // Tạo một AlertDialog Builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
-        // Tạo một EditText cho người dùng nhập số
-        final EditText input = new EditText(getContext());
-        input.setInputType(android.text.InputType.TYPE_CLASS_NUMBER); // Chỉ cho phép nhập số
-
-
-
-        builder.setTitle("Nhập gia tiền")
-                .setView(input) // Thêm EditText vào AlertDialog
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String enteredNumber = input.getText().toString();
-                        if (!enteredNumber.isEmpty()) {
-                            Toast.makeText(getContext(), "Số bạn nhập: " + enteredNumber, Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getContext(), "Vui lòng nhập số!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        // Hiển thị AlertDialog
-        builder.show();
-    }
 
     @Override
     public void onDestroyView() {

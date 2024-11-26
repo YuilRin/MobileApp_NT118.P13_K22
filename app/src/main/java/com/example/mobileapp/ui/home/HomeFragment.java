@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.mobileapp.Custom.CustomAdapter_Money;
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentHomeBinding;
+import com.example.mobileapp.ui.add.ExpenseManager;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -59,7 +60,7 @@ public class HomeFragment extends Fragment {
     PieChart pieChart;
     ListView listView;
     String[] dayKeys = {"23", "25"};
-    String userId;
+    String userId,userName;
 
     String currentMonth;
     @Override
@@ -78,23 +79,34 @@ public class HomeFragment extends Fragment {
         getDayKeys();
         loadMonthlyExpenses(userId, currentMonth);
 
-
         TextView tvName =binding.idCustomer;
-        String userName = getUserName();
-
+        userName = getUserName();
         if (userName!= null) {
             tvName.setText(userName);
         }
 
-
-        // Thiết lập ListView
         listView = binding.List;
 
         Button btnAddExpense = root.findViewById(R.id.btnAddExpense);
-        btnAddExpense.setOnClickListener(v -> showAddExpenseDialog());
+        btnAddExpense.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExpenseManager expenseManager = new ExpenseManager(requireContext(), new ExpenseManager.OnExpenseSavedListener() {
+                    @Override
+                    public void onExpenseSaved() {
+                        // This code will run after the expense is saved
+                        getDayKeys();
+                        loadMonthlyExpenses(userId, currentMonth);
+                    }
+                });
+                expenseManager.showAddExpenseDialog();
+            }
+        });
 
         return root;
-    }public void getDayKeys() {
+    }
+
+    public void getDayKeys() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("users")
                 .document(userId)
@@ -129,134 +141,6 @@ public class HomeFragment extends Fragment {
     private String getUserName() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         return sharedPreferences.getString("USER_NAME", null);
-    }
-    private void showAddExpenseDialog() {
-        // Tạo dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.ui_dialog_add_expense, null);
-        builder.setView(dialogView);
-
-        // Tham chiếu các View trong dialog
-        EditText etCategory = dialogView.findViewById(R.id.etCategory);
-        EditText etAmount = dialogView.findViewById(R.id.etAmount);
-        Button btnPickDate = dialogView.findViewById(R.id.btnPickDate);
-        TextView tvSelectedDate = dialogView.findViewById(R.id.tvSelectedDate);
-        Button btnSaveExpense = dialogView.findViewById(R.id.btnSaveExpense);
-
-        // Biến lưu trữ ngày được chọn
-        final Calendar selectedDate = Calendar.getInstance();
-
-        // Xử lý chọn ngày
-        btnPickDate.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                    (view, year, month, dayOfMonth) -> {
-                        selectedDate.set(year, month, dayOfMonth);
-
-                        // Format ngày và tháng
-                        String monthKey = year + "-" + String.format("%02d", (month + 1)); // YYYY-MM
-                        String dayKey = String.format("%02d", dayOfMonth); // DD
-                        tvSelectedDate.setText("Selected Date: " + year + "-" + String.format("%02d", (month + 1)) + "-" + dayKey);
-                    },
-                    selectedDate.get(Calendar.YEAR),
-                    selectedDate.get(Calendar.MONTH),
-                    selectedDate.get(Calendar.DAY_OF_MONTH));
-            datePickerDialog.show();
-        });
-
-        // Tạo dialog và hiển thị
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        // Xử lý lưu dữ liệu
-        btnSaveExpense.setOnClickListener(v -> {
-            String category = etCategory.getText().toString().trim();
-            String amountStr = etAmount.getText().toString().trim();
-            String selectedDateText = tvSelectedDate.getText().toString().replace("Selected Date: ", "").trim();
-
-            if (category.isEmpty() || amountStr.isEmpty() || selectedDateText.equals("None")) {
-                Toast.makeText(getContext(), "Please fill all fields and select a date!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            double amount = Double.parseDouble(amountStr);
-
-            // Tách tháng và ngày từ ngày đã chọn
-            String[] dateParts = selectedDateText.split("-");
-            String monthKey = dateParts[0] + "-" + dateParts[1]; // YYYY-MM
-            String dayKey = dateParts[2]; // DD
-
-            // Lưu dữ liệu vào Firestore
-            saveDailyExpense(category, amount, monthKey, dayKey);
-
-
-            // Đóng dialog sau khi lưu
-            dialog.dismiss();
-
-        });
-    }
-    private void saveDailyExpense(String category, double amount, String monthKey, String dayKey) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String userId;
-        if (user != null) {
-            userId = user.getUid();
-        } else {
-            Toast.makeText(getContext(), "User ID not found", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Create expense data
-        Map<String, Object> expenseData = new HashMap<>();
-        expenseData.put(category, amount);
-
-        // Reference to the specific user's document
-        DocumentReference monthRef = db.collection("users").document(userId)
-                .collection("expenses").document(monthKey);
-
-        // Check if the month document exists
-        monthRef.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                // Document exists, check if the days field needs updating
-                String daysString = documentSnapshot.getString("days");
-                if (daysString != null) {
-                    // Split the existing days and check if the day already exists
-                    Set<String> daySet = new HashSet<>(Arrays.asList(daysString.split(" ")));
-                    if (!daySet.contains(dayKey)) {
-                        // Add the new day to the set
-                        daySet.add(dayKey);
-                        // Convert the set back to a string
-                        String updatedDays = String.join(" ", daySet);
-                        // Update the days field in Firestore
-                        monthRef.update("days", updatedDays);
-
-                    }
-                } else {
-                    // No days field found, create a new one with the current day
-                    monthRef.update("days", dayKey);
-                }
-            } else {
-                // If the document doesn't exist, create it with the new day
-                monthRef.set(Collections.singletonMap("days", dayKey));
-            }
-
-            // Save the expense for the specific day
-            db.collection("users").document(userId)
-                    .collection("expenses").document(monthKey)
-                    .collection(dayKey).document(category)
-                    .set(expenseData)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Expense saved for " + dayKey + " in " + monthKey, Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to save expense: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-            getDayKeys();
-            loadMonthlyExpenses(userId, currentMonth);
-
-        }).addOnFailureListener(e -> {
-            Toast.makeText(getContext(), "Failed to retrieve month data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
     }
 
     private void loadMonthlyExpenses(String userId, String monthKey) {
@@ -318,16 +202,14 @@ public class HomeFragment extends Fragment {
         }
     }
 
-// Method to update the ListView with the data
-        private void updateListView(List<String> listItems) {
-            // Create the adapter and set it to the ListView
-            View rootView = getView();
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listItems);
-            ListView listView = rootView.findViewById(R.id.List);  // Make sure to use the correct ListView ID
-            listView.setAdapter(adapter);
-        }
 
-
+    private void updateListView(List<String> listItems) {
+        // Create the adapter and set it to the ListView
+        View rootView = getView();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listItems);
+        ListView listView = rootView.findViewById(R.id.List);  // Make sure to use the correct ListView ID
+        listView.setAdapter(adapter);
+    }
 
     private void updatePieChart(ArrayList<PieEntry> pieEntries) {
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "Chi tiêu");
@@ -359,9 +241,6 @@ public class HomeFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
         return sdf.format(new Date());
     }
-
-
-
 
 
 }
