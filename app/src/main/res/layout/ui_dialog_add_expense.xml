@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter category (e.g., Food)"
-        android:inputType="text" />
+        android:inputType="text"
+        android:maxLines="1"/>
 
     <!-- Input cho số tiền -->
     <EditText
@@ -35,8 +36,25 @@
         android:layout_height="wrap_content"
         android:text="Selected Date: None"
         android:paddingTop="8dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tvSelectedCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tiền Thu"
+            android:paddingTop="8dp"
+            android:paddingEnd="10dp"/>
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="20dp"
+            android:layout_height="20dp"/>
+    </LinearLayout>
 
     <!-- Nút lưu -->
+
     <Button
         android:id="@+id/btnSaveExpense"
         android:layout_width="match_parent"

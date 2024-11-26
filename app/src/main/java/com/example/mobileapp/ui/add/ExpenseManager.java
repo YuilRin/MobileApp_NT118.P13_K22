@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.icu.util.Calendar;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +71,22 @@ public class ExpenseManager {
         Button btnPickDate = dialogView.findViewById(R.id.btnPickDate);
         TextView tvSelectedDate = dialogView.findViewById(R.id.tvSelectedDate);
         Button btnSaveExpense = dialogView.findViewById(R.id.btnSaveExpense);
+        CheckBox cbAddAsterisk = dialogView.findViewById(R.id.checkbox);
+
+        // Đặt InputFilter để ngăn ký tự '*' trong etCategory
+
+        etCategory.setFilters(new InputFilter[] {
+                new InputFilter() {
+                    @Override
+                    public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                        // Nếu ký tự nhập vào là '*', chặn lại
+                        if (source.toString().contains("*")) {
+                            return "";
+                        }
+                        return null; // Cho phép nhập các ký tự khác
+                    }
+                }
+        });
 
         // Calendar to store selected date
         final Calendar selectedDate = Calendar.getInstance();
@@ -99,6 +118,10 @@ public class ExpenseManager {
             if (category.isEmpty() || amountStr.isEmpty() || selectedDateText.isEmpty()) {
                 Toast.makeText(context, "Please fill all fields and select a date!", Toast.LENGTH_SHORT).show();
                 return;
+            }
+            // Add '*' if checkbox is selected (only add, not allow user to type it)
+            if (cbAddAsterisk.isChecked()) {
+                category = "*" + category;  // Add '*' to category name
             }
 
             double amount = Double.parseDouble(amountStr);
