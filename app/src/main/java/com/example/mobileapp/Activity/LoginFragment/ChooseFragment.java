@@ -104,9 +104,6 @@ public class ChooseFragment extends Fragment {
         editor.putString("USER_NAME", userName);
         editor.apply();
     }
-
-
-
     // Lấy tên người dùng từ SharedPreferences
     private String getUserName() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);

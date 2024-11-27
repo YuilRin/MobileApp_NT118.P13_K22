@@ -56,8 +56,6 @@ public class HomeDnFragment extends Fragment {
             }
         });
 
-
-
         // Xử lý sự kiện khi nhấn button
         btnDonHang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +65,6 @@ public class HomeDnFragment extends Fragment {
                 navController.navigate(R.id.action_homeDnFragment_to_donHangFragment);
             }
         });
-
 
         // Xử lý sự kiện khi nhấn button
         btnSanPham.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +94,7 @@ public class HomeDnFragment extends Fragment {
 
             }
         });
+
         btnBaoCao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +103,7 @@ public class HomeDnFragment extends Fragment {
 
             }
         });
+
         btnNhanVien.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +112,7 @@ public class HomeDnFragment extends Fragment {
 
             }
         });
+
         btnThongBao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -53,5 +53,13 @@
     <string name="mat_khau">Mật khẩu</string>
     <string name="cau_gioi_thieu">Quản lý tài chính chưa bao giờ là dễ đến thế</string>
     <string name="finecoin">FineCoin</string>
+            <!-- Các string khác -->
+        <string-array name="business_types">
+            <item>Cửa hàng</item>
+            <item>Nhà hàng</item>
+            <item>Dịch vụ</item>
+            <item>Khác</item>
+        </string-array>
+
 
 </resources>

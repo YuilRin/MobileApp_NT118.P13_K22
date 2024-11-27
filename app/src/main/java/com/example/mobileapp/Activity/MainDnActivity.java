@@ -1,6 +1,7 @@
 package com.example.mobileapp.Activity;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -13,11 +14,14 @@ import com.example.mobileapp.R;
 
 import com.example.mobileapp.databinding.BusinessActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
 public class MainDnActivity extends AppCompatActivity {
 
+    String companyId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,10 +29,25 @@ public class MainDnActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
-        if (savedInstanceState == null) {
-            InfoDialogFragment infoDialogFragment = new InfoDialogFragment();
-            infoDialogFragment.show(getSupportFragmentManager(), "InfoDialog");
-        }
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore.collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && !documentSnapshot.contains("companyId")) {
+                        // If there's no companyId field, show the dialog
+                        InfoDialogFragment infoDialogFragment = new InfoDialogFragment();
+                        infoDialogFragment.show(getSupportFragmentManager(), "InfoDialog");
+                    }
+                    else
+                    {
+                        companyId = documentSnapshot.getString("companyId");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Lỗi khi kiểm tra dữ liệu người dùng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
 
 
         BottomNavigationView navView = binding.navView2;
