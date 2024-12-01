@@ -55,6 +55,7 @@ public class NhaCungCapFragment extends Fragment {
         // Thiết lập adapter cho ListView
         BusinessProviderAdapter providerAdapter = new BusinessProviderAdapter(requireContext(), providerList);
         providerListView.setAdapter(providerAdapter);
+
         ImageButton Add;
         Add=view.findViewById(R.id.add_button);
         Add.setOnClickListener(new View.OnClickListener() {
