@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,24 +21,20 @@ import com.example.mobileapp.Class.Product;
 import com.example.mobileapp.Custom.ProductAdapter;
 import com.example.mobileapp.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SanPhamFragment extends Fragment {
 
-    private ImageButton Add;
-    @Override
+    String userId;
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Nén layout cho fragment
         setHasOptionsMenu(true);
@@ -56,7 +52,7 @@ public class SanPhamFragment extends Fragment {
         ListView productListView = view.findViewById(R.id.listProduct); // Tham chiếu đến ListView
         List<Product> productList = new ArrayList<>();
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
 
        /* productList.add(new Product("Sản phẩm A", "Nhà cung cấp X", "Loại A", 50000, 75000, "MA001"));
@@ -147,8 +143,8 @@ public class SanPhamFragment extends Fragment {
                 });
 
 
-        Add=view.findViewById(R.id.add_button);
-        Add.setOnClickListener(new View.OnClickListener() {
+        ImageButton addSP = view.findViewById(R.id.add_button);
+        addSP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -162,8 +158,6 @@ public class SanPhamFragment extends Fragment {
                 EditText etGiaBan = dialogView.findViewById(R.id.et_product_edit_giaban);
                 EditText etGhiChu = dialogView.findViewById(R.id.et_product_edit_ghichu);
                 EditText etPhanLoai= dialogView.findViewById(R.id.sp_product_edit_phanloai);
-                Spinner spTinhTrang = dialogView.findViewById(R.id.sp_product_edit_tinhtrang);
-                Spinner spNhaCungCap = dialogView.findViewById(R.id.sp_product_edit_nhacungcap);
 
                 builder.setPositiveButton("Save", (dialog, which) -> {
                     String maSP = etMaSP.getText().toString().trim();
@@ -211,6 +205,7 @@ public class SanPhamFragment extends Fragment {
                                                     khoHangData.put("ghiChu",ghiChu);
                                                     khoHangData.put("NhaCungCap","chua co nha cung cap");
 
+                                                    assert companyId != null;
                                                     firestore.collection("company")
                                                             .document(companyId)
                                                             .collection("khohang")
