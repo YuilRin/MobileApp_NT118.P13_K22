@@ -25,12 +25,15 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.mobileapp.Class.BusinessProvider;
+import com.example.mobileapp.Class.Product;
 import com.example.mobileapp.Custom.BusinessProviderAdapter;
+import com.example.mobileapp.Custom.ProductAdapter;
 import com.example.mobileapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,7 +43,6 @@ import java.util.Objects;
 
 public class NhaCungCapFragment extends Fragment {
 
-    private ListView providerListView;
     private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     private String companyId; // Tái sử dụng để giảm truy vấn Firestore
 
@@ -59,17 +61,8 @@ public class NhaCungCapFragment extends Fragment {
             }
         }
 
-        // Tham chiếu đến ListView
-        providerListView = view.findViewById(R.id.supplier_list);
+        UpdateList(view);
 
-        // Tạo danh sách nhà cung cấp mẫu
-        List<BusinessProvider> providerList = new ArrayList<>();
-        providerList.add(new BusinessProvider("ID001", "Nhà cung cấp A", "SP001", "0123456789", "Nguyễn Văn A", "emailA@example.com", "01/01/2023", "Đang hoạt động", "Ghi chú A"));
-        providerList.add(new BusinessProvider("ID002", "Nhà cung cấp B", "SP002", "0987654321", "Trần Thị B", "emailB@example.com", "02/02/2023", "Ngừng hoạt động", "Ghi chú B"));
-
-        // Thiết lập adapter cho ListView
-        BusinessProviderAdapter providerAdapter = new BusinessProviderAdapter(requireContext(), providerList);
-        providerListView.setAdapter(providerAdapter);
 
         // Nút thêm nhà cung cấp
         ImageButton addButton = view.findViewById(R.id.add_button);
@@ -165,6 +158,7 @@ public class NhaCungCapFragment extends Fragment {
             }
 
             saveSupplierData(maNhaCC, tenNCC, selectedProducts, etDaDien, etGhiChu, etNgay, etSDT, etEmail, spinner);
+
         });
 
         builder.create().show();
@@ -202,6 +196,7 @@ public class NhaCungCapFragment extends Fragment {
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         Map<String, Object> chiTietNCC = new HashMap<>();
+        chiTietNCC.put("Ten",tenNCC);
         chiTietNCC.put("DaiDien", etDaDien.getText().toString().trim());
         chiTietNCC.put("GhiChu", etGhiChu.getText().toString().trim());
         chiTietNCC.put("Ngay", etNgay.getText().toString().trim());
@@ -227,5 +222,64 @@ public class NhaCungCapFragment extends Fragment {
                     progressDialog.dismiss();
                     Toast.makeText(getContext(), "Lỗi lưu nhà cung cấp!", Toast.LENGTH_SHORT).show();
                 });
+    }private void UpdateList(View view) {
+        // Tham chiếu đến ListView
+        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        ListView providerListView = view.findViewById(R.id.supplier_list);
+        if (companyId == null) {
+            FirebaseFirestore.getInstance().collection("users")
+                    .document(userId)
+                    .get()
+                    .addOnSuccessListener(userDoc -> {
+                        if (userDoc.exists()) {
+                            companyId = userDoc.getString("companyId");
+
+                            if (companyId == null || companyId.isEmpty()) {
+                                Toast.makeText(requireContext(), "Company ID không hợp lệ!", Toast.LENGTH_SHORT).show();
+                                return; // Dừng phương thức nếu companyId không hợp lệ
+                            }
+
+                            // Tạo danh sách nhà cung cấp
+                            List<BusinessProvider> providerList = new ArrayList<>();
+                            BusinessProviderAdapter providerAdapter = new BusinessProviderAdapter(requireContext(), providerList);
+                            providerListView.setAdapter(providerAdapter);
+
+                            // Lấy dữ liệu từ Firestore
+                            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                            firestore.collection("company")
+                                    .document(companyId)
+                                    .collection("nhacungcap")
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful() && task.getResult() != null) {
+                                            providerList.clear(); // Xóa danh sách cũ
+                                            for (QueryDocumentSnapshot NccDoc : task.getResult()) {
+                                                // Lấy dữ liệu từ tài liệu Firestore
+                                                BusinessProvider provider = new BusinessProvider(
+                                                        NccDoc.getId(),
+                                                        NccDoc.getString("Ten"),
+                                                        "SP01", // Tạm thời dùng giá trị mẫu cho mã sản phẩm
+                                                        NccDoc.getString("SDT"),
+                                                        NccDoc.getString("DaiDien"),
+                                                        NccDoc.getString("Email"),
+                                                        NccDoc.getString("Ngay"),
+                                                        NccDoc.getString("TinhTrang"),
+                                                        NccDoc.getString("GhiChu")
+                                                );
+                                                providerList.add(provider); // Thêm vào danh sách nhà cung cấp
+                                            }
+                                            providerAdapter.notifyDataSetChanged(); // Làm mới adapter
+                                        } else {
+                                            Toast.makeText(requireContext(), "Lỗi khi tải danh sách nhà cung cấp!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                    );
+                        }
+                    });
+
+        }
     }
+
 }
