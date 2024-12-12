@@ -54,10 +54,6 @@ public class SanPhamFragment extends Fragment {
 
         userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-
-       /* productList.add(new Product("Sản phẩm A", "Nhà cung cấp X", "Loại A", 50000, 75000, "MA001"));
-        productList.add(new Product("Sản phẩm B", "Nhà cung cấp Y", "Loại B", 60000, 90000, "MB002"));
-*/
         ProductAdapter productAdapter = new ProductAdapter(requireContext(), productList);
         productListView.setAdapter(productAdapter);
 
@@ -79,9 +75,8 @@ public class SanPhamFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         Map<String, Product> sanPhamMap = new HashMap<>();
                                         for (QueryDocumentSnapshot document : task.getResult()) {
-                                            // Lấy productCode từ ID tài liệu
+
                                             String productCode = document.getId();
-                                            // Lấy các trường "tenSP" và "giaVon" từ tài liệu
                                             String name = document.getString("tenSP");
                                             Double costPrice = document.getDouble("giaVon");
 
@@ -203,6 +198,7 @@ public class SanPhamFragment extends Fragment {
                                                     khoHangData.put("soLuong", 0);
                                                     khoHangData.put("phanLoai",phanLoai);
                                                     khoHangData.put("ghiChu",ghiChu);
+                                                    khoHangData.put("ngayNhap","1/1/1999");
                                                     khoHangData.put("NhaCungCap","chua co nha cung cap");
 
                                                     assert companyId != null;

@@ -15,15 +15,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.mobileapp.Class.BusinessProvider;
 import com.example.mobileapp.Class.BusinessStorage;
 import com.example.mobileapp.Custom.BusinessKhoHangAdapter;
+import com.example.mobileapp.Custom.BusinessProviderAdapter;
 import com.example.mobileapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class KhoHangFragment extends Fragment {
+
+    private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+    private String companyId;
 
     @Override
 
@@ -39,8 +49,9 @@ public class KhoHangFragment extends Fragment {
                 activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Hiển thị nút quay lại
                 activity.getSupportActionBar().setTitle("Kho hàng"); // Đặt tiêu đề cho ActionBar
             }
-        } ImageButton btnReport;
-        btnReport=view.findViewById(R.id.fragment_button);
+        }
+        ImageButton btnReport;
+        btnReport = view.findViewById(R.id.fragment_button);
         btnReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,7 +60,7 @@ public class KhoHangFragment extends Fragment {
             }
         });
         ImageButton Add;
-        Add=view.findViewById(R.id.add_button);
+        Add = view.findViewById(R.id.add_button);
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,20 +75,11 @@ public class KhoHangFragment extends Fragment {
 
             }
         });
-        ListView listView = view.findViewById(R.id.lv_storage);
 
-        // Tạo dữ liệu mẫu
-        List<BusinessStorage> khoHangItems = new ArrayList<>();
-        khoHangItems.add(new BusinessStorage("Sản phẩm A", "Công ty X", "Loại 1", "100,000",
-                "01/11/2024", "50", "Còn hàng", "5,000,000", "SP001"));
-        khoHangItems.add(new BusinessStorage("Sản phẩm B", "Công ty Y", "Loại 2", "200,000",
-                "02/11/2024", "30", "Hết hàng", "6,000,000", "SP002"));
-        khoHangItems.add(new BusinessStorage("Sản phẩm C", "Công ty Z", "Loại 3", "150,000",
-                "03/11/2024", "40", "Còn hàng", "6,000,000", "SP003"));
 
-        // Gắn Adapter
-        BusinessKhoHangAdapter adapter = new BusinessKhoHangAdapter(getContext(), khoHangItems);
-        listView.setAdapter(adapter);
+        UpdateList(view);
+
+
         return view; // Trả về view đã nén
     }
 
@@ -94,6 +96,72 @@ public class KhoHangFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    private void UpdateList(View view) {
+
+        // Tham chiếu đến ListView
+        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        ListView storageListView = view.findViewById(R.id.lv_storage);
 
 
+        if (companyId == null) {
+            FirebaseFirestore.getInstance().collection("users")
+                    .document(userId)
+                    .get()
+                    .addOnSuccessListener(userDoc -> {
+                        if (userDoc.exists()) {
+                            companyId = userDoc.getString("companyId");
+
+                            if (companyId == null || companyId.isEmpty()) {
+                                Toast.makeText(requireContext(), "Company ID không hợp lệ!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            List<BusinessStorage> StorageList = new ArrayList<>();
+
+                            BusinessKhoHangAdapter storageAdapter = new BusinessKhoHangAdapter(requireContext(), StorageList);
+                            storageListView.setAdapter(storageAdapter);
+
+                            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                            firestore.collection("company")
+                                    .document(companyId)
+                                    .collection("khohang")
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful() && task.getResult() != null) {
+                                            StorageList.clear(); // Xóa danh sách cũ
+                                            for (QueryDocumentSnapshot KhDoc : task.getResult()) {
+                                                // Lấy dữ liệu từ tài liệu Firestore
+                                                double giaBan = KhDoc.getDouble("giaBan");
+                                                double soLuong = KhDoc.getDouble("soLuong");
+                                                String tongGiaTri = String.valueOf(giaBan * soLuong); // Tính giá trị tổng
+
+                                                BusinessStorage Storage = new BusinessStorage(
+                                                        KhDoc.getId(),
+                                                        KhDoc.getString("NhaCungCap"),
+                                                        KhDoc.getString("phanLoai"),
+                                                        String.valueOf(giaBan), // Chuyển giá bán thành String
+                                                        KhDoc.getString("ngayNhap"),
+                                                        String.valueOf(soLuong), // Chuyển số lượng thành String
+                                                        soLuong > 0 ? "Còn hàng" : "Hết hàng", // Thay đổi theo số lượng tồn
+                                                        tongGiaTri, // Giá trị tổng được tính toán
+                                                        KhDoc.getId()
+                                                );
+                                                StorageList.add(Storage); // Thêm vào danh sách nhà cung cấp
+                                            }
+                                            storageAdapter.notifyDataSetChanged(); // Làm mới adapter
+                                        } else {
+                                            Toast.makeText(requireContext(), "Lỗi khi tải danh sách nhà cung cấp!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                    );
+                        }
+                    });
+
+        }
+
+
+    }
 }

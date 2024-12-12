@@ -222,7 +222,9 @@ public class NhaCungCapFragment extends Fragment {
                     progressDialog.dismiss();
                     Toast.makeText(getContext(), "Lỗi lưu nhà cung cấp!", Toast.LENGTH_SHORT).show();
                 });
-    }private void UpdateList(View view) {
+    }
+
+    private void UpdateList(View view) {
         // Tham chiếu đến ListView
         userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         ListView providerListView = view.findViewById(R.id.supplier_list);
