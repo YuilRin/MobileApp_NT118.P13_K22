@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -33,7 +34,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,10 +63,13 @@ public class NhaCungCapFragment extends Fragment {
 
         UpdateList(view);
 
-
         // Nút thêm nhà cung cấp
         ImageButton addButton = view.findViewById(R.id.add_button);
-        addButton.setOnClickListener(v -> openAddSupplierDialog());
+        addButton.setOnClickListener(v -> {
+            openAddSupplierDialog(() -> {
+                UpdateList(view);
+            });
+        });
 
         return view;
     }
@@ -88,7 +91,7 @@ public class NhaCungCapFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void openAddSupplierDialog() {
+    private void openAddSupplierDialog(Runnable onEmployeeAdded) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_supplier_edit_item, null);
         builder.setView(dialogView);
@@ -110,11 +113,6 @@ public class NhaCungCapFragment extends Fragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
 
-        ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Đang tải dữ liệu...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
         // Lấy dữ liệu companyId nếu chưa có
         if (companyId == null) {
             FirebaseFirestore.getInstance().collection("users")
@@ -123,15 +121,15 @@ public class NhaCungCapFragment extends Fragment {
                     .addOnSuccessListener(userDoc -> {
                         if (userDoc.exists()) {
                             companyId = userDoc.getString("companyId");
-                            fetchProductList(companyId, editSp, progressDialog);
+                            fetchProductList(companyId, editSp);
                         }
                     })
                     .addOnFailureListener(e -> {
-                        progressDialog.dismiss();
+
                         Toast.makeText(getContext(), "Lỗi lấy thông tin công ty!", Toast.LENGTH_SHORT).show();
                     });
         } else {
-            fetchProductList(companyId, editSp, progressDialog);
+            fetchProductList(companyId, editSp);
         }
 
         // Xử lý nút lưu
@@ -157,20 +155,51 @@ public class NhaCungCapFragment extends Fragment {
                 return;
             }
 
-            saveSupplierData(maNhaCC, tenNCC, selectedProducts, etDaDien, etGhiChu, etNgay, etSDT, etEmail, spinner);
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            Map<String, Object> chiTietNCC = new HashMap<>();
+            chiTietNCC.put("Ten",tenNCC);
+            chiTietNCC.put("DaiDien", etDaDien.getText().toString().trim());
+            chiTietNCC.put("GhiChu", etGhiChu.getText().toString().trim());
+            chiTietNCC.put("Ngay", etNgay.getText().toString().trim());
+            chiTietNCC.put("SDT", etSDT.getText().toString().trim());
+            chiTietNCC.put("Email", etEmail.getText().toString().trim());
+            chiTietNCC.put("TinhTrang", spinner.getSelectedItem().toString());
 
+            // Lưu thông tin nhà cung cấp
+            firestore.collection("company").document(companyId)
+                    .collection("nhacungcap").document(maNhaCC)
+                    .set(chiTietNCC)
+                    .addOnSuccessListener(aVoid -> {
+                        // Cập nhật từng sản phẩm
+                        for (String maSp : selectedProducts) {
+                            firestore.collection("company").document(companyId)
+                                    .collection("khohang").document(maSp)
+                                    .update("NhaCungCap", maNhaCC);
+                        }
+
+                        Toast.makeText(getContext(), "Lưu nhà cung cấp thành công!", Toast.LENGTH_SHORT).show();
+                        if (onEmployeeAdded != null) {
+                            onEmployeeAdded.run(); // Gọi callback sau khi thêm nhân viên
+                        }
+
+
+                    })
+                    .addOnFailureListener(e -> {
+
+                        Toast.makeText(getContext(), "Lỗi lưu nhà cung cấp!", Toast.LENGTH_SHORT).show();
+                    });
         });
 
         builder.create().show();
     }
 
-    private void fetchProductList(String companyId, ListView editSp, ProgressDialog progressDialog) {
+    private void fetchProductList(String companyId, ListView editSp) {
         FirebaseFirestore.getInstance().collection("company")
                 .document(companyId)
                 .collection("khohang")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    progressDialog.dismiss();
+
                     List<String> productList = new ArrayList<>();
                     for (QueryDocumentSnapshot document : querySnapshot) {
                         productList.add(document.getId());
@@ -181,48 +210,11 @@ public class NhaCungCapFragment extends Fragment {
                     editSp.setAdapter(adapter);
                 })
                 .addOnFailureListener(e -> {
-                    progressDialog.dismiss();
+
                     Toast.makeText(getContext(), "Lỗi khi lấy dữ liệu sản phẩm!", Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void saveSupplierData(String maNhaCC, String tenNCC, List<String> selectedProducts,
-                                  EditText etDaDien, EditText etGhiChu, EditText etNgay,
-                                  EditText etSDT, EditText etEmail, Spinner spinner) {
-        ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Đang lưu dữ liệu...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        Map<String, Object> chiTietNCC = new HashMap<>();
-        chiTietNCC.put("Ten",tenNCC);
-        chiTietNCC.put("DaiDien", etDaDien.getText().toString().trim());
-        chiTietNCC.put("GhiChu", etGhiChu.getText().toString().trim());
-        chiTietNCC.put("Ngay", etNgay.getText().toString().trim());
-        chiTietNCC.put("SDT", etSDT.getText().toString().trim());
-        chiTietNCC.put("Email", etEmail.getText().toString().trim());
-        chiTietNCC.put("TinhTrang", spinner.getSelectedItem().toString());
-
-        // Lưu thông tin nhà cung cấp
-        firestore.collection("company").document(companyId)
-                .collection("nhacungcap").document(maNhaCC)
-                .set(chiTietNCC)
-                .addOnSuccessListener(aVoid -> {
-                    // Cập nhật từng sản phẩm
-                    for (String maSp : selectedProducts) {
-                        firestore.collection("company").document(companyId)
-                                .collection("khohang").document(maSp)
-                                .update("NhaCungCap", maNhaCC);
-                    }
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Lưu nhà cung cấp thành công!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(getContext(), "Lỗi lưu nhà cung cấp!", Toast.LENGTH_SHORT).show();
-                });
-    }
 
     private void UpdateList(View view) {
         // Tham chiếu đến ListView
@@ -280,8 +272,6 @@ public class NhaCungCapFragment extends Fragment {
                                     );
                         }
                     });
-
         }
     }
-
 }

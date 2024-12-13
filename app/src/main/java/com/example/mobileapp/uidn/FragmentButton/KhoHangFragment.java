@@ -161,6 +161,7 @@ public class KhoHangFragment extends Fragment {
                                                 .document(maSP)
                                                 .update(data)
                                                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Cập nhật thành công: " + maSP))
+
                                                 .addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi cập nhật: " + maSP, e));
                                     } else {
                                         Log.e("Firestore", "Không tìm thấy sản phẩm: " + maSP);
@@ -282,18 +283,6 @@ public class KhoHangFragment extends Fragment {
         }
     }
 
-    private void showAddDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_storage_edit_item, null);
-        builder.setView(dialogView);
 
-        // Xử lý logic bên trong dialog...
-        builder.setPositiveButton("Save", (dialog, which) -> {
-            // Lưu dữ liệu...
-        });
-
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-        builder.create().show();
-    }
 
 }
