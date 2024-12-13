@@ -53,7 +53,14 @@
     <string name="mat_khau">Mật khẩu</string>
     <string name="cau_gioi_thieu">Quản lý tài chính chưa bao giờ là dễ đến thế</string>
     <string name="finecoin">FineCoin</string>
-            <!-- Các string khác -->
+
+    <!--Files are using: business_button_storage.xml, -->
+    <string name="SoSanPham">Số sản phẩm</string>
+    <string name="SoLuongTon">Số lượng tồn</string>
+    <string name="GiaTriTon">Giá trị tồn</string>
+    <string name="demo_0">0</string>
+
+    <!-- Các string khác -->
         <string-array name="business_types">
             <item>Cửa hàng</item>
             <item>Nhà hàng</item>
