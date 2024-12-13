@@ -100,7 +100,7 @@ public class KhoHangFragment extends Fragment {
                                     String maSP = document.getId();
                                     double soLuong = document.getDouble("soLuong");
                                     // Tạo Product với số lượng nhập mặc định là 0
-                                    ProductMini product = new ProductMini(maSP, soLuong);
+                                    ProductMini product = new ProductMini(maSP, 0);
                                     productList.add(product);
                                     BusinessStorageEditAdapter adapter = new BusinessStorageEditAdapter(requireContext(), productList);
                                     lvSanPham.setAdapter(adapter);
@@ -131,21 +131,46 @@ public class KhoHangFragment extends Fragment {
                     // Lưu từng sản phẩm vào Firestore
                     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                     for (ProductMini product3 : sanPhamNhap) {
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("soLuong", product3.getSoLuongNhap());
-                        data.put("ngayNhap", ngayNhap);
-                        data.put("ghiChu", ghiChu);
+                        String maSP = product3.getMaSP();
+                        double soLuongNhapMoi = product3.getSoLuongNhap();
 
+                        // Lấy số lượng hiện tại từ Firestore trước khi cập nhật
                         firestore.collection("company")
                                 .document(companyId)
                                 .collection("khohang")
-                                .document(product3.getMaSP())
-                                .update(data)
-                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Cập nhật thành công: " + product3.getMaSP()))
-                                .addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi cập nhật: " + product3.getMaSP(), e));
+                                .document(maSP)
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    if (documentSnapshot.exists()) {
+                                        // Lấy số lượng hiện tại
+                                        Double soLuongHienTai = documentSnapshot.getDouble("soLuong");
+                                        if (soLuongHienTai == null) soLuongHienTai = 0.0;
+
+                                        // Cộng thêm số lượng mới
+                                        double soLuongMoi = soLuongHienTai + soLuongNhapMoi;
+
+                                        // Cập nhật dữ liệu
+                                        Map<String, Object> data = new HashMap<>();
+                                        data.put("soLuong", soLuongMoi);
+                                        data.put("ngayNhap", ngayNhap);
+                                        data.put("ghiChu", ghiChu);
+
+                                        firestore.collection("company")
+                                                .document(companyId)
+                                                .collection("khohang")
+                                                .document(maSP)
+                                                .update(data)
+                                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Cập nhật thành công: " + maSP))
+                                                .addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi cập nhật: " + maSP, e));
+                                    } else {
+                                        Log.e("Firestore", "Không tìm thấy sản phẩm: " + maSP);
+                                    }
+                                })
+                                .addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi lấy dữ liệu: " + maSP, e));
                     }
 
                     Toast.makeText(requireContext(), "Đã lưu thành công!", Toast.LENGTH_SHORT).show();
+
                 });
                 builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
                 builder.create().show();
@@ -153,7 +178,6 @@ public class KhoHangFragment extends Fragment {
         });
 
         UpdateList(view);
-
         return view; // Trả về view đã nén
     }
 
@@ -258,31 +282,6 @@ public class KhoHangFragment extends Fragment {
         }
     }
 
-    private void saveUpdates(List<BusinessStorage> storageList, String note, String date) {
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        for (BusinessStorage storage : storageList) {
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("soLuong", storage.getTonKho());
-            updates.put("ghiChu", note);
-            updates.put("ngayNhap", date);
-
-            firestore.collection("company")
-                    .document(companyId)
-                    .collection("khohang")
-                    .document(storage.getMaSanPham())
-                    .update(updates)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(requireContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(requireContext(), "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
-                    });
-        }
-    }
-    private void setupAddButton(View view) {
-        ImageButton addButton = view.findViewById(R.id.add_button);
-        addButton.setOnClickListener(v -> showAddDialog());
-    }
     private void showAddDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_storage_edit_item, null);

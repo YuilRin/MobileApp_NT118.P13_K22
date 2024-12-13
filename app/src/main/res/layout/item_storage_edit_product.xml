@@ -12,10 +12,22 @@
         android:text="Mã SP"
         android:textSize="16sp" />
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/baseline_horizontal_rule_24"
+        android:layout_gravity="center_vertical"/>
     <EditText
         android:id="@+id/et_item_soluong"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:hint="Số lượng"
         android:inputType="numberDecimal" />
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/baseline_add_24"
+        android:layout_gravity="center_vertical"
+        />
+
+
 </LinearLayout>
