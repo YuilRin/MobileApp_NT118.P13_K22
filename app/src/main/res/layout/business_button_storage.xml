@@ -93,7 +93,7 @@
                 android:text="@string/GiaTriTon"
                 android:textAlignment="center" />
             <TextView
-                android:id="@+id/tv_storgae_gtton"
+                android:id="@+id/tv_storage_gtton"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
@@ -123,26 +123,26 @@
         android:clipChildren="true"
         android:gravity="end">
 
-        <ImageButton
-            android:id="@+id/fragment_button"
-            android:layout_width="45dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="0dp"
-            android:background="?attr/selectableItemBackground"
-            android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_edit"
-            android:visibility="gone"/>
+<!--        <ImageButton-->
+<!--            android:id="@+id/fragment_button"-->
+<!--            android:layout_width="83dp"-->
+<!--            android:layout_height="38dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginEnd="0dp"-->
+<!--            android:background="?attr/selectableItemBackground"-->
+<!--            android:scaleType="fitCenter"-->
+<!--            android:src="@drawable/business_ic_edit"-->
+<!--            android:visibility="gone" />-->
 
-        <ImageButton
-            android:id="@+id/edit_button"
-            android:layout_width="60dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackground"
-            android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_edit"
-            android:layout_marginTop="10dp"
-            android:visibility="gone"/>
+<!--        <ImageButton-->
+<!--            android:id="@+id/edit_button"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:background="?attr/selectableItemBackground"-->
+<!--            android:scaleType="fitCenter"-->
+<!--            android:src="@drawable/business_ic_edit"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:visibility="gone"/>-->
 
         <ImageButton
             android:id="@+id/search_button"

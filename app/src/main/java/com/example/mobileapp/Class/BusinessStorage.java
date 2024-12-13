@@ -62,4 +62,8 @@ public class BusinessStorage {
     public String getTonKho() {
         return tonKho;
     }
+    public void setTonKho(String tk)
+    {
+        this.tonKho = tk;
+    }
 }
