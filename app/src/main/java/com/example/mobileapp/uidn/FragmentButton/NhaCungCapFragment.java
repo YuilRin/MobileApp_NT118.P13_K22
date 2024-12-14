@@ -65,11 +65,8 @@ public class NhaCungCapFragment extends Fragment {
 
         // Nút thêm nhà cung cấp
         ImageButton addButton = view.findViewById(R.id.add_button);
-        addButton.setOnClickListener(v -> {
-            openAddSupplierDialog(() -> {
-                UpdateList(view);
-            });
-        });
+        addButton.setOnClickListener(v ->
+            openAddSupplierDialog(view));
 
         return view;
     }
@@ -91,7 +88,7 @@ public class NhaCungCapFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void openAddSupplierDialog(Runnable onEmployeeAdded) {
+    private void openAddSupplierDialog(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_supplier_edit_item, null);
         builder.setView(dialogView);
@@ -178,9 +175,48 @@ public class NhaCungCapFragment extends Fragment {
                         }
 
                         Toast.makeText(getContext(), "Lưu nhà cung cấp thành công!", Toast.LENGTH_SHORT).show();
-                        if (onEmployeeAdded != null) {
-                            onEmployeeAdded.run(); // Gọi callback sau khi thêm nhân viên
-                        }
+//                        if (onEmployeeAdded != null) {
+//                            onEmployeeAdded.run(); // Gọi callback sau khi thêm nhân viên
+//                        }
+
+                        ListView providerListView = view.findViewById(R.id.supplier_list);
+                        List<BusinessProvider> providerList = new ArrayList<>();
+                        BusinessProviderAdapter providerAdapter = new BusinessProviderAdapter(requireContext(), providerList);
+                        providerListView.setAdapter(providerAdapter);
+
+                        // Lấy dữ liệu từ Firestore
+
+                        firestore.collection("company")
+                                .document(companyId)
+                                .collection("nhacungcap")
+                                .get()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful() && task.getResult() != null) {
+                                        providerList.clear(); // Xóa danh sách cũ
+                                        for (QueryDocumentSnapshot NccDoc : task.getResult()) {
+                                            // Lấy dữ liệu từ tài liệu Firestore
+                                            BusinessProvider provider = new BusinessProvider(
+                                                    NccDoc.getId(),
+                                                    NccDoc.getString("Ten"),
+                                                    "SP01", // Tạm thời dùng giá trị mẫu cho mã sản phẩm
+                                                    NccDoc.getString("SDT"),
+                                                    NccDoc.getString("DaiDien"),
+                                                    NccDoc.getString("Email"),
+                                                    NccDoc.getString("Ngay"),
+                                                    NccDoc.getString("TinhTrang"),
+                                                    NccDoc.getString("GhiChu")
+                                            );
+                                            providerList.add(provider); // Thêm vào danh sách nhà cung cấp
+                                        }
+                                        providerAdapter.notifyDataSetChanged(); // Làm mới adapter
+                                    } else {
+                                        Toast.makeText(requireContext(), "Lỗi khi tải danh sách nhà cung cấp!", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                );
+
 
 
                     })
