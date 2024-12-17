@@ -92,7 +92,8 @@ public class KhoHangFragment extends Fragment {
         List<ProductMini> productList = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("company")
-                .document(companyId).collection("khohang")
+                .document(companyId)
+                .collection("khohang")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -207,7 +208,7 @@ public class KhoHangFragment extends Fragment {
 
                                                             etSSP.setText(String.valueOf(SoSanPham));
                                                             etSLSP.setText(String.format("%.0f", SoLuongSP));
-                                                            etGT.setText(String.format("%.2f", GiaTri));
+                                                            etGT.setText(String.format("%.0f", GiaTri));
 
                                                             storageAdapter.notifyDataSetChanged();
                                                                         } else {

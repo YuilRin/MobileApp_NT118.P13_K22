@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,11 +53,30 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
         // Tham chiếu đến các thành phần trong item
         TextView tvMaSP = convertView.findViewById(R.id.tv_item_masp);
         EditText etSoLuong = convertView.findViewById(R.id.et_item_soluong);
+        ImageButton btnIncrease = convertView.findViewById(R.id.increase);
+        ImageButton btnDecrease = convertView.findViewById(R.id.decrease);
 
         // Gán dữ liệu
         ProductMini product = productList.get(position);
         tvMaSP.setText(product.getMaSP());
         etSoLuong.setText(String.valueOf(product.getSoLuongNhap()));
+
+        btnIncrease.setOnClickListener(v -> {
+            Double currentQuantity = Double.parseDouble(etSoLuong.getText().toString());
+            currentQuantity++;
+            etSoLuong.setText(String.valueOf(currentQuantity));
+            product.setSoLuongNhap(currentQuantity); // Cập nhật số lượng trong danh sách
+        });
+
+        btnDecrease.setOnClickListener(v -> {
+            Double currentQuantity = Double.parseDouble(etSoLuong.getText().toString());
+            if (currentQuantity > 0) {
+                currentQuantity--;
+                etSoLuong.setText(String.valueOf(currentQuantity));
+                product.setSoLuongNhap(currentQuantity); // Cập nhật số lượng trong danh sách
+            }
+        });
+
 
         // Xử lý thay đổi số lượng
         etSoLuong.addTextChangedListener(new TextWatcher() {
