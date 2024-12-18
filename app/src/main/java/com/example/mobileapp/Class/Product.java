@@ -1,18 +1,17 @@
-package com.example.mobileapp.Class;
-public class Product {
-    private String name;
-    private String supplier;
-    private String category;
-    private double costPrice;
-    private double sellingPrice;
+package com.example.mobileapp.Class;public class Product {
     private String productCode;
+    private String name;
+    private String category;
+    private String supplier;
+    private String costPrice;
+    private String sellingPrice;
 
-    public Product(String name, String supplier, String category, double costPrice, double sellingPrice, String productCode) {
-        this.name = name;
-        this.supplier = supplier;
-        this.category = category;
-        this.costPrice = costPrice;
-        this.sellingPrice = sellingPrice;
+    // Getter và Setter
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
         this.productCode = productCode;
     }
 
@@ -20,23 +19,40 @@ public class Product {
         return name;
     }
 
-    public String getSupplier() {
-        return supplier;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public double getCostPrice() {
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getCostPrice() {
         return costPrice;
     }
 
-    public double getSellingPrice() {
+    public void setCostPrice(String costPrice) {
+        this.costPrice = costPrice;
+    }
+
+    public String getSellingPrice() {
         return sellingPrice;
     }
 
-    public String getProductCode() {
-        return productCode;
+    public void setSellingPrice(String sellingPrice) {
+        this.sellingPrice = sellingPrice;
     }
 }
+

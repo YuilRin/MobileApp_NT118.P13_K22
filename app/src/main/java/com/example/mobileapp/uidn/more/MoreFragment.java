@@ -37,6 +37,7 @@ public class MoreFragment extends Fragment {
 
     private BusinessFragmentMoreBinding binding;
     ListView listView;
+    private String userId;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class MoreFragment extends Fragment {
         }
         Button btnBack = binding.btnBack;
         Button btnLogout= binding.btnLogout;
+
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -99,11 +102,40 @@ public class MoreFragment extends Fragment {
                 if (position == 0) {  // chia se
                     shareOnOtherApps();
                 }
+                if (position == 3) {  // "Thông tin nhóm" là mục thứ tư (index 3)
+                    getCompanyID(companyId -> {
+                        if (companyId != null) {
+                            checkUserRole(companyId);
+                        } else {
+                            Toast.makeText(getContext(), "Không lấy được ID công ty", Toast.LENGTH_SHORT).show();
+                        }
+                                        });// Truyền ID công ty
+                }
+
 
             }
         });
         return root;
+    }private void getCompanyID(FirestoreCallback callback) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore.collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String companyId = documentSnapshot.getString("companyId");
+                    callback.onCallback(companyId);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Lỗi khi kiểm tra dữ liệu người dùng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    callback.onCallback(null);
+                });
     }
+
+    public interface FirestoreCallback {
+        void onCallback(String companyId);
+    }
+
 
     @Override
     public void onDestroyView() {
@@ -172,27 +204,6 @@ public class MoreFragment extends Fragment {
         editor.putString("USER_NAME", userName);
         editor.apply();
     }
-    public void shareOnFacebook() {
-        String message = "Mình muốn giới thiệu một ứng dụng tuyệt vời với bạn! Tải ngay để thử nhé!";
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-
-        // Đặt message cho việc chia sẻ
-        shareIntent.putExtra(Intent.EXTRA_TEXT, message);
-
-        // Kiểm tra xem Facebook có cài đặt trên thiết bị không
-        shareIntent.setPackage("com.facebook.katana");  // Facebook package name
-
-        // Kiểm tra xem có ứng dụng nào có thể xử lý Intent này không
-        if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            startActivity(shareIntent);
-        } else {
-            // Nếu không có Facebook, có thể chia sẻ với ứng dụng khác
-            Toast.makeText(getContext(), "Facebook không được cài đặt, chia sẻ qua ứng dụng khác.", Toast.LENGTH_SHORT).show();
-            startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"));
-        }
-    }
-
     public void shareOnOtherApps() {
         String message = "Mình muốn giới thiệu một ứng dụng tuyệt vời với bạn! Tải ngay để thử nhé!";
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -250,6 +261,92 @@ public class MoreFragment extends Fragment {
         // Lấy email từ SharedPreferences, nếu không có thì trả về null hoặc giá trị mặc định khác
         return sharedPreferences.getString("USER_EMAIL", null);  // Hoặc có thể thay `null` bằng giá trị mặc định nếu cần
     }
+    private void checkUserRole(String companyId) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userEmail = user.getEmail();
+
+            db.collection("company").document(companyId).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            // Lấy trường "roles"
+                            Map<String, Object> roles = (Map<String, Object>) documentSnapshot.get("roles");
+
+                            if (roles == null) {
+                                // Nếu roles null, thêm roles với thông tin boss
+                                String bossUserId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // ID của boss
+                                Map<String, Object> newRoles = new HashMap<>();
+                                newRoles.put("boss", bossUserId);
+
+                                // Cập nhật trường roles trong Firestore
+                                db.collection("company").document(companyId)
+                                        .update("roles", newRoles)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(getContext(), "Đã thiết lập roles với boss.", Toast.LENGTH_SHORT).show();
+                                            showAddMemberDialog(companyId, newRoles); // Gọi dialog thêm thành viên
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(getContext(), "Lỗi khi thiết lập roles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                            } else {
+                                // Nếu roles đã tồn tại và không null
+                                String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                String bossUserId = (String) roles.get("boss");
+
+                                if (currentUserId.equals(bossUserId)) {
+                                    // Nếu user hiện tại là boss
+                                    showAddMemberDialog(companyId, roles);
+                                } else {
+                                    Toast.makeText(getContext(), "Bạn không phải là boss.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Dữ liệu công ty không tồn tại.", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Lỗi khi lấy dữ liệu công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+
+        }
+    }
+
+    private void showAddMemberDialog(String companyId, Map<String, Object> roles) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_member, null);
+        builder.setView(dialogView);
+
+        EditText editEmail = dialogView.findViewById(R.id.edit_email);
+        Button btnAdd = dialogView.findViewById(R.id.btn_add);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        btnAdd.setOnClickListener(v -> {
+            String newEmail = editEmail.getText().toString().trim();
+            if (newEmail.isEmpty()) {
+                Toast.makeText(getContext(), "Email không được để trống", Toast.LENGTH_SHORT).show();
+            } else if (roles.containsKey(newEmail)) {
+                Toast.makeText(getContext(), "Email này đã tồn tại trong nhóm", Toast.LENGTH_SHORT).show();
+            } else {
+                // Thêm email mới vào Firestore
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                roles.put(newEmail, "member");  // Gán vai trò mặc định là "member"
+                db.collection("company").document(companyId)
+                        .update("roles", roles)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(getContext(), "Thêm thành viên thành công", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getContext(), "Lỗi khi thêm thành viên: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+            }
+        });
+    }
+
+
 
 
 

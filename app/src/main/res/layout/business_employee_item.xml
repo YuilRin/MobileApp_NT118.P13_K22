@@ -69,6 +69,16 @@
         app:layout_constraintTop_toTopOf="@id/employee_phone"
         app:layout_constraintBottom_toBottomOf="@id/employee_phone"
         app:layout_constraintStart_toStartOf="@id/employee_date"/>
+    <TextView
+        android:id="@+id/employee_evaluation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:text="Danh gia"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toTopOf="@id/employee_note"
+        app:layout_constraintBottom_toBottomOf="@id/employee_note"
+        app:layout_constraintStart_toStartOf="@id/employee_date"/>
 
     <TextView
         android:id="@+id/employee_type"
@@ -87,8 +97,8 @@
         android:text="Tình trạng"
         android:textColor="@android:color/black"
         android:layout_marginEnd="10dp"
-        app:layout_constraintTop_toTopOf="@id/employee_note"
-        app:layout_constraintBottom_toBottomOf="@id/employee_note"
+        app:layout_constraintTop_toBottomOf="@id/employee_note"
+
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView

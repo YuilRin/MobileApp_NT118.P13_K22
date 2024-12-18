@@ -44,10 +44,11 @@
         app:layout_constraintStart_toEndOf="@id/et_product_edit_giavon"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Spinner
+    <EditText
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:id="@+id/sp_product_edit_phanloai"
+        android:hint="Phân loai"
         app:layout_constraintTop_toBottomOf="@id/et_product_edit_giavon"
         app:layout_constraintStart_toStartOf="@id/et_product_edit_masp"/>
 

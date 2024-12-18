@@ -11,11 +11,12 @@ public class BusinessEmployee {
     private String employeeStatus;
     private String employeeEvaluation;
     private String employeeNote;
+    private String date;
 
     // Constructor to initialize all fields
     public BusinessEmployee(String employeeId, String employeeName, String employeeRoom, String employeeRank,
                             String employeePhone, String employeeEmail, String employeeType, String employeeStatus,
-                            String employeeEvaluation, String employeeNote) {
+                            String employeeEvaluation, String employeeNote,String date) {
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.employeeRoom = employeeRoom;
@@ -26,6 +27,7 @@ public class BusinessEmployee {
         this.employeeStatus = employeeStatus;
         this.employeeEvaluation = employeeEvaluation;
         this.employeeNote = employeeNote;
+        this.date=date;
     }
 
     // Getter methods to access the private fields
@@ -67,5 +69,8 @@ public class BusinessEmployee {
 
     public String getEmployeeNote() {
         return employeeNote;
+    }
+    public String getEmployeeDate() {
+        return date;
     }
 }

@@ -98,7 +98,7 @@
     <EditText
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:id="@+id/sp_employee_edit_email"
+        android:id="@+id/et_employee_edit_email"
         android:hint="Email"
         app:layout_constraintStart_toEndOf="@id/et_employee_edit_sdt"
         app:layout_constraintTop_toTopOf="@+id/et_employee_edit_sdt"
