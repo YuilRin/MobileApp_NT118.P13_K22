@@ -61,7 +61,8 @@ public class NhanVienFragment extends Fragment {
                 activity.getSupportActionBar().setTitle("Nhân viên"); // Đặt tiêu đề cho ActionBar
             }
         }
-        UpdateList(view);
+
+        fetchCompanyId(() ->UpdateList(view));
 
         ImageButton Add;
         Add=view.findViewById(R.id.add_button);
@@ -88,10 +89,12 @@ public class NhanVienFragment extends Fragment {
 
     private void UpdateList(View view) {
 
-        // Tham chiếu đến ListView
+        ListView EMPListView = view.findViewById(R.id.employee_list);
+        List<BusinessEmployee> EMPList = new ArrayList<>();
+
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         AtomicReference<String> companyId= new AtomicReference<>();
-        ListView EMPListView = view.findViewById(R.id.employee_list);
+
 
         if (companyId.get() == null) {
             FirebaseFirestore.getInstance().collection("users")
@@ -105,8 +108,6 @@ public class NhanVienFragment extends Fragment {
                                 Toast.makeText(requireContext(), "Company ID không hợp lệ!", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-
-                            List<BusinessEmployee> EMPList = new ArrayList<>();
 
                             BusinessEmployeeAdapter EMPAdapter = new BusinessEmployeeAdapter(requireContext(), EMPList);
                             EMPListView.setAdapter(EMPAdapter);
@@ -147,19 +148,30 @@ public class NhanVienFragment extends Fragment {
                                     );
                         }
                     });
-
         }
+        EMPListView.setOnItemLongClickListener((parent, view1, position, id) -> {
+            BusinessEmployee selectedEmployee = EMPList.get(position);
 
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("Lựa chọn hành động")
+                    .setItems(new String[]{"Sửa", "Xóa"}, (dialog, which) -> {
+                        if (which == 0) { // Sửa
+                            openEditEmployeeDialog(selectedEmployee, () -> UpdateList(view));
+                        } else if (which == 1) { // Xóa
+                            deleteEmployee(selectedEmployee, () -> UpdateList(view));
+                        }
+                    })
+                    .show();
 
+            return true; // Đánh dấu sự kiện đã được xử lý
+        });
     }
-
 
     private void openAddEmployeeDialog(Runnable onEmployeeAdded) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_employee_edit_item, null);
         builder.setView(dialogView);
 
-        // Ánh xạ các thành phần giao diện
         EditText etMaNhanVien   = dialogView.findViewById(R.id.et_employee_edit_manv);
         EditText etTenNV        = dialogView.findViewById(R.id.et_employee_edit_tennv);
         EditText etSDT          = dialogView.findViewById(R.id.et_employee_edit_sdt);
@@ -172,22 +184,11 @@ public class NhanVienFragment extends Fragment {
         Spinner spRank          = dialogView.findViewById(R.id.sp_employee_edit_cap);
         Spinner spType          = dialogView.findViewById(R.id.sp_employee_edit_loai);
 
-
-        // Cài đặt spinner
         setupSpinner(spStatus, Arrays.asList("Đang làm việc", "Chưa làm việc", "Nghỉ việc"));
         setupSpinner(spBoPhan, Arrays.asList("IT", "Kế toán"));
         setupSpinner(spRank, Arrays.asList("Trưởng phòng", "Nhân viên"));
         setupSpinner(spType, Arrays.asList("Full time", "Part-time"));
 
-
-
-
-        ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Đang tải dữ liệu...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
-        // Lấy dữ liệu companyId nếu chưa có
         if (companyId == null) {
             FirebaseFirestore.getInstance().collection("users")
                     .document(userId)
@@ -198,12 +199,10 @@ public class NhanVienFragment extends Fragment {
                         }
                     })
                     .addOnFailureListener(e -> {
-                        progressDialog.dismiss();
                         Toast.makeText(getContext(), "Lỗi lấy thông tin công ty!", Toast.LENGTH_SHORT).show();
                     });
         }
 
-        // Xử lý nút lưu
         builder.setPositiveButton("Lưu", (dialog, which) -> {
             String maNhanVien = etMaNhanVien.getText().toString().trim();
             String tenNhanVien = etTenNV.getText().toString().trim();
@@ -217,13 +216,11 @@ public class NhanVienFragment extends Fragment {
             String capBac = spRank.getSelectedItem().toString();
             String loaiNhanVien = spType.getSelectedItem().toString();
 
-            // Kiểm tra xem các trường cần thiết đã được nhập chưa
             if (maNhanVien.isEmpty() || tenNhanVien.isEmpty() || soDienThoai.isEmpty()) {
                 Toast.makeText(requireContext(), "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Tạo một Map để lưu dữ liệu nhân viên
             Map<String, Object> employeeData = new HashMap<>();
 
             employeeData.put("Name", tenNhanVien);
@@ -250,7 +247,6 @@ public class NhanVienFragment extends Fragment {
                             if (onEmployeeAdded != null) {
                                 onEmployeeAdded.run(); // Gọi callback sau khi thêm nhân viên
                             }
-                            progressDialog.dismiss();
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(requireContext(), "Lỗi khi lưu nhân viên!", Toast.LENGTH_SHORT).show();
@@ -263,12 +259,121 @@ public class NhanVienFragment extends Fragment {
         });
 
         builder.create().show();
-        progressDialog.dismiss();
     }
     private void setupSpinner(Spinner spinner, List<String> items) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
+    private void openEditEmployeeDialog(BusinessEmployee employee, Runnable onEmployeeUpdated) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_employee_edit_item, null);
+        builder.setView(dialogView);
+
+        EditText etMaNhanVien = dialogView.findViewById(R.id.et_employee_edit_manv);
+        EditText etTenNV = dialogView.findViewById(R.id.et_employee_edit_tennv);
+        EditText etSDT = dialogView.findViewById(R.id.et_employee_edit_sdt);
+        EditText etNgay = dialogView.findViewById(R.id.et_employee_edit_ngay);
+        EditText etGhiChu = dialogView.findViewById(R.id.et_employee_edit_ghichu);
+        EditText etEmail = dialogView.findViewById(R.id.et_employee_edit_email);
+        EditText etDanhGia = dialogView.findViewById(R.id.et_employee_edit_danhgia);
+        Spinner spStatus = dialogView.findViewById(R.id.sp_employee_edit_tinhtrang);
+        Spinner spBoPhan = dialogView.findViewById(R.id.sp_employee_edit_bophan);
+        Spinner spRank = dialogView.findViewById(R.id.sp_employee_edit_cap);
+        Spinner spType = dialogView.findViewById(R.id.sp_employee_edit_loai);
+
+        setupSpinner(spStatus, Arrays.asList("Đang làm việc", "Chưa làm việc", "Nghỉ việc"));
+        setupSpinner(spBoPhan, Arrays.asList("IT", "Kế toán"));
+        setupSpinner(spRank, Arrays.asList("Trưởng phòng", "Nhân viên"));
+        setupSpinner(spType, Arrays.asList("Full time", "Part-time"));
+
+        // Điền thông tin nhân viên vào form
+        etMaNhanVien.setText(employee.getEmployeeId());
+        etMaNhanVien.setEnabled(false); // Không cho phép sửa mã nhân viên
+        etTenNV.setText(employee.getEmployeeName());
+        etSDT.setText(employee.getEmployeePhone());
+        etNgay.setText(employee.getEmployeeDate());
+        etGhiChu.setText(employee.getEmployeeNote());
+        etEmail.setText(employee.getEmployeeEmail());
+        etDanhGia.setText(employee.getEmployeeEvaluation());
+        spStatus.setSelection(((ArrayAdapter) spStatus.getAdapter()).getPosition(employee.getEmployeeStatus()));
+        spBoPhan.setSelection(((ArrayAdapter) spBoPhan.getAdapter()).getPosition(employee.getEmployeeRoom()));
+        spRank.setSelection(((ArrayAdapter) spRank.getAdapter()).getPosition(employee.getEmployeeRank()));
+        spType.setSelection(((ArrayAdapter) spType.getAdapter()).getPosition(employee.getEmployeeType()));
+
+        builder.setPositiveButton("Lưu", (dialog, which) -> {
+            String tenNhanVien = etTenNV.getText().toString().trim();
+            String soDienThoai = etSDT.getText().toString().trim();
+            String ngay = etNgay.getText().toString().trim();
+            String ghiChu = etGhiChu.getText().toString().trim();
+            String email = etEmail.getText().toString().trim();
+            String danhGia = etDanhGia.getText().toString().trim();
+            String tinhTrang = spStatus.getSelectedItem().toString();
+            String boPhan = spBoPhan.getSelectedItem().toString();
+            String capBac = spRank.getSelectedItem().toString();
+            String loaiNhanVien = spType.getSelectedItem().toString();
+
+            Map<String, Object> updatedData = new HashMap<>();
+            updatedData.put("Name", tenNhanVien);
+            updatedData.put("Phone", soDienThoai);
+            updatedData.put("Date", ngay);
+            updatedData.put("Note", ghiChu);
+            updatedData.put("Email", email);
+            updatedData.put("Evaluation", danhGia);
+            updatedData.put("Status", tinhTrang);
+            updatedData.put("Room", boPhan);
+            updatedData.put("Rank", capBac);
+            updatedData.put("Type", loaiNhanVien);
+
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            firestore.collection("company")
+                    .document(companyId)
+                    .collection("nhanvien")
+                    .document(employee.getEmployeeId())
+                    .update(updatedData)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(requireContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                        if (onEmployeeUpdated != null) onEmployeeUpdated.run();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(requireContext(), "Lỗi khi cập nhật!", Toast.LENGTH_SHORT).show();
+                    });
+        });
+
+        builder.create().show();
+    }
+
+    private void deleteEmployee(BusinessEmployee employee, Runnable onEmployeeDeleted) {
+        FirebaseFirestore.getInstance()
+                .collection("company")
+                .document(companyId)
+                .collection("nhanvien")
+                .document(employee.getEmployeeId())
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(requireContext(), "Xóa nhân viên thành công!", Toast.LENGTH_SHORT).show();
+                    if (onEmployeeDeleted != null) onEmployeeDeleted.run();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Lỗi khi xóa nhân viên!", Toast.LENGTH_SHORT).show();
+                });
+    }
+    private void fetchCompanyId(Runnable onComplete) {
+        FirebaseFirestore.getInstance().collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    if (userDoc.exists()) {
+                        companyId = userDoc.getString("companyId");
+                        if (onComplete != null) onComplete.run();
+                    } else {
+                        Toast.makeText(requireContext(), "Không tìm thấy thông tin công ty!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Lỗi khi lấy thông tin công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
 
 }
