@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class NhanVienFragment extends Fragment {
 
     private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-    private String companyId; // Tái sử dụng để giảm truy vấn Firestore
+    private String companyId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,11 +66,7 @@ public class NhanVienFragment extends Fragment {
 
         ImageButton Add;
         Add=view.findViewById(R.id.add_button);
-        Add.setOnClickListener(v -> {
-            openAddEmployeeDialog(() -> {
-                UpdateList(view);
-            });
-        });
+        Add.setOnClickListener(v -> openAddEmployeeDialog(view));
         return view; // Trả về view đã nén
     }
 
@@ -167,7 +163,7 @@ public class NhanVienFragment extends Fragment {
         });
     }
 
-    private void openAddEmployeeDialog(Runnable onEmployeeAdded) {
+    private void openAddEmployeeDialog(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_employee_edit_item, null);
         builder.setView(dialogView);
@@ -244,9 +240,7 @@ public class NhanVienFragment extends Fragment {
                         .set(employeeData)
                         .addOnSuccessListener(aVoid -> {
                             Toast.makeText(requireContext(), "Lưu nhân viên thành công!", Toast.LENGTH_SHORT).show();
-                            if (onEmployeeAdded != null) {
-                                onEmployeeAdded.run(); // Gọi callback sau khi thêm nhân viên
-                            }
+                            UpdateList(view);
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(requireContext(), "Lỗi khi lưu nhân viên!", Toast.LENGTH_SHORT).show();

@@ -14,8 +14,15 @@ public class BusinessStorage {
 
     /// donGia đang de gia ban, tồn kho  đang để so luong tồn
 
-    public BusinessStorage(String tenSanPham, String nhaCungCap, String phanLoai, String donGia,
-                       String ngayNhap, String tonKho, String tinhTrang, String giaTriTon, String maSanPham) {
+    public BusinessStorage(String tenSanPham,
+                           String nhaCungCap,
+                           String phanLoai,
+                           String donGia,
+                       String ngayNhap,
+                           String tonKho,
+                           String tinhTrang,
+                           String giaTriTon,
+                           String maSanPham) {
         this.tenSanPham = tenSanPham;
         this.nhaCungCap = nhaCungCap;
         this.phanLoai = phanLoai;

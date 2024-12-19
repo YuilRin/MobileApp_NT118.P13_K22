@@ -25,16 +25,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mobileapp.Class.BusinessStorage;
-import com.example.mobileapp.Class.Product;
 import com.example.mobileapp.Class.ProductMini;
 import com.example.mobileapp.Custom.BusinessKhoHangAdapter;
 import com.example.mobileapp.Custom.BusinessStorageEditAdapter;
 import com.example.mobileapp.R;
-import com.example.mobileapp.uidn.Dialog.OrderListDialogFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.AllOrdersFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.OtherOrdersFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.PaidOrdersFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.UnpaidOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.AllOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.OtherOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.PaidOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.UnpaidOrdersFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -160,7 +158,6 @@ public class DonHangFragment extends Fragment {
         setupSpinner(spHinhThuc, Arrays.asList("Online", "Tiền mặt", "Khác"));
         setupSpinner(spTinhTrang, Arrays.asList("Đã thanh toán", "Chưa thanh toán", "Khác"));
 
-
         FirebaseFirestore.getInstance().collection("users")
                 .document(userId)
                 .get()
@@ -229,6 +226,7 @@ public class DonHangFragment extends Fragment {
                                 return;
                             }
 
+
                             // 3. Tạo đối tượng đơn hàng
                             Map<String, Object> orderData = new HashMap<>();
                             orderData.put("orderId", maDonHang);
@@ -242,6 +240,13 @@ public class DonHangFragment extends Fragment {
                             orderData.put("Productcount", totalProducts);
                             orderData.put("Quantity", totalQuantity);
 
+                            List<String> productIds = new ArrayList<>();
+                            for (Map<String, Object> productData : products) {
+                                productIds.add((String) productData.get("productId"));
+                            }
+
+                            orderData.put("MaSPList", productIds);
+
 
                             db.collection("company")
                                     .document(companyId)
@@ -249,8 +254,6 @@ public class DonHangFragment extends Fragment {
                                     .document(maDonHang)
                                     .set(orderData)
                                     .addOnSuccessListener(aVoid -> {
-                                        Toast.makeText(requireContext(), "Đơn hàng đã lưu!", Toast.LENGTH_SHORT).show();
-
                                         // Cập nhật kho hàng
                                         for (Map<String, Object> productData : products) {
                                             String productId = (String) productData.get("productId");
@@ -263,12 +266,14 @@ public class DonHangFragment extends Fragment {
                                                     .get()
                                                     .addOnSuccessListener(snapshot -> {
                                                         if (snapshot.exists()) {
-                                                            // Lấy số lượng hiện tại trong kho
                                                             Double currentQuantity = snapshot.getDouble("soLuong");
-                                                            if (currentQuantity != null) {
+                                                            if (currentQuantity == null || currentQuantity < quantity) {
+                                                                // Số lượng không đủ, hiển thị thông báo lỗi
+                                                                Toast.makeText(requireContext(), "Sản phẩm " + productId + " không đủ số lượng trong kho!", Toast.LENGTH_SHORT).show();
+                                                                return; // Dừng thao tác
+                                                            } else {
+                                                                // Số lượng đủ, tiến hành cập nhật kho
                                                                 Double updatedQuantity = currentQuantity - quantity;
-
-                                                                // Cập nhật lại số lượng
                                                                 db.collection("company")
                                                                         .document(companyId)
                                                                         .collection("khohang")
@@ -281,6 +286,9 @@ public class DonHangFragment extends Fragment {
                                                     })
                                                     .addOnFailureListener(e -> Log.e("Firestore", "Không thể lấy thông tin sản phẩm " + productId, e));
                                         }
+
+                                        Toast.makeText(requireContext(), "Đơn hàng đã lưu!", Toast.LENGTH_SHORT).show();
+
                                     })
                                     .addOnFailureListener(e -> Toast.makeText(requireContext(), "Lỗi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                         });
