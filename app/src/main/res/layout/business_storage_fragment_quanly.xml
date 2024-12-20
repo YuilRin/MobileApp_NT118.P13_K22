@@ -23,16 +23,17 @@
             android:layout_weight="1"
             android:id="@+id/ly_storage_quanlynhap"
             android:orientation="vertical"
-            android:background="@color/light_red"
-            android:layout_marginTop="5dp">
+            android:background="@color/light_red">
 
             <TextView
+                android:id="@+id/lb_storage_quanlynhaphang"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/lb_storage_quanlynhaphang"
-                android:text="Quản lý nhập hàng"
+                android:text=" Quản lý nhập hàng"
                 android:textSize="25dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:background="#B64242"/>
 
             <ListView
                 android:layout_width="match_parent"
@@ -49,14 +50,15 @@
             android:orientation="vertical"
             android:background="@color/light_green"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp">
+            android:layout_marginBottom="45dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lb_storage_quanlykho"
-                android:text="Quản lý kho"
+                android:text=" Quản lý kho"
                 android:textSize="25dp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 android:background="@color/teal_700"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -69,6 +71,7 @@
                     android:id="@+id/lb_storage_xuathang"
                     android:layout_weight="1"
                     android:text="Xuất hàng"
+                    android:textColor="@color/black"
                     android:textAlignment="center"/>
                 <TextView
                     android:layout_width="0dp"
@@ -76,6 +79,7 @@
                     android:id="@+id/lb_storage_nhaphang"
                     android:layout_weight="1"
                     android:text="Nhâp hàng"
+                    android:textColor="@color/black"
                     android:textAlignment="center"/>
 
             </LinearLayout>
@@ -92,25 +96,34 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/lb_storage_quanly_ngaybd"
-                    android:text="Tu"/>
+                    android:text="Tu"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="15dp"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/date_storage_quanly_datestart"
-                    android:text="DD/MM/YYYY"/>
+                    android:text="DD/MM/YYYY"
+                    android:textColor="@color/black"
+                    android:layout_marginEnd="5dp"/>
+
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:id="@+id/lb_storage_quanly_ngaykt"
-                    android:text="Den"/>
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Den"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="15dp"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/date_storage_quanly_dateend"
-                    android:text="DD/MM/YYYY"/>
+                    android:text="DD/MM/YYYY"
+                    android:textColor="@color/black"
+                    android:layout_marginEnd="5dp" />
 
             </LinearLayout>
 
@@ -118,7 +131,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/lb_storage_quanly_trongngay"
-                android:text="DD/MM/YYYY"/>
+                android:text="DD/MM/YYYY"
+                android:textColor="@color/black"/>
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

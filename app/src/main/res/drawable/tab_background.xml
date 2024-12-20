@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Hình dạng là hình chữ nhật -->
+    <solid android:color="#464646"/> <!-- Màu nền trắng cho tab được chọn -->
+
+    <!-- Đặt góc bo tròn cho tab được chọn -->
+    <corners android:radius="16dp"/>
+
+    <!-- Đặt padding cho tab được chọn -->
+    <padding
+        android:left="4dp"
+        android:top="4dp"
+        android:right="4dp"
+        android:bottom="4dp"/>
+</shape>

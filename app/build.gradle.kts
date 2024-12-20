@@ -1,13 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.example.piechart"
+    namespace = "com.example.mobileapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.piechart"
+        applicationId = "com.example.mobileapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -52,11 +53,16 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.gridlayout)
     implementation(libs.legacy.support.v4)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation (libs.mpandroidchart);
     implementation("com.airbnb.android:lottie:5.2.0") // thư viện hỗ trợ file Json animation
-
-
+    implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.firebase:firebase-auth:21.0.6")
+    implementation("com.google.firebase:firebase-firestore:24.0.0")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 }

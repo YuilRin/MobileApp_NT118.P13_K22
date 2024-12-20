@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PieChart"
+rootProject.name = "MobileApp"
 include(":app")
  

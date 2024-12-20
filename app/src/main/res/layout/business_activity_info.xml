@@ -1,121 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/business_background_gradient"
+    android:background="@drawable/business_shape_button"
     android:padding="16dp">
 
-<LinearLayout
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-android:padding="16dp"
-android:background="@drawable/rounded_background"
-    android:layout_gravity="center">
+    <LinearLayout
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/rounded_background"
+        android:layout_gravity="center">
 
-    <!-- Tiêu đề -->
-<TextView
-android:id="@+id/title"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Thông tin doanh nghiệp"
-android:textSize="24sp"
-android:textColor="@color/white"
-android:layout_gravity="center_horizontal"
-android:paddingBottom="16dp"
-android:background="@color/purple_500"
-android:gravity="center"
-android:padding="8dp"
-android:layout_marginBottom="16dp" />
+        <!-- Tiêu đề -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/thong_tin_doanh_nghiep"
+            android:textSize="24sp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="16dp"
+            android:background="@color/purple_500"
+            android:gravity="center"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Họ và tên -->
-<TextView
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Họ và tên"
-android:textColor="@color/black"
-android:textSize="16sp" />
+        <!-- Họ và tên -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hoten"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-<EditText
-android:id="@+id/name"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:hint="Nhập họ và tên"
-android:backgroundTint="@color/black"
-android:layout_marginBottom="16dp" />
+        <EditText
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:hint="@string/nhaphoten"
+            android:autofillHints="name"
+            android:backgroundTint="@color/black"
+            android:layout_marginBottom="16dp"
+            android:inputType="text"/>
 
-    <!-- Liên hệ -->
-<TextView
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Liên hệ"
-android:textColor="@color/black"
-android:textSize="16sp" />
+        <!-- Liên hệ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lienhe"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-<EditText
-android:id="@+id/contact"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:hint="Nhập liên hệ"
-android:backgroundTint="@color/black"
-android:layout_marginBottom="16dp" />
+        <EditText
+            android:id="@+id/contact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:hint="@string/nhap_lien_he"
+            android:autofillHints=""
+            android:inputType="text"
+            android:backgroundTint="@color/black"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Loại hình kinh doanh -->
-<TextView
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Loại hình kinh doanh"
-android:textColor="@color/black"
-android:textSize="16sp" />
+        <!-- Loại hình kinh doanh -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loai_hinh_kinh_doanh"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-<Spinner
-android:id="@+id/business_type"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:backgroundTint="@color/black"
-android:layout_marginBottom="16dp" />
+        <Spinner
+            android:id="@+id/business_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="15dp"
+            android:backgroundTint="@color/black"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Tên doanh nghiệp -->
-<TextView
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Tên doanh nghiệp"
-android:textColor="@color/black"
-android:textSize="16sp" />
+        <!-- Tên doanh nghiệp -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ten_doanh_nghiep"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-<EditText
-android:id="@+id/business_name"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:hint="Nhập tên doanh nghiệp"
-android:backgroundTint="@color/black"
-android:layout_marginBottom="16dp" />
+        <EditText
+            android:id="@+id/business_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:hint="@string/nhap_ten_doanh_nghiep"
+            android:backgroundTint="@color/black"
+            android:inputType="text"
+            android:autofillHints="name"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Địa chỉ -->
-<TextView
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Địa chỉ"
-android:textColor="@color/black"
-android:textSize="16sp" />
+        <!-- Địa chỉ -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dia_chi"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
-<EditText
-android:id="@+id/address"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:hint="Nhập địa chỉ"
-android:backgroundTint="@color/black"
-android:layout_marginBottom="16dp" />
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="12dp"
+            android:hint="@string/nhap_dia_chi"
+            android:autofillHints="postalAddress"
+            android:inputType="text"
+            android:backgroundTint="@color/black"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Nút Xác nhận -->
-<Button
-android:id="@+id/confirm_button"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:text="Xác nhận"
-android:background="@color/purple_500"
-android:textColor="@color/white"
-android:layout_gravity="center_horizontal" />
+        <!-- Nút Xác nhận -->
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/xac_nhan"
+            android:background="@color/purple_500"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal" />
 
+        <Button
+            android:id="@+id/existing_company_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Đã có công ty" />
     </LinearLayout>
-    </ScrollView>
+
+</ScrollView>

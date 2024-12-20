@@ -8,15 +8,16 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="4"
+    android:weightSum="3"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:weightSum="5"
+        android:layout_height="248dp"
+        android:layout_weight="1"
+        android:background="#9ACBC6C6"
         android:orientation="vertical"
-        android:background="#9ACBC6C6">
+        android:weightSum="5">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,38 +26,39 @@
             <Spinner
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"></Spinner>
+                android:layout_marginTop="15dp">
+            </Spinner>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            android:weightSum="2"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="2">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:weightSum="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
-                    
+
                     <TextView
                         android:id="@+id/tv_report_sale_doanhthu"
                         android:layout_width="149dp"
                         android:layout_height="69dp"
-                        android:background="@drawable/business_shape_green"
                         android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
+                        android:layout_marginStart="25dp"
+                        android:background="@drawable/business_shape_green"
                         android:text="Doanh thu"
-                        android:layout_marginStart="25dp" />
+                        android:textAlignment="center"
+                        android:textColor="@color/black" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -68,12 +70,12 @@
                         android:id="@+id/tv_report_sale_loinhuan"
                         android:layout_width="149dp"
                         android:layout_height="69dp"
-                        android:background="@drawable/business_shape_green"
                         android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
+                        android:layout_marginStart="25dp"
+                        android:background="@drawable/business_shape_green"
                         android:text="Lợi nhuận"
-                        android:layout_marginStart="25dp" />
+                        android:textAlignment="center"
+                        android:textColor="@color/black" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -81,8 +83,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:weightSum="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -93,12 +95,12 @@
                         android:id="@+id/tv_report_sale_khachang"
                         android:layout_width="149dp"
                         android:layout_height="69dp"
-                        android:background="@drawable/business_shape_red"
                         android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
+                        android:layout_marginStart="25dp"
+                        android:background="@drawable/business_shape_red"
                         android:text="Khách hàng"
-                        android:layout_marginStart="25dp" />
+                        android:textAlignment="center"
+                        android:textColor="@color/black" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -110,12 +112,12 @@
                         android:id="@+id/tv_report_sale_donhang"
                         android:layout_width="149dp"
                         android:layout_height="69dp"
-                        android:background="@drawable/business_shape_red"
                         android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
+                        android:layout_marginStart="25dp"
+                        android:background="@drawable/business_shape_red"
                         android:text="Đơn hàng"
-                        android:layout_marginStart="25dp" />
+                        android:textAlignment="center"
+                        android:textColor="@color/black" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -171,53 +173,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
+        android:layout_height="293dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/business_shape_white">
+        android:layout_weight="1"
+        android:background="@drawable/business_shape_white"
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:text="Sản phẩm bán chạy"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="10dp"/>
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#75CBA7FD"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/business_shape_white">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="Doanh số nhân viên"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginStart="10dp"/>
+            android:textStyle="bold" />
+
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#75B7FDA7"/>
-
+            android:background="#75CBA7FD" />
     </LinearLayout>
+
 
 </LinearLayout>
 

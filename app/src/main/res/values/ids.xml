@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tv_name" type="id" />
+    <item name="editText" type="id" />
+    <item name="tv_pass" type="id" />
+    <item name="editText2" type="id" />
+    <item name="login" type="id" />
+    <item name="btn_ttk" type="id" />
+    <item name="dividerMid" type="id" />
+    <item name="dividerLeft" type="id" />
+    <item name="dividerRight" type="id" />
+    <item name="linearLayoutGoogle" type="id" />
+    <item name="googleIcon" type="id" />
+    <item name="googleText" type="id" />
+    <item name="linearLayoutFacebook" type="id" />
+    <item name="facebookIcon" type="id" />
+    <item name="FacbookText" type="id" />
+</resources>

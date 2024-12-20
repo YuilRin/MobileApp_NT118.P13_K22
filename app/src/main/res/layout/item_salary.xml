@@ -11,7 +11,7 @@
         android:id="@+id/tvMainTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lương cơ bản"
+        android:text="This is Main Title"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -25,16 +25,16 @@
         android:nestedScrollingEnabled="false" />
 
     <TextView
-        android:layout_marginTop="8dp"
         android:id="@+id/income_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Thu nhập: 8,000,000,000 đ"
-        android:textColor="#FFEB3B"
+        android:text="Thu nhập: 1,000,000.000 đ"
+        android:textColor="@color/yellow"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_gravity="right"
-        android:layout_marginEnd="16dp"/>
+        android:layout_gravity="end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"/>
 
     <!-- Dòng phân cách -->
     <View

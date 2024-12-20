@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv_item_masp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Mã SP"
+        android:textSize="16sp" />
+
+    <ImageButton
+        android:id="@+id/decrease"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/baseline_horizontal_rule_24"
+        android:layout_gravity="center_vertical"/>
+    <EditText
+        android:id="@+id/et_item_soluong"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal" />
+    <ImageButton
+        android:id="@+id/increase"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/baseline_add_24"
+        android:layout_gravity="center_vertical"
+        />
+
+
+</LinearLayout>

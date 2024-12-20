@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background_gradient"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:text="Vai trò của bạn là gì?"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textAppearance="@style/Heading"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="84dp"
+        android:background="@drawable/rounded_image"
+        android:clipToOutline="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+   <!-- <Button
+        android:id="@+id/btn_change_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Change Name"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/emailTextView" />-->
+<!--    <ImageView-->
+<!--        android:id="@+id/imageCN"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:background="@drawable/rounded_corners"-->
+<!--        android:clipToOutline="true"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/individual"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/individual"-->
+<!--        app:srcCompat="@drawable/ic" />-->
+
+
+    <View
+        android:id="@+id/imageDN"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="56dp"
+        android:background="@drawable/rounded_corners_for_business"
+        app:layout_constraintBottom_toTopOf="@+id/btn_dn"
+        app:layout_constraintEnd_toEndOf="@+id/btn_dn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/btn_dn"
+        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        app:layout_constraintVertical_bias="0.937" />
+
+    <Button
+        android:id="@+id/btn_dn"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="124dp"
+        android:text="Doanh nghiệp "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <View
+        android:id="@+id/imageCN"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/rounded_corners"
+        app:layout_constraintBottom_toBottomOf="@id/individual"
+        app:layout_constraintBottom_toTopOf="@+id/individual"
+        app:layout_constraintEnd_toEndOf="@+id/individual"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/individual" />
+
+    <ImageView
+        android:id="@+id/ic_user"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_user"
+        app:layout_constraintBottom_toBottomOf="@id/imageCN"
+        app:layout_constraintEnd_toEndOf="@id/imageCN"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="@id/imageCN"
+        app:layout_constraintTop_toTopOf="@id/imageCN"
+        app:layout_constraintVertical_bias="0.566" />
+
+    <Button
+        android:id="@+id/individual"
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="60dp"
+        android:text="Cá nhân"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btn_dn" />
+
+    <ImageView
+        android:id="@+id/ic_business"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_business"
+        app:layout_constraintBottom_toBottomOf="@id/imageDN"
+        app:layout_constraintEnd_toEndOf="@id/imageDN"
+        app:layout_constraintHorizontal_bias="0.433"
+        app:layout_constraintStart_toStartOf="@id/imageDN"
+        app:layout_constraintTop_toTopOf="@id/imageDN" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="0dp"
+        android:layout_height="202dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="50dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/sub_heading_page_choose"
+        android:textAppearance="@style/lorem_ipsum"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/emailTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="---------------------"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
