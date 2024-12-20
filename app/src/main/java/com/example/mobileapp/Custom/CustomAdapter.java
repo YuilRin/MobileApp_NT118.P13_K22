@@ -35,7 +35,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
 
         // Đặt dữ liệu
         textViewItem.setText(item);
-        // Nếu cần, bạn có thể thêm xử lý để thay đổi biểu tượng ở đây
+        // Nếu cần có thể thêm xử lý để thay đổi biểu tượng ở đây
         if (position % 2 == 0) {
             convertView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorEven)); // Màu cho vị trí chẵn
         } else {
