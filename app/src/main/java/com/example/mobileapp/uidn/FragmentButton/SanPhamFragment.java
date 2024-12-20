@@ -7,19 +7,23 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mobileapp.Class.Product;
 import com.example.mobileapp.Custom.ProductAdapter;
 import com.example.mobileapp.R;
+import com.example.mobileapp.ViewModel.SharedViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -160,21 +164,41 @@ public class SanPhamFragment extends Fragment {
         EditText etGiaVon = dialogView.findViewById(R.id.et_product_edit_giavon);
         EditText etGiaBan = dialogView.findViewById(R.id.et_product_edit_giaban);
         EditText etGhiChu = dialogView.findViewById(R.id.et_product_edit_ghichu);
-        EditText etPhanLoai = dialogView.findViewById(R.id.sp_product_edit_phanloai);
 
-        builder.setPositiveButton("Save", (dialog, which) -> addProduct(etMaSP, etTenSP, etGiaVon, etGiaBan, etGhiChu, etPhanLoai));
+        Spinner spPhanLoai = dialogView.findViewById(R.id.sp_product_edit_phanloai);
+
+
+
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spPhanLoai.setAdapter(spinnerAdapter);
+
+        // Quan sát danh sách từ button thứ 3 (buttonId = 2)
+        sharedViewModel.getStatusList(3).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter.clear();
+            spinnerAdapter.addAll(newList);
+            spinnerAdapter.notifyDataSetChanged();
+        });
+
+
+
+        builder.setPositiveButton("Save", (dialog, which) -> addProduct(etMaSP, etTenSP, etGiaVon, etGiaBan, etGhiChu, spPhanLoai));
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         builder.create().show();
     }
 
-    private void addProduct(EditText etMaSP, EditText etTenSP, EditText etGiaVon, EditText etGiaBan, EditText etGhiChu, EditText etPhanLoai) {
+    private void addProduct(EditText etMaSP, EditText etTenSP, EditText etGiaVon, EditText etGiaBan, EditText etGhiChu, Spinner spPhanLoai) {
         String maSP = etMaSP.getText().toString().trim();
         String tenSP = etTenSP.getText().toString().trim();
         double giaVon = Double.parseDouble(etGiaVon.getText().toString().trim());
         double giaBan = Double.parseDouble(etGiaBan.getText().toString().trim());
         String ghiChu = etGhiChu.getText().toString().trim();
-        String phanLoai = etPhanLoai.getText().toString().trim();
+        String phanLoai = spPhanLoai.getSelectedItem().toString().trim();
+
 
         if (!maSP.isEmpty() && !tenSP.isEmpty()) {
             firestore.collection("users")
@@ -188,7 +212,7 @@ public class SanPhamFragment extends Fragment {
                             sanPhamData.put("tenSP", tenSP);
                             sanPhamData.put("giaVon", giaVon);
 
-                            addProductToFirestore(companyId, maSP, sanPhamData, giaBan, ghiChu, phanLoai);
+                            addProductToFirestore(companyId, maSP, sanPhamData, giaBan, ghiChu, phanLoai,tenSP);
                         } else {
                             Toast.makeText(getContext(), "Không tìm thấy thông tin công ty", Toast.LENGTH_SHORT).show();
                         }
@@ -201,19 +225,19 @@ public class SanPhamFragment extends Fragment {
         }
     }
 
-    private void addProductToFirestore(String companyId, String maSP, Map<String, Object> sanPhamData, double giaBan, String ghiChu, String phanLoai) {
+    private void addProductToFirestore(String companyId, String maSP, Map<String, Object> sanPhamData, double giaBan, String ghiChu, String phanLoai,String ten) {
         firestore.collection("SanPham")
                 .document(maSP)
                 .set(sanPhamData)
                 .addOnSuccessListener(aVoid -> {
-                    addToKhoHang(companyId, maSP, giaBan, ghiChu, phanLoai);
+                    addToKhoHang(companyId, maSP, giaBan, ghiChu, phanLoai,ten);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Lỗi khi thêm sản phẩm: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void addToKhoHang(String companyId, String maSP, double giaBan, String ghiChu, String phanLoai) {
+    private void addToKhoHang(String companyId, String maSP, double giaBan, String ghiChu, String phanLoai,String ten) {
         Map<String, Object> khoHangData = new HashMap<>();
         khoHangData.put("maSP", maSP);
         khoHangData.put("giaBan", giaBan);
@@ -221,6 +245,7 @@ public class SanPhamFragment extends Fragment {
         khoHangData.put("phanLoai", phanLoai);
         khoHangData.put("ghiChu", ghiChu);
         khoHangData.put("ngayNhap", "1/1/1999");
+        khoHangData.put("tenSp",ten);
         khoHangData.put("NhaCungCap", "chua co nha cung cap");
 
         firestore.collection("company")

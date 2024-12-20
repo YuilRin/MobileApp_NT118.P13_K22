@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -32,6 +33,7 @@ import com.example.mobileapp.Custom.BusinessEmployeeAdapter;
 import com.example.mobileapp.Custom.BusinessKhoHangAdapter;
 import com.example.mobileapp.Custom.BusinessOrderAdapter;
 import com.example.mobileapp.R;
+import com.example.mobileapp.ViewModel.SharedViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -202,10 +204,46 @@ public class NhanVienFragment extends Fragment {
             datePickerDialog.show();
         });
 
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
-        setupSpinner(spStatus, Arrays.asList("Đang làm việc", "Chưa làm việc", "Nghỉ việc"));
-        setupSpinner(spBoPhan, Arrays.asList("IT", "Kế toán"));
-        setupSpinner(spRank, Arrays.asList("Trưởng phòng", "Nhân viên"));
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spStatus.setAdapter(spinnerAdapter);
+
+
+        sharedViewModel.getStatusList(7).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter.clear();
+            spinnerAdapter.addAll(newList);
+            spinnerAdapter.notifyDataSetChanged();
+        });
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spBoPhan.setAdapter(spinnerAdapter2);
+
+        // Quan sát danh sách từ button thứ 3 (buttonId = 2)
+        sharedViewModel.getStatusList(5).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter2.clear();
+            spinnerAdapter2.addAll(newList);
+            spinnerAdapter2.notifyDataSetChanged();
+        });
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter3 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRank.setAdapter(spinnerAdapter3);
+
+        // Quan sát danh sách từ button thứ 3 (buttonId = 2)
+        sharedViewModel.getStatusList(6).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter3.clear();
+            spinnerAdapter3.addAll(newList);
+            spinnerAdapter3.notifyDataSetChanged();
+        });
+
+
+
         setupSpinner(spType, Arrays.asList("Full time", "Part-time"));
 
         if (companyId == null) {
