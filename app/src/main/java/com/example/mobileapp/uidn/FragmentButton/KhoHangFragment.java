@@ -1,6 +1,9 @@
 package com.example.mobileapp.uidn.FragmentButton;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,7 +91,25 @@ public class KhoHangFragment extends Fragment {
         EditText etMaNhap = dialogView.findViewById(R.id.et_storage_edit_manhap);
         EditText etNgayNhap = dialogView.findViewById(R.id.et_storage_edit_ngay);
         EditText etGhiChu = dialogView.findViewById(R.id.et_storage_edit_ghichu);
+        ImageButton ibDate = dialogView.findViewById(R.id.ib_storage_date);
         ListView lvSanPham = dialogView.findViewById(R.id.lv_storage_edit_sp);
+
+        // Calendar to store selected date
+        final Calendar selectedDate = Calendar.getInstance();
+        // Date picker dialog
+        ibDate.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                    (view, year, month, dayOfMonth) -> {
+                        selectedDate.set(year, month, dayOfMonth);
+                        String formattedDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+                        etNgayNhap.setText(formattedDate);
+                    },
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+        });
+
 
         List<ProductMini> productList = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();

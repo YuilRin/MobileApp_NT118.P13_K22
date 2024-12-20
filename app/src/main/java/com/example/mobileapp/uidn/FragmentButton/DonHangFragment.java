@@ -1,6 +1,8 @@
 package com.example.mobileapp.uidn.FragmentButton;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -154,6 +156,23 @@ public class DonHangFragment extends Fragment {
         Spinner spHinhThuc = dialogView.findViewById(R.id.sp_order_edit_hinhthuc);
         Spinner spTinhTrang = dialogView.findViewById(R.id.sp_order_edit_tinhtrang);
         ListView lvSanPham = dialogView.findViewById(R.id.lv_order_edit_sp);
+        ImageButton ibDate = dialogView.findViewById(R.id.ib_order_date);
+
+        // Calendar to store selected date
+        final Calendar selectedDate = Calendar.getInstance();
+        // Date picker dialog
+        ibDate.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                    (view, year, month, dayOfMonth) -> {
+                        selectedDate.set(year, month, dayOfMonth);
+                        String formattedDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+                        etNgay.setText(formattedDate);
+                    },
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+        });
 
         setupSpinner(spHinhThuc, Arrays.asList("Online", "Tiền mặt", "Khác"));
         setupSpinner(spTinhTrang, Arrays.asList("Đã thanh toán", "Chưa thanh toán", "Khác"));
