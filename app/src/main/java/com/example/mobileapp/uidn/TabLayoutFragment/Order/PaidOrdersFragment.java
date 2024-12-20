@@ -1,4 +1,4 @@
-package com.example.mobileapp.uidn.TabLayoutFragment;
+package com.example.mobileapp.uidn.TabLayoutFragment.Order;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,8 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class OtherOrdersFragment extends Fragment {
-
+public class PaidOrdersFragment extends Fragment {
     private ListView ordersListView;
     private BusinessOrderAdapter adapter;
     @Nullable
@@ -32,8 +31,8 @@ public class OtherOrdersFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         // Nạp layout cho Fragment
-        View rootView = inflater.inflate(R.layout.business_order_fragment_other_orders, container, false);
-        UpdateList(rootView);
+        View rootView = inflater.inflate(R.layout.business_order_fragment_paid_orders, container, false);
+       UpdateList(rootView);
 
         return rootView;
     }
@@ -43,7 +42,7 @@ public class OtherOrdersFragment extends Fragment {
         // Tham chiếu đến ListView
         String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         AtomicReference<String> companyId= new AtomicReference<>();
-        ListView AllOrderListView = view.findViewById(R.id.lv_order_other);
+        ListView AllOrderListView = view.findViewById(R.id.lv_order_paid);
 
 
         if (companyId.get() == null) {
@@ -73,7 +72,6 @@ public class OtherOrdersFragment extends Fragment {
                                         if (task.isSuccessful() && task.getResult() != null) {
                                             OrderList.clear(); // Xóa danh sách cũ
                                             for (QueryDocumentSnapshot DhDoc : task.getResult()) {
-
                                                 String paymentStatus = DhDoc.getString("Paymentstatus");
 
                                                 BusinessOrder Order = new BusinessOrder(
@@ -84,7 +82,7 @@ public class OtherOrdersFragment extends Fragment {
                                                         DhDoc.getDouble("Productcount"),
                                                         DhDoc.getDouble("Quantity")
                                                 );
-                                                if(paymentStatus.equals("Khác"))
+                                                if(paymentStatus.equals("Đã thanh toán"))
                                                         OrderList.add(Order); // Thêm vào danh sách nhà cung cấp
                                             }
                                             OrderAdapter.notifyDataSetChanged(); // Làm mới adapter

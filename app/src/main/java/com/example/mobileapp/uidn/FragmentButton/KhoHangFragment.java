@@ -136,9 +136,10 @@ public class KhoHangFragment extends Fragment {
             String ngayNhap = etNgayNhap.getText().toString().trim();
             String ghiChu = etGhiChu.getText().toString().trim();
 
+
             List<ProductMini> sanPhamNhap = new ArrayList<>();
             for (ProductMini product : productList) {
-                if (product.getSoLuongNhap() > 0) {
+                if (product.getSoLuong() > 0) {
                     sanPhamNhap.add(product);
                 }
             }
@@ -156,12 +157,15 @@ public class KhoHangFragment extends Fragment {
         builder.create().show();
     }
 
-    private void addProductToStorage(List<ProductMini> sanPhamNhap, String ngayNhap, String ghiChu, View view) {
+    private void addProductToStorage(List<ProductMini> sanPhamNhap,
+                                     String ngayNhap,
+                                     String ghiChu, View view) {
+
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
         for (ProductMini product : sanPhamNhap) {
             String maSP = product.getMaSP();
-            double soLuongNhapMoi = product.getSoLuongNhap();
+            double soLuongNhapMoi = product.getSoLuong();
 
             firestore.collection("company")
                     .document(companyId)
@@ -169,9 +173,9 @@ public class KhoHangFragment extends Fragment {
                     .document(maSP)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
                             Double soLuongHienTai = documentSnapshot.getDouble("soLuong");
-                            if (soLuongHienTai == null) soLuongHienTai = 0.0;
+                            if (soLuongHienTai == null)
+                                soLuongHienTai = 0.0;
 
                             double soLuongMoi = soLuongHienTai + soLuongNhapMoi;
                             Map<String, Object> data = new HashMap<>();
@@ -186,71 +190,9 @@ public class KhoHangFragment extends Fragment {
                                     .update(data)
                                     .addOnSuccessListener(aVoid -> {
                                         Log.d("Firestore", "Cập nhật thành công: " + maSP);
-
-                                        ListView storageListView = view.findViewById(R.id.lv_storage);
-                                        List<BusinessStorage> StorageList = new ArrayList<>();
-                                        BusinessKhoHangAdapter storageAdapter = new BusinessKhoHangAdapter(requireContext(), StorageList);
-                                        storageListView.setAdapter(storageAdapter);
-                                            firestore.collection("company")
-                                                    .document(companyId)
-                                                    .collection("khohang")
-                                                    .get()
-                                                    .addOnCompleteListener(task -> {
-                                                        if (task.isSuccessful() && task.getResult() != null) {
-                                                            StorageList.clear();
-                                                            int SoSanPham = 0;
-                                                            double SoLuongSP = 0.0, GiaTri = 0.0;
-                                                            for (QueryDocumentSnapshot KhDoc : task.getResult()) {
-                                                                Double giaBan = KhDoc.getDouble("giaBan");
-                                                                Double soLuong = KhDoc.getDouble("soLuong");
-                                                                giaBan = giaBan != null ? giaBan : 0.0;
-                                                                soLuong = soLuong != null ? soLuong : 0.0;
-
-                                                                SoSanPham++;
-                                                                SoLuongSP += soLuong;
-                                                                GiaTri += giaBan * soLuong;
-
-                                                                String tongGiaTri = String.format("%.2f", giaBan * soLuong);
-                                                                BusinessStorage Storage = new BusinessStorage(
-                                                                        KhDoc.getId(),
-                                                                        KhDoc.getString("NhaCungCap"),
-                                                                        KhDoc.getString("phanLoai"),
-                                                                        String.valueOf(giaBan),
-                                                                        KhDoc.getString("ngayNhap"),
-                                                                        String.valueOf(soLuong),
-                                                                        soLuong > 0 ? "Còn hàng" : "Hết hàng",
-                                                                        tongGiaTri,
-                                                                        KhDoc.getId()
-                                                                );
-                                                                StorageList.add(Storage);
-                                                            }
-                                                            TextView etSSP = view.findViewById(R.id.tv_storage_slpham);
-                                                            TextView etSLSP = view.findViewById(R.id.tv_storage_slton);
-                                                            TextView etGT = view.findViewById(R.id.tv_storage_gtton);
-
-                                                            etSSP.setText(String.valueOf(SoSanPham));
-                                                            etSLSP.setText(String.format("%.0f", SoLuongSP));
-                                                            etGT.setText(String.format("%.0f", GiaTri));
-
-                                                            storageAdapter.notifyDataSetChanged();
-                                                                        } else {
-                                                                            Toast.makeText(requireContext(), "Lỗi khi tải danh sách kho hàng!", Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(e ->
-                                                                            Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                                                                    );
-
-                                                    });
-
-
-                                    }
-
-
-
-                    });
+                                    });
+                        });
         }
-
         Toast.makeText(requireContext(), "Đã lưu thành công!", Toast.LENGTH_SHORT).show();
     }
 
@@ -298,7 +240,7 @@ public class KhoHangFragment extends Fragment {
 
                                                 String tongGiaTri = String.format("%.2f", giaBan * soLuong);
                                                 BusinessStorage Storage = new BusinessStorage(
-                                                        KhDoc.getId(),
+                                                        KhDoc.getString("tenSP"),
                                                         KhDoc.getString("NhaCungCap"),
                                                         KhDoc.getString("phanLoai"),
                                                         String.valueOf(giaBan),

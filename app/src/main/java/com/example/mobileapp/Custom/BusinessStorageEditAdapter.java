@@ -59,13 +59,13 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
         // Gán dữ liệu
         ProductMini product = productList.get(position);
         tvMaSP.setText(product.getMaSP());
-        etSoLuong.setText(String.valueOf(product.getSoLuongNhap()));
+        etSoLuong.setText(String.valueOf(product.getSoLuong()));
 
         btnIncrease.setOnClickListener(v -> {
             Double currentQuantity = Double.parseDouble(etSoLuong.getText().toString());
             currentQuantity++;
             etSoLuong.setText(String.valueOf(currentQuantity));
-            product.setSoLuongNhap(currentQuantity); // Cập nhật số lượng trong danh sách
+            product.setSoLuong(currentQuantity); // Cập nhật số lượng trong danh sách
         });
 
         btnDecrease.setOnClickListener(v -> {
@@ -73,7 +73,7 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
             if (currentQuantity > 0) {
                 currentQuantity--;
                 etSoLuong.setText(String.valueOf(currentQuantity));
-                product.setSoLuongNhap(currentQuantity); // Cập nhật số lượng trong danh sách
+                product.setSoLuong(currentQuantity); // Cập nhật số lượng trong danh sách
             }
         });
 
@@ -87,9 +87,9 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 try {
                     double soLuong = Double.parseDouble(s.toString());
-                    product.setSoLuongNhap(soLuong); // Cập nhật số lượng trong danh sách
+                    product.setSoLuong(soLuong); // Cập nhật số lượng trong danh sách
                 } catch (NumberFormatException e) {
-                    product.setSoLuongNhap(0); // Nếu nhập sai, đặt về 0
+                    product.setSoLuong(0); // Nếu nhập sai, đặt về 0
                 }
             }
 
