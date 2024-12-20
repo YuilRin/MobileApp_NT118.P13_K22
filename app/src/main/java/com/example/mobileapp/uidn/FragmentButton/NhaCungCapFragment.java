@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -32,6 +33,7 @@ import com.example.mobileapp.Class.Product;
 import com.example.mobileapp.Custom.BusinessProviderAdapter;
 import com.example.mobileapp.Custom.ProductAdapter;
 import com.example.mobileapp.R;
+import com.example.mobileapp.ViewModel.SharedViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -126,11 +128,19 @@ public class NhaCungCapFragment extends Fragment {
         });
 
 
-        // Cài đặt spinner
-        List<String> statusItems = Arrays.asList("Đã hợp tác", "Chưa hợp tác");
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, statusItems);
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
+
+        // Quan sát danh sách từ button thứ 3 (buttonId = 2)
+        sharedViewModel.getStatusList(2).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter.clear();
+            spinnerAdapter.addAll(newList);
+            spinnerAdapter.notifyDataSetChanged();
+        });
 
         // Lấy dữ liệu companyId nếu chưa có
         if (companyId == null) {

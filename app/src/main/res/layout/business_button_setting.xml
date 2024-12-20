@@ -137,7 +137,7 @@
                 android:layout_weight="1">
 
                 <ImageButton
-                    android:id="@+id/btn_donhang"
+                    android:id="@+id/btnEdit1"
                     android:layout_width="69dp"
                     android:layout_height="69dp"
                     android:layout_marginTop="40dp"
@@ -170,7 +170,7 @@
                 android:layout_weight="1">
 
                 <ImageButton
-                    android:id="@+id/btn_thanhtoan"
+                    android:id="@+id/btnEdit2"
                     android:layout_width="69dp"
                     android:layout_height="69dp"
                     android:layout_marginTop="40dp"
@@ -202,7 +202,7 @@
                 android:layout_weight="1">
 
                 <ImageButton
-                    android:id="@+id/btn_hoptac"
+                    android:id="@+id/btnEdit3"
                     android:layout_width="69dp"
                     android:layout_height="69dp"
                     android:layout_marginTop="40dp"
@@ -234,7 +234,7 @@
                 android:layout_weight="1">
 
                 <ImageButton
-                    android:id="@+id/btn_phanloai"
+                    android:id="@+id/btnEdit4"
                     android:layout_width="69dp"
                     android:layout_height="69dp"
                     android:layout_marginTop="40dp"
@@ -279,7 +279,7 @@
                 android:layout_weight="1">
 
                 <ImageButton
-                    android:id="@+id/btn_baocao"
+                    android:id="@+id/btnEdit5"
                     android:layout_width="69dp"
                     android:layout_height="69dp"
                     android:background="@drawable/business_shape_button"
@@ -310,7 +310,7 @@
                 android:layout_weight="1">
 
                 <ImageButton
-                    android:id="@+id/btn_nhanvien"
+                    android:id="@+id/btnEdit6"
                     android:layout_width="69dp"
                     android:layout_height="69dp"
                     android:background="@drawable/business_shape_button"
@@ -342,7 +342,7 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/btn_thongbao"
+                android:id="@+id/btnEdit7"
                 android:layout_width="69dp"
                 android:layout_height="69dp"
                 android:background="@drawable/business_shape_button"
@@ -373,7 +373,7 @@
             android:layout_weight="1">
 
             <ImageButton
-                android:id="@+id/btn_caidat"
+                android:id="@+id/btnEdit8"
                 android:layout_width="69dp"
                 android:layout_height="69dp"
                 android:background="@drawable/business_shape_button"
