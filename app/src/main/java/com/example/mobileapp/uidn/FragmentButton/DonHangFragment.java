@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -31,6 +32,7 @@ import com.example.mobileapp.Class.ProductMini;
 import com.example.mobileapp.Custom.BusinessKhoHangAdapter;
 import com.example.mobileapp.Custom.BusinessStorageEditAdapter;
 import com.example.mobileapp.R;
+import com.example.mobileapp.ViewModel.SharedViewModel;
 import com.example.mobileapp.uidn.TabLayoutFragment.Order.AllOrdersFragment;
 import com.example.mobileapp.uidn.TabLayoutFragment.Order.OtherOrdersFragment;
 import com.example.mobileapp.uidn.TabLayoutFragment.Order.PaidOrdersFragment;
@@ -176,9 +178,31 @@ public class DonHangFragment extends Fragment {
             datePickerDialog.show();
         });
 
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
-        setupSpinner(spHinhThuc, Arrays.asList("Online", "Tiền mặt", "Khác"));
-        setupSpinner(spTinhTrang, Arrays.asList("Đã thanh toán", "Chưa thanh toán", "Khác"));
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spHinhThuc.setAdapter(spinnerAdapter);
+
+        // Quan sát danh sách từ button thứ 2 (buttonId = 1)
+        sharedViewModel.getStatusList(1).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter.clear();
+            spinnerAdapter.addAll(newList);
+            spinnerAdapter.notifyDataSetChanged();
+        });
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spTinhTrang.setAdapter(spinnerAdapter2);
+
+
+        sharedViewModel.getStatusList(0).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter2.clear();
+            spinnerAdapter2.addAll(newList);
+            spinnerAdapter2.notifyDataSetChanged();
+        });
 
         FirebaseFirestore.getInstance().collection("users")
                 .document(userId)

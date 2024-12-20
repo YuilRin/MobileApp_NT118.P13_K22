@@ -94,11 +94,16 @@ public class CaiDatFragment extends Fragment {
             String newItem = input.getText().toString().trim();
             if (!newItem.isEmpty() && !list.contains(newItem)) {
                 sharedViewModel.addStatus(buttonId, newItem); // Thêm vào ViewModel
+                adapter.notifyDataSetChanged(); // Cập nhật ListView
+                dialog.dismiss();
             }
         });
 
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
         builder.show();
+    }
+    private void updateFirestore(int buttonId, ArrayList<String> list) {
+        sharedViewModel.saveStatusToFirestore(buttonId, list);
     }
 
     private void showSubEditDialog(int buttonId, ArrayList<String> list, String item, int position, ArrayAdapter<String> adapter) {
@@ -113,11 +118,16 @@ public class CaiDatFragment extends Fragment {
             String updatedItem = input.getText().toString().trim();
             if (!updatedItem.isEmpty()) {
                 sharedViewModel.updateStatus(buttonId, position, updatedItem); // Sửa trong ViewModel
+                adapter.notifyDataSetChanged(); // Cập nhật ListView
+                dialog.dismiss();
             }
         });
 
         builder.setNeutralButton("Xóa", (dialog, which) -> {
             sharedViewModel.removeStatus(buttonId, position); // Xóa trong ViewModel
+            adapter.notifyDataSetChanged(); // Cập nhật ListView
+            dialog.dismiss();
+
         });
 
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
