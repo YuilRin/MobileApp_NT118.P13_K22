@@ -56,14 +56,6 @@ public class OrderListDialogFragment extends DialogFragment {
                 builder.create().show();
             }
         });
-        Save=rootView.findViewById(R.id.btn_Save);
-        Save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Thực hiện lưu thông tin nếu cần và sau đó thoát dialog
-                dismiss(); // Thoát dialog
-            }
-        });
 
 
         return rootView;

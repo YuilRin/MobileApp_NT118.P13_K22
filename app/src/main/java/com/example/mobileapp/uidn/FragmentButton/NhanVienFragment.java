@@ -186,12 +186,14 @@ public class NhanVienFragment extends Fragment {
 
         // Calendar to store selected date
         final Calendar selectedDate = Calendar.getInstance();
-        // Date picker dialog
+
+// Date picker dialog
         ibDate.setOnClickListener(v -> {
             DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
-                    (view, year, month, dayOfMonth) -> {
+                    (dview, year, month, dayOfMonth) -> {
                         selectedDate.set(year, month, dayOfMonth);
-                        String formattedDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+                        // Format date as dd-MM-yyyy
+                        String formattedDate = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year);
                         etNgay.setText(formattedDate);
                     },
                     selectedDate.get(Calendar.YEAR),
@@ -199,6 +201,7 @@ public class NhanVienFragment extends Fragment {
                     selectedDate.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
         });
+
 
         setupSpinner(spStatus, Arrays.asList("Đang làm việc", "Chưa làm việc", "Nghỉ việc"));
         setupSpinner(spBoPhan, Arrays.asList("IT", "Kế toán"));
