@@ -175,7 +175,8 @@ public class DonHangFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             String maSP = document.getId();
-                                            ProductMini product = new ProductMini(maSP, 0);
+                                            double giaBan = document.getDouble("giaBan") != null ? document.getDouble("giaBan") : 0.0; // Giá bán
+                                            ProductMini product = new ProductMini(maSP, 0,giaBan);
                                             productList.add(product);
                                         }
                                         BusinessStorageEditAdapter adapter = new BusinessStorageEditAdapter(requireContext(), productList);
@@ -200,24 +201,27 @@ public class DonHangFragment extends Fragment {
                                 return;
                             }
 
-                            double tongCong = Double.parseDouble(tongCongStr);
+                            double tongCong = 0.0;
                             double thanhToan = Double.parseDouble(thanhToanStr);
+
 
                             // Lấy danh sách sản phẩm đã chỉnh sửa từ ListView
                             int totalProducts = 0;
                             Double totalQuantity = 0.0;
+
                             List<Map<String, Object>> products = new ArrayList<>();
 
                             for (int i = 0; i < lvSanPham.getCount(); i++) {
                                 ProductMini product = (ProductMini) lvSanPham.getAdapter().getItem(i);
-                                if (product.getSoLuongNhap() > 0) {
+                                if (product.getSoLuong() > 0) {
                                     Map<String, Object> productData = new HashMap<>();
                                     productData.put("productId", product.getMaSP());
-                                    productData.put("quantity", product.getSoLuongNhap());
+                                    productData.put("quantity", product.getSoLuong());
                                     products.add(productData);
 
+                                    tongCong += product.getGiaBan() * product.getSoLuong();
                                     totalProducts++;
-                                    totalQuantity += product.getSoLuongNhap();
+                                    totalQuantity += product.getSoLuong();
                                 }
                             }
 
@@ -246,7 +250,6 @@ public class DonHangFragment extends Fragment {
                             }
 
                             orderData.put("MaSPList", productIds);
-
 
                             db.collection("company")
                                     .document(companyId)
@@ -287,7 +290,7 @@ public class DonHangFragment extends Fragment {
                                                     .addOnFailureListener(e -> Log.e("Firestore", "Không thể lấy thông tin sản phẩm " + productId, e));
                                         }
 
-                                        Toast.makeText(requireContext(), "Đơn hàng đã lưu!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(requireContext(), "Đơn hàng đã lưu! Tong cong: ", Toast.LENGTH_SHORT).show();
 
                                     })
                                     .addOnFailureListener(e -> Toast.makeText(requireContext(), "Lỗi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -312,7 +315,7 @@ public class DonHangFragment extends Fragment {
 
         for (ProductMini product : sanPhamNhap) {
             String maSP = product.getMaSP();
-            double soLuongNhapMoi = product.getSoLuongNhap();
+            double soLuongNhapMoi = product.getSoLuong();
 
             firestore.collection("company")
                     .document(companyId)

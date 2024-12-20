@@ -117,7 +117,7 @@ public class KhoHangFragment extends Fragment {
 
             List<ProductMini> sanPhamNhap = new ArrayList<>();
             for (ProductMini product : productList) {
-                if (product.getSoLuongNhap() > 0) {
+                if (product.getSoLuong() > 0) {
                     sanPhamNhap.add(product);
                 }
             }
@@ -143,7 +143,7 @@ public class KhoHangFragment extends Fragment {
 
         for (ProductMini product : sanPhamNhap) {
             String maSP = product.getMaSP();
-            double soLuongNhapMoi = product.getSoLuongNhap();
+            double soLuongNhapMoi = product.getSoLuong();
 
             firestore.collection("company")
                     .document(companyId)
