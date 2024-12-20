@@ -1,7 +1,9 @@
 package com.example.mobileapp.uidn.FragmentButton;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -168,17 +170,35 @@ public class NhanVienFragment extends Fragment {
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_employee_edit_item, null);
         builder.setView(dialogView);
 
-        EditText etMaNhanVien   = dialogView.findViewById(R.id.et_employee_edit_manv);
-        EditText etTenNV        = dialogView.findViewById(R.id.et_employee_edit_tennv);
-        EditText etSDT          = dialogView.findViewById(R.id.et_employee_edit_sdt);
-        EditText etNgay         = dialogView.findViewById(R.id.et_employee_edit_ngay);
-        EditText etGhiChu       = dialogView.findViewById(R.id.et_employee_edit_ghichu);
-        EditText etEmail        = dialogView.findViewById(R.id.et_employee_edit_email);
-        EditText etDanhGia      = dialogView.findViewById(R.id.et_employee_edit_danhgia);
-        Spinner spStatus        = dialogView.findViewById(R.id.sp_employee_edit_tinhtrang);
-        Spinner spBoPhan        = dialogView.findViewById(R.id.sp_employee_edit_bophan); //ROOM
-        Spinner spRank          = dialogView.findViewById(R.id.sp_employee_edit_cap);
-        Spinner spType          = dialogView.findViewById(R.id.sp_employee_edit_loai);
+        // Ánh xạ các thành phần giao diện
+        EditText etMaNhanVien = dialogView.findViewById(R.id.et_employee_edit_manv);
+        EditText etTenNV = dialogView.findViewById(R.id.et_employee_edit_tennv);
+        EditText etSDT = dialogView.findViewById(R.id.et_employee_edit_sdt);
+        EditText etNgay = dialogView.findViewById(R.id.et_employee_edit_ngay);
+        EditText etGhiChu = dialogView.findViewById(R.id.et_employee_edit_ghichu);
+        EditText etEmail = dialogView.findViewById(R.id.et_employee_edit_email);
+        EditText etDanhGia = dialogView.findViewById(R.id.et_employee_edit_danhgia);
+        Spinner spStatus = dialogView.findViewById(R.id.sp_employee_edit_tinhtrang);
+        Spinner spBoPhan = dialogView.findViewById(R.id.sp_employee_edit_bophan); //ROOM
+        Spinner spRank = dialogView.findViewById(R.id.sp_employee_edit_cap);
+        Spinner spType = dialogView.findViewById(R.id.sp_employee_edit_loai);
+        ImageButton ibDate = dialogView.findViewById(R.id.ib_employee_date);
+
+        // Calendar to store selected date
+        final Calendar selectedDate = Calendar.getInstance();
+        // Date picker dialog
+        ibDate.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                    (view, year, month, dayOfMonth) -> {
+                        selectedDate.set(year, month, dayOfMonth);
+                        String formattedDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+                        etNgay.setText(formattedDate);
+                    },
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+        });
 
         setupSpinner(spStatus, Arrays.asList("Đang làm việc", "Chưa làm việc", "Nghỉ việc"));
         setupSpinner(spBoPhan, Arrays.asList("IT", "Kế toán"));

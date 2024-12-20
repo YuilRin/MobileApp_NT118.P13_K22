@@ -1,7 +1,9 @@
 package com.example.mobileapp.uidn.FragmentButton;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -103,6 +105,23 @@ public class NhaCungCapFragment extends Fragment {
         EditText etEmail = dialogView.findViewById(R.id.et_supplier_edit_email);
         Spinner spinner = dialogView.findViewById(R.id.sp_supplier_edit_tinhtrang);
         ListView editSp = dialogView.findViewById(R.id.lv_supplier_edit_sp);
+        ImageButton ibDate = dialogView.findViewById(R.id.ib_supplier_date);
+
+        // Calendar to store selected date
+        final Calendar selectedDate = Calendar.getInstance();
+        // Date picker dialog
+        ibDate.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                    (dview, year, month, dayOfMonth) -> {
+                        selectedDate.set(year, month, dayOfMonth);
+                        String formattedDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+                        etNgay.setText(formattedDate);
+                    },
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+        });
 
         // Cài đặt spinner
         List<String> statusItems = Arrays.asList("Đã hợp tác", "Chưa hợp tác");

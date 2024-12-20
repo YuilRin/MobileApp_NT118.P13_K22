@@ -10,7 +10,7 @@
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Khoản chi tháng 8"
+        android:text="Khoản chi"
         android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
