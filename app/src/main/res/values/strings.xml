@@ -9,7 +9,7 @@
     <!--Files are using: fragment_budget.xml, -->
     <string name="title_budget">Ngân sách</string>
 
-    <string name="sub_heading_page_choose">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum vel bibendum ex, quis mollis arcu. Maeceis odio. Etiam commodo congue augue a eleifend. Donec turpis lacus, iaculis sed sagittis vitae, gravida ac ex.</string>
+    <string name="sub_heading_page_choose">Dù bạn là một cá nhân muốn kiểm soát tài chính cá nhân hay là một doanh nghiệp đang tìm kiếm giải pháp tối ưu hóa, ứng dụng luôn sẵn sàng có tất cả những gì bạn cần để thực hiện điều đó</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

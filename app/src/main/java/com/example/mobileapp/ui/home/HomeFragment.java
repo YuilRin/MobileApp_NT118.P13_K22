@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        pieChart = binding.pieChart;
+       // pieChart = binding.pieChart;
 
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         currentMonth = getCurrentMonth();
@@ -192,8 +192,8 @@ public class HomeFragment extends Fragment {
 
                         // If all days have been processed, update ListView and PieChart
                         if (remainingDays[0] == 0) {
-                            updateListView(listItems);
-                            updatePieChart(pieEntries);
+//                            updateListView(listItems);
+                            //updatePieChart(pieEntries);
                         }
 
                     }).addOnFailureListener(e -> {
@@ -207,36 +207,36 @@ public class HomeFragment extends Fragment {
         // Create the adapter and set it to the ListView
         View rootView = getView();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listItems);
-        ListView listView = rootView.findViewById(R.id.List);  // Make sure to use the correct ListView ID
+//        ListView listView = rootView.findViewById(R.id.List);  // Make sure to use the correct ListView ID
         listView.setAdapter(adapter);
     }
 
-    private void updatePieChart(ArrayList<PieEntry> pieEntries) {
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Chi tiêu");
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        pieDataSet.setValueTextSize(14f);
-        pieDataSet.setValueTextColor(Color.BLACK);
-
-        PieData pieData = new PieData(pieDataSet);
-
-        pieChart.setData(pieData);
-        pieChart.setCenterText("Chi tiêu tháng");
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setUsePercentValues(true);
-        pieChart.setEntryLabelTextSize(12f);
-        pieChart.getDescription().setEnabled(false);
-
-        Legend legend = pieChart.getLegend();
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-        legend.setDrawInside(false);
-        legend.setXEntrySpace(5f);
-        legend.setYEntrySpace(3f);
-        legend.setTextSize(16f);
-
-        pieChart.invalidate();
-    }
+//    private void updatePieChart(ArrayList<PieEntry> pieEntries) {
+//        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Chi tiêu");
+//        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+//        pieDataSet.setValueTextSize(14f);
+//        pieDataSet.setValueTextColor(Color.BLACK);
+//
+//        PieData pieData = new PieData(pieDataSet);
+//
+//        pieChart.setData(pieData);
+//        pieChart.setCenterText("Chi tiêu tháng");
+//        pieChart.setDrawHoleEnabled(true);
+//        pieChart.setUsePercentValues(true);
+//        pieChart.setEntryLabelTextSize(12f);
+//        pieChart.getDescription().setEnabled(false);
+//
+//        Legend legend = pieChart.getLegend();
+//        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
+//        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+//        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+//        legend.setDrawInside(false);
+//        legend.setXEntrySpace(5f);
+//        legend.setYEntrySpace(3f);
+//        legend.setTextSize(16f);
+//
+//        pieChart.invalidate();
+//    }
     String getCurrentMonth() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
         return sdf.format(new Date());
