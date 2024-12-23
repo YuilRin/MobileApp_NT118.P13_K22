@@ -3,13 +3,15 @@ package com.example.mobileapp.Class;
 public class BusinessOrder {
     private String orderId;          // Order ID, e.g., "ABCXYZ"
     private String orderDate;             // Order date, e.g., "DD/MM/YYYY"
-    private int orderTotal;               // Total amount, e.g., 400000
+    private double orderTotal;               // Total amount, e.g., 400000
     private String orderPaymentstatus;    // Payment status, e.g., "Đã thanh toán"
-    private int orderProductcount;        // Number of products, e.g., 2
-    private int orderQuantity;            // Total quantity, e.g., 4
+    private double orderProductcount;        // Number of products, e.g., 2
+    private double orderQuantity;            // Total quantity, e.g., 4
 
     // Constructor to initialize all fields
-    public BusinessOrder(String orderId, String orderDate, int orderTotal, String orderPaymentstatus, int orderProductcount, int orderQuantity) {
+    public BusinessOrder(String orderId, String orderDate,
+                         double orderTotal, String orderPaymentstatus,
+                         double orderProductcount, double orderQuantity) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.orderTotal = orderTotal;
@@ -28,7 +30,7 @@ public class BusinessOrder {
         return orderDate;
     }
 
-    public int getOrderTotal() {
+    public double getOrderTotal() {
         return orderTotal;
     }
 
@@ -36,11 +38,11 @@ public class BusinessOrder {
         return orderPaymentstatus;
     }
 
-    public int getOrderProductCount() {
+    public double getOrderProductCount() {
         return orderProductcount;
     }
 
-    public int getOrderQuantity() {
+    public double getOrderQuantity() {
         return orderQuantity;
     }
 }

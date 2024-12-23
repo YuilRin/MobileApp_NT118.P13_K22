@@ -34,7 +34,9 @@ public class BusinessEmployeeAdapter extends ArrayAdapter<BusinessEmployee> {
         TextView employeeEmail = convertView.findViewById(R.id.employee_email);
         TextView employeeType = convertView.findViewById(R.id.employee_type);
         TextView employeeStatus = convertView.findViewById(R.id.employee_status);
-        TextView employeeEvaluation = convertView.findViewById(R.id.employee_date);
+
+        TextView employeeDate = convertView.findViewById(R.id.employee_date);
+        TextView employeeEvaluation = convertView.findViewById(R.id.employee_evaluation);
         TextView employeeNote = convertView.findViewById(R.id.employee_note);
 
         employeeId.setText(emp.getEmployeeId());
@@ -46,6 +48,7 @@ public class BusinessEmployeeAdapter extends ArrayAdapter<BusinessEmployee> {
         employeeType.setText("Loại: " + emp.getEmployeeType());
         employeeStatus.setText("Tình trạng: " + emp.getEmployeeStatus());
         employeeEvaluation.setText("Đánh giá: " + emp.getEmployeeEvaluation());
+        employeeDate.setText("Ngày làm viêc: "+emp.getEmployeeDate());
         employeeNote.setText("Ghi chú: " + emp.getEmployeeNote());
 
         return convertView;

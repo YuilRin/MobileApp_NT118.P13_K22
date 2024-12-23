@@ -1,33 +1,59 @@
 package com.example.mobileapp.uidn.FragmentButton;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.mobileapp.Class.BusinessStorage;
+import com.example.mobileapp.Class.ProductMini;
+import com.example.mobileapp.Custom.BusinessKhoHangAdapter;
+import com.example.mobileapp.Custom.BusinessStorageEditAdapter;
 import com.example.mobileapp.R;
-import com.example.mobileapp.uidn.Dialog.OrderListDialogFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.AllOrdersFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.OtherOrdersFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.PaidOrdersFragment;
-import com.example.mobileapp.uidn.TabLayoutFragment.UnpaidOrdersFragment;
+import com.example.mobileapp.ViewModel.SharedViewModel;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.AllOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.OtherOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.PaidOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.UnpaidOrdersFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class DonHangFragment extends Fragment {
+    private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+    private String companyId;
     @Override
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Nén layout cho fragment
 
@@ -90,15 +116,10 @@ public class DonHangFragment extends Fragment {
                 }
             }
         }).attach();
-        add=view.findViewById(R.id.add_button);
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OrderListDialogFragment dialogFragment = new OrderListDialogFragment();
-                dialogFragment.show(getParentFragmentManager(), "OrderListDialog");
 
-            }
-        });
+
+        add=view.findViewById(R.id.add_button);
+        add.setOnClickListener(v -> showAddProductDialog(view));
         return view; // Trả về view đã nén
     }
 
@@ -120,6 +141,317 @@ public class DonHangFragment extends Fragment {
     }
 
 
+    private void showAddProductDialog(View parentView) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_order_edit_item, null, false);
+
+        if (dialogView.getParent() != null) {
+            ((ViewGroup) dialogView.getParent()).removeView(dialogView);
+        }
+        builder.setView(dialogView);
+
+        EditText etMaDonHang = dialogView.findViewById(R.id.et_order_edit_madonhang);
+        EditText etNgay = dialogView.findViewById(R.id.et_order_edit_ngay);
+        EditText etTongCong = dialogView.findViewById(R.id.et_order_edit_tongcong);
+        EditText etThanhToan = dialogView.findViewById(R.id.et_order_edit_thanhtoan);
+        EditText etGhiChu = dialogView.findViewById(R.id.et_order_edit_ghichu);
+        Spinner spHinhThuc = dialogView.findViewById(R.id.sp_order_edit_hinhthuc);
+        Spinner spTinhTrang = dialogView.findViewById(R.id.sp_order_edit_tinhtrang);
+        ListView lvSanPham = dialogView.findViewById(R.id.lv_order_edit_sp);
+        ImageButton ibDate = dialogView.findViewById(R.id.ib_order_date);
+
+        // Calendar to store selected date
+        final Calendar selectedDate = Calendar.getInstance();
+
+        // Date picker dialog
+        ibDate.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                    (dview, year, month, dayOfMonth) -> {
+                        selectedDate.set(year, month, dayOfMonth);
+                        // Format date as dd-MM-yyyy
+                        String formattedDate = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year);
+                        etNgay.setText(formattedDate);
+                    },
+                    selectedDate.get(Calendar.YEAR),
+                    selectedDate.get(Calendar.MONTH),
+                    selectedDate.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+        });
+
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spHinhThuc.setAdapter(spinnerAdapter);
+
+        // Quan sát danh sách từ button thứ 2 (buttonId = 1)
+        sharedViewModel.getStatusList(1).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter.clear();
+            spinnerAdapter.addAll(newList);
+            spinnerAdapter.notifyDataSetChanged();
+        });
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spTinhTrang.setAdapter(spinnerAdapter2);
 
 
+        sharedViewModel.getStatusList(0).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter2.clear();
+            spinnerAdapter2.addAll(newList);
+            spinnerAdapter2.notifyDataSetChanged();
+        });
+
+        FirebaseFirestore.getInstance().collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    if (userDoc.exists()) {
+                        companyId = userDoc.getString("companyId");
+
+                        List<ProductMini> productList = new ArrayList<>();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        db.collection("company")
+                                .document(companyId)
+                                .collection("khohang")
+                                .get()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            String maSP = document.getId();
+                                            double giaBan = document.getDouble("giaBan") != null ? document.getDouble("giaBan") : 0.0; // Giá bán
+                                            ProductMini product = new ProductMini(maSP, 0,giaBan);
+                                            productList.add(product);
+                                        }
+                                        BusinessStorageEditAdapter adapter = new BusinessStorageEditAdapter(requireContext(), productList);
+                                        lvSanPham.setAdapter(adapter);
+                                    } else {
+                                        Log.e("Firestore", "Lỗi khi tải dữ liệu", task.getException());
+                                    }
+                                });
+
+                        builder.setPositiveButton("Save", (dialog, which) -> {
+                            String maDonHang = etMaDonHang.getText().toString().trim();
+                            String ngay = etNgay.getText().toString().trim();
+                            String tongCongStr = etTongCong.getText().toString().trim();
+                            String thanhToanStr = etThanhToan.getText().toString().trim();
+                            String ghiChu = etGhiChu.getText().toString().trim();
+                            String hinhThuc = spHinhThuc.getSelectedItem().toString();
+                            String tinhTrang = spTinhTrang.getSelectedItem().toString();
+
+                            // Kiểm tra tính hợp lệ
+                            if (maDonHang.isEmpty() || ngay.isEmpty() || tongCongStr.isEmpty() || thanhToanStr.isEmpty()) {
+                                Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            double tongCong = 0.0;
+                            double thanhToan = Double.parseDouble(thanhToanStr);
+
+
+                            // Lấy danh sách sản phẩm đã chỉnh sửa từ ListView
+                            int totalProducts = 0;
+                            Double totalQuantity = 0.0;
+
+                            List<Map<String, Object>> products = new ArrayList<>();
+
+                            for (int i = 0; i < lvSanPham.getCount(); i++) {
+                                ProductMini product = (ProductMini) lvSanPham.getAdapter().getItem(i);
+                                if (product.getSoLuong() > 0) {
+                                    Map<String, Object> productData = new HashMap<>();
+                                    productData.put("productId", product.getMaSP());
+                                    productData.put("quantity", product.getSoLuong());
+                                    products.add(productData);
+
+                                    tongCong += product.getGiaBan() * product.getSoLuong();
+                                    totalProducts++;
+                                    totalQuantity += product.getSoLuong();
+                                }
+                            }
+
+                            if (products.isEmpty()) {
+                                Toast.makeText(requireContext(), "Danh sách sản phẩm trống!", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+
+                            // 3. Tạo đối tượng đơn hàng
+                            Map<String, Object> orderData = new HashMap<>();
+                            orderData.put("orderId", maDonHang);
+                            orderData.put("Date", ngay);
+                            orderData.put("Total", tongCong);
+                            orderData.put("paidAmount", thanhToan);
+                            orderData.put("note", ghiChu);
+                            orderData.put("paymentMethod", hinhThuc);
+                            orderData.put("Paymentstatus", tinhTrang);
+                            orderData.put("products", productList);
+                            orderData.put("Productcount", totalProducts);
+                            orderData.put("Quantity", totalQuantity);
+
+                            List<String> productIds = new ArrayList<>();
+                            for (Map<String, Object> productData : products) {
+                                productIds.add((String) productData.get("productId"));
+                            }
+
+                            orderData.put("MaSPList", productIds);
+
+                            db.collection("company")
+                                    .document(companyId)
+                                    .collection("donhang")
+                                    .document(maDonHang)
+                                    .set(orderData)
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Cập nhật kho hàng
+                                        for (Map<String, Object> productData : products) {
+                                            String productId = (String) productData.get("productId");
+                                            Double quantity = (Double) productData.get("quantity");
+
+                                            db.collection("company")
+                                                    .document(companyId)
+                                                    .collection("khohang")
+                                                    .document(productId)
+                                                    .get()
+                                                    .addOnSuccessListener(snapshot -> {
+                                                        if (snapshot.exists()) {
+                                                            Double currentQuantity = snapshot.getDouble("soLuong");
+                                                            if (currentQuantity == null || currentQuantity < quantity) {
+                                                                // Số lượng không đủ, hiển thị thông báo lỗi
+                                                                Toast.makeText(requireContext(), "Sản phẩm " + productId + " không đủ số lượng trong kho!", Toast.LENGTH_SHORT).show();
+                                                                return; // Dừng thao tác
+                                                            } else {
+                                                                // Số lượng đủ, tiến hành cập nhật kho
+                                                                Double updatedQuantity = currentQuantity - quantity;
+                                                                db.collection("company")
+                                                                        .document(companyId)
+                                                                        .collection("khohang")
+                                                                        .document(productId)
+                                                                        .update("soLuong", updatedQuantity)
+                                                                        .addOnSuccessListener(aVoid1 -> Log.d("Firestore", "Cập nhật thành công sản phẩm " + productId))
+                                                                        .addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi cập nhật sản phẩm " + productId, e));
+                                                            }
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(e -> Log.e("Firestore", "Không thể lấy thông tin sản phẩm " + productId, e));
+                                        }
+
+                                        Toast.makeText(requireContext(), "Đơn hàng đã lưu! Tong cong: ", Toast.LENGTH_SHORT).show();
+
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(requireContext(), "Lỗi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                        });
+
+                        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                        builder.create().show();
+
+
+                    }
+                });
+    }
+
+    private void setupSpinner(Spinner spinner, List<String> items) {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+    }
+
+    private void addProductToStorage(List<ProductMini> sanPhamNhap, String ngayNhap, String ghiChu, View view) {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        for (ProductMini product : sanPhamNhap) {
+            String maSP = product.getMaSP();
+            double soLuongNhapMoi = product.getSoLuong();
+
+            firestore.collection("company")
+                    .document(companyId)
+                    .collection("khohang")
+                    .document(maSP)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Double soLuongHienTai = documentSnapshot.getDouble("soLuong");
+                            if (soLuongHienTai == null) soLuongHienTai = 0.0;
+
+                            double soLuongMoi = soLuongHienTai + soLuongNhapMoi;
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("soLuong", soLuongMoi);
+                            data.put("ngayNhap", ngayNhap);
+                            data.put("ghiChu", ghiChu);
+
+                            firestore.collection("company")
+                                    .document(companyId)
+                                    .collection("khohang")
+                                    .document(maSP)
+                                    .update(data)
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d("Firestore", "Cập nhật thành công: " + maSP);
+
+                                        ListView storageListView = view.findViewById(R.id.lv_storage);
+                                        List<BusinessStorage> StorageList = new ArrayList<>();
+                                        BusinessKhoHangAdapter storageAdapter = new BusinessKhoHangAdapter(requireContext(), StorageList);
+                                        storageListView.setAdapter(storageAdapter);
+                                        firestore.collection("company")
+                                                .document(companyId)
+                                                .collection("khohang")
+                                                .get()
+                                                .addOnCompleteListener(task -> {
+                                                    if (task.isSuccessful() && task.getResult() != null) {
+                                                        StorageList.clear();
+                                                        int SoSanPham = 0;
+                                                        double SoLuongSP = 0.0, GiaTri = 0.0;
+                                                        for (QueryDocumentSnapshot KhDoc : task.getResult()) {
+                                                            Double giaBan = KhDoc.getDouble("giaBan");
+                                                            Double soLuong = KhDoc.getDouble("soLuong");
+                                                            giaBan = giaBan != null ? giaBan : 0.0;
+                                                            soLuong = soLuong != null ? soLuong : 0.0;
+
+                                                            SoSanPham++;
+                                                            SoLuongSP += soLuong;
+                                                            GiaTri += giaBan * soLuong;
+
+                                                            String tongGiaTri = String.format("%.2f", giaBan * soLuong);
+                                                            BusinessStorage Storage = new BusinessStorage(
+                                                                    KhDoc.getId(),
+                                                                    KhDoc.getString("NhaCungCap"),
+                                                                    KhDoc.getString("phanLoai"),
+                                                                    String.valueOf(giaBan),
+                                                                    KhDoc.getString("ngayNhap"),
+                                                                    String.valueOf(soLuong),
+                                                                    soLuong > 0 ? "Còn hàng" : "Hết hàng",
+                                                                    tongGiaTri,
+                                                                    KhDoc.getId()
+                                                            );
+                                                            StorageList.add(Storage);
+                                                        }
+                                                        TextView etSSP = view.findViewById(R.id.tv_storage_slpham);
+                                                        TextView etSLSP = view.findViewById(R.id.tv_storage_slton);
+                                                        TextView etGT = view.findViewById(R.id.tv_storage_gtton);
+
+                                                        etSSP.setText(String.valueOf(SoSanPham));
+                                                        etSLSP.setText(String.format("%.0f", SoLuongSP));
+                                                        etGT.setText(String.format("%.0f", GiaTri));
+
+                                                        storageAdapter.notifyDataSetChanged();
+                                                    } else {
+                                                        Toast.makeText(requireContext(), "Lỗi khi tải danh sách kho hàng!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(e ->
+                                                        Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                                );
+
+                                    });
+
+
+                        }
+
+
+
+                    });
+        }
+
+        Toast.makeText(requireContext(), "Đã lưu thành công!", Toast.LENGTH_SHORT).show();
+    }
 }
+
