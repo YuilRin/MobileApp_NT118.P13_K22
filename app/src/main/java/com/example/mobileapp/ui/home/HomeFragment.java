@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,14 +22,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.mobileapp.Custom.CustomAdapter_Expense;
-import com.example.mobileapp.Custom.CustomAdapter_Grid;
 import com.example.mobileapp.Custom.CustomAdapter_Money;
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentHomeBinding;
-import com.example.mobileapp.ui.add.ExpenseItem;
 import com.example.mobileapp.ui.add.ExpenseManager;
-import com.example.mobileapp.ui.add.ExpenseUtils;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -61,7 +56,6 @@ import java.util.Set;
 
 public class HomeFragment extends Fragment {
 
-    float tongChi = 0, tongthu = 0;
     private FragmentHomeBinding binding;
     PieChart pieChart;
     ListView listView;
@@ -82,44 +76,14 @@ public class HomeFragment extends Fragment {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         currentMonth = getCurrentMonth();
 
-        ExpenseUtils expenseUtils = new ExpenseUtils(userId, currentMonth);
-        expenseUtils.loadExpenses(new ExpenseUtils.OnExpensesLoadedListener() {
-            @Override
-            public void onExpensesLoaded(List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
-
-                if (listItems != null && !listItems.isEmpty()) {
-                    updateListView(listItems);
-                } else {
-                    Log.d("ExpenseUtils", "No expenses found for the selected month.");
-                }
-                updatePieChart(pieEntries);
-            }
-        });
-
+        getDayKeys();
+        loadMonthlyExpenses(userId, currentMonth);
 
         TextView tvName =binding.idCustomer;
         userName = getUserName();
         if (userName!= null) {
             tvName.setText(userName);
         }
-         TextView tvThang =binding.tvThang;
-        tvThang.setText("Tổng tiền tháng "+ getMonth());
-        TextView tvMoney=binding.tvMoney;
-        CheckBox checkMoney=binding.CheckMoney;
-        checkMoney.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // Hiển thị giá trị tiền
-                float soDu = tongthu - tongChi;
-
-
-                String centerText = String.format("Số dư\n%.2f", soDu);
-                tvMoney.setText(centerText); // Hoặc giá trị tiền động
-            } else {
-                // Hiển thị ***
-                tvMoney.setText("**********");
-            }
-        });
-
 
         listView = binding.List;
 
@@ -131,19 +95,8 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onExpenseSaved() {
                         // This code will run after the expense is saved
-                        ExpenseUtils expenseUtils = new ExpenseUtils(userId, currentMonth);
-                        expenseUtils.loadExpenses(new ExpenseUtils.OnExpensesLoadedListener() {
-                            @Override
-                            public void onExpensesLoaded(List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
-
-                                if (listItems != null && !listItems.isEmpty()) {
-                                    updateListView(listItems);
-                                } else {
-                                    Log.d("ExpenseUtils", "No expenses found for the selected month.");
-                                }
-                                updatePieChart(pieEntries);
-                            }
-                        });
+                        getDayKeys();
+                        loadMonthlyExpenses(userId, currentMonth);
                     }
                 });
                 expenseManager.showAddExpenseDialog();
@@ -151,6 +104,32 @@ public class HomeFragment extends Fragment {
         });
 
         return root;
+    }
+
+    public void getDayKeys() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(userId)
+                .collection("expenses")
+                .document(currentMonth)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String daysString = documentSnapshot.getString("days");
+                        if (daysString != null && !daysString.isEmpty()) {
+                            dayKeys = daysString.split(" ");
+                            Log.d("DayKeys", Arrays.toString(dayKeys));
+
+                            // Now that dayKeys is updated, perform actions that rely on it
+                            loadMonthlyExpenses(userId, getCurrentMonth());
+                        }
+                    } else {
+                        Log.d("Firestore", "Document not found!");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error getting document", e);
+                });
     }
 
 
@@ -164,93 +143,102 @@ public class HomeFragment extends Fragment {
         return sharedPreferences.getString("USER_NAME", null);
     }
 
+    private void loadMonthlyExpenses(String userId, String monthKey) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        Map<String, Float> categoryTotals = new HashMap<>();
+        List<String> listItems = new ArrayList<>();
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
 
+        // Flag to track when all data is loaded
+        final int[] remainingDays = {dayKeys.length};
 
-    private void updateListView(List<ExpenseItem> listItems) {
-        // Tính tổng chi tiêu và thu nhập
-        tongChi = 0; tongthu = 0;
-        for (ExpenseItem item : listItems) {
-            if (item.getCategory().charAt(0) != '*') {
-                tongChi += item.getAmount();
-            } else {
-                tongthu += item.getAmount();
-            }
+        for (String dayKey : dayKeys) {
+            db.collection("users")
+                    .document(userId)
+                    .collection("expenses")
+                    .document(monthKey)
+                    .collection(dayKey)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        for (DocumentSnapshot docSnapshot : querySnapshot) {
+                            Map<String, Object> dayExpenses = (Map<String, Object>) docSnapshot.getData();
+                            if (dayExpenses != null) {
+                                for (Map.Entry<String, Object> entry : dayExpenses.entrySet()) {
+                                    String category = entry.getKey();
+                                    Object value = entry.getValue();
+
+                                    if (value != null) {
+                                        try {
+                                            float amount = Float.parseFloat(value.toString());
+                                            categoryTotals.put(category, categoryTotals.getOrDefault(category, 0f) + amount);
+
+                                            // Prepare data for ListView
+                                            String formattedItem = category + " - " + String.format("%.2f", amount) + "k";
+                                            listItems.add(formattedItem);
+
+                                            // Prepare data for PieChart
+                                            pieEntries.add(new PieEntry(amount, category));
+                                        } catch (NumberFormatException ex) {
+                                            Log.w("LoadExpenses", "Couldn't parse amount for category " + category);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Decrease the remaining days counter
+                        remainingDays[0]--;
+
+                        // If all days have been processed, update ListView and PieChart
+                        if (remainingDays[0] == 0) {
+                            updateListView(listItems);
+                            updatePieChart(pieEntries);
+                        }
+
+                    }).addOnFailureListener(e -> {
+                        Log.w("LoadExpenses", "Error fetching data for day " + dayKey + ": " + e.getMessage());
+                    });
         }
+    }
 
-        // Sử dụng CustomAdapter
-        CustomAdapter_Expense adapter = new CustomAdapter_Expense(getContext(), listItems);
 
-        // Cập nhật ListView
+    private void updateListView(List<String> listItems) {
+        // Create the adapter and set it to the ListView
+        View rootView = getView();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listItems);
+        ListView listView = rootView.findViewById(R.id.List);  // Make sure to use the correct ListView ID
         listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-
     }
 
     private void updatePieChart(ArrayList<PieEntry> pieEntries) {
-        // Bước 1: Tổng hợp dữ liệu nhỏ vào mục "Khác"
-        float total = 0f;
-        for (PieEntry entry : pieEntries) {
-            total += entry.getValue();
-        }
-
-        float threshold = total * 0.05f; // 5% threshold
-        float otherValues = 0f;
-        ArrayList<PieEntry> optimizedEntries = new ArrayList<>();
-
-        for (PieEntry entry : pieEntries) {
-            if (entry.getValue() < threshold) {
-                otherValues += entry.getValue();
-            } else {
-                optimizedEntries.add(entry);
-            }
-        }
-
-        if (otherValues > 0) {
-            optimizedEntries.add(new PieEntry(otherValues, "Khác"));
-        }
-
-        // Bước 2: Cấu hình PieDataSet
-        PieDataSet pieDataSet = new PieDataSet(optimizedEntries, "Chi tiêu");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Chi tiêu");
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        pieDataSet.setValueTextSize(10f); // Giảm kích thước chữ để tránh chồng lấn
+        pieDataSet.setValueTextSize(14f);
         pieDataSet.setValueTextColor(Color.BLACK);
-        pieDataSet.setSliceSpace(2f); // Tạo khoảng cách giữa các mảnh
 
         PieData pieData = new PieData(pieDataSet);
 
-        // Bước 3: Cấu hình PieChart
         pieChart.setData(pieData);
         pieChart.setCenterText("Chi tiêu tháng");
         pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleRadius(40f); // Kích thước hole
-        pieChart.setTransparentCircleRadius(45f);
         pieChart.setUsePercentValues(true);
-        pieChart.setEntryLabelTextSize(10f); // Giảm kích thước nhãn
-        pieChart.getDescription().setEnabled(false); // Tắt mô tả
-        pieChart.setExtraOffsets(10, 10, 10, 10); // Tăng khoảng cách để tránh va chạm
+        pieChart.setEntryLabelTextSize(12f);
+        pieChart.getDescription().setEnabled(false);
 
-        // Bước 4: Tùy chỉnh Legend
         Legend legend = pieChart.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
         legend.setOrientation(Legend.LegendOrientation.VERTICAL);
         legend.setDrawInside(false);
-        legend.setXEntrySpace(7f);
-        legend.setYEntrySpace(5f);
-        legend.setTextSize(14f);
+        legend.setXEntrySpace(5f);
+        legend.setYEntrySpace(3f);
+        legend.setTextSize(16f);
 
-        // Cập nhật biểu đồ
         pieChart.invalidate();
     }
-
     String getCurrentMonth() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
-        return sdf.format(new Date());
-    }
-    String getMonth() {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM", Locale.getDefault());
         return sdf.format(new Date());
     }
 

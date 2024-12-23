@@ -4,7 +4,7 @@
     <solid android:color="#464646"/> <!-- Màu nền trắng cho tab được chọn -->
 
     <!-- Đặt góc bo tròn cho tab được chọn -->
-    <corners android:radius="16dp"/>
+    <corners android:radius="12dp"/>
 
     <!-- Đặt padding cho tab được chọn -->
     <padding

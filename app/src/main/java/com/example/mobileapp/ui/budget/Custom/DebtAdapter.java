@@ -1,28 +1,48 @@
 package com.example.mobileapp.ui.budget.Custom;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobileapp.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder> {
 
     private List<Debt> debtList;
     private Context context;
 
-    public DebtAdapter(Context context, List<Debt> debtList) {
+
+    public interface  OnItemLongClickListener{
+        void onItemLongClicked(int position, Debt debt);
+    }
+    private OnItemLongClickListener longClickListener;
+
+    public DebtAdapter(Context context, List<Debt> debtList,OnItemLongClickListener listener) {
         this.context = context;
         this.debtList = debtList;
+        this.longClickListener = listener;
     }
 
     @NonNull
@@ -36,15 +56,68 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder
     public void onBindViewHolder(@NonNull DebtViewHolder holder, int position) {
         Debt debt = debtList.get(position);
         holder.tvTitle.setText(debt.getTitle());
-        holder.tvAmount.setText(debt.getAmount());
-        holder.tvDate.setText(debt.getDate());
+        holder.tvAmount.setText(debt.getSoTien());
+        holder.tvNgayNo.setText("Ngày nợ: " + debt.getNgayNo());
+        holder.tvNgayDenHan.setText("Ngày đến hạn: " + debt.getNgayDenHan());
+        holder.tvNguonNo.setText("Nguồn nợ: " + debt.getNguonNo());
 
-        // Thêm sự kiện cho nút xóa
-        holder.btnDelete.setOnClickListener(v -> {
-            debtList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, debtList.size());
+
+        // Gọi hàm isOverDue -> xác định quaHan
+        boolean isDebtOverDue = isOverDue(debt.getNgayDenHan());
+        debt.quaHan = isDebtOverDue;
+
+
+        // Cập nhật checkbox hiển thị
+        holder.btntick.setChecked(debt.isSlected);
+        if (debt.getdaTra())
+        {
+            holder.tvTrangThai.setText("Trạng thái: Đã trả");
+            holder.btntick.setChecked(false);
+            holder.tvNgayTra.setVisibility(View.VISIBLE);
+            holder.tvNgayTra.setText("Ngày trả: " + debt.getNgayTra());
+
+        }
+        else
+        {
+            holder.tvTrangThai.setText("Trạng thái: Đang nợ");
+            holder.btntick.setChecked(false);
+            holder.tvNgayTra.setVisibility(View.GONE);
+        }
+
+        boolean quaHan = debt.getquaHan();
+        if (quaHan && !debt.getdaTra())
+        {
+            // Nợ trễ
+            holder.tvTrangThai.setText("Trạng thái: Trễ hạn");
+            holder.container.setBackground(ContextCompat.getDrawable(context,R.drawable.rounded_corners_debt_item_red));
+        }
+        else if (!quaHan && debt.getdaTra())
+        {
+            holder.container.setBackground(ContextCompat.getDrawable(context,R.drawable.rounded_corners_debt_item_green));
+        }else if (quaHan && debt.daTra)
+        {
+
+            holder.container.setBackground(ContextCompat.getDrawable(context,R.drawable.rounded_corners_debt_item_green));
+        }
+        else
+        {
+            holder.container.setBackground(ContextCompat.getDrawable(context,R.drawable.rounded_corners_debt_item));
+        }
+
+
+        holder.btntick.setOnCheckedChangeListener(null);
+        holder.btntick.setOnCheckedChangeListener(((buttonView , isChecked) -> {
+            debt.setSelected(isChecked);
+
+        }));
+
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onItemLongClicked(position, debt);
+            }
+            return true;
         });
+
     }
 
     @Override
@@ -52,18 +125,61 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder
         return debtList.size();
     }
 
+
     public static class DebtViewHolder extends RecyclerView.ViewHolder {
         ImageView imgIcon;
-        TextView tvTitle, tvAmount, tvDate;
-        ImageButton btnDelete;
+        TextView tvTitle, tvAmount, tvNgayNo, tvNgayDenHan, tvNgayTra, tvTrangThai, tvNguonNo;
+        CheckBox btntick;
+        LinearLayout container;
+
 
         public DebtViewHolder(@NonNull View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.container);
             imgIcon = itemView.findViewById(R.id.img_icon);
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvAmount = itemView.findViewById(R.id.tv_amount);
-            tvDate = itemView.findViewById(R.id.tv_date);
-            btnDelete = itemView.findViewById(R.id.btn_delete);
+            tvNgayNo = itemView.findViewById(R.id.tv_NgayNo);
+            tvNgayDenHan = itemView.findViewById(R.id.tv_NgayDenHan);
+            tvNgayTra = itemView.findViewById(R.id.tv_NgayTra);
+            tvTrangThai = itemView.findViewById(R.id.tv_TrangThai);
+            tvNguonNo = itemView.findViewById(R.id.NguonNo);
+            btntick = itemView.findViewById(R.id.btn_tick);
+
+        }
+
+
+    }
+
+
+    private boolean isOverDue(String ngayDenHan) {
+        // Kiểm tra null hoặc chuỗi rỗng
+        // Máy từ Android O (API 26) trở lên => dùng LocalDate
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault());
+                LocalDate dueDate = LocalDate.parse(ngayDenHan, formatter);
+                LocalDate today = LocalDate.now();
+                return dueDate.isBefore(today);
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            // Máy cũ => dùng SimpleDateFormat
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            sdf.setLenient(false);
+            try {
+                Date d = sdf.parse(ngayDenHan);
+                Date now = new Date();
+                return d.before(now);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
     }
+
+
+
 }
