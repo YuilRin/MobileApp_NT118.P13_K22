@@ -241,9 +241,6 @@ public class NhanVienFragment extends Fragment {
             spinnerAdapter3.addAll(newList);
             spinnerAdapter3.notifyDataSetChanged();
         });
-
-
-
         setupSpinner(spType, Arrays.asList("Full time", "Part-time"));
 
         if (companyId == null) {
@@ -340,6 +337,8 @@ public class NhanVienFragment extends Fragment {
         setupSpinner(spStatus, Arrays.asList("Đang làm việc", "Chưa làm việc", "Nghỉ việc"));
         setupSpinner(spBoPhan, Arrays.asList("IT", "Kế toán"));
         setupSpinner(spRank, Arrays.asList("Trưởng phòng", "Nhân viên"));
+
+
         setupSpinner(spType, Arrays.asList("Full time", "Part-time"));
 
         // Điền thông tin nhân viên vào form
