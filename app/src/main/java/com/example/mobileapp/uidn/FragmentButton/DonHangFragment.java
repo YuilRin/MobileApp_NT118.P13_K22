@@ -8,12 +8,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.os.Handler;
+import android.text.style.UpdateLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -37,6 +40,8 @@ import com.example.mobileapp.uidn.TabLayoutFragment.Order.AllOrdersFragment;
 import com.example.mobileapp.uidn.TabLayoutFragment.Order.OtherOrdersFragment;
 import com.example.mobileapp.uidn.TabLayoutFragment.Order.PaidOrdersFragment;
 import com.example.mobileapp.uidn.TabLayoutFragment.Order.UnpaidOrdersFragment;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,6 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DonHangFragment extends Fragment {
     private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -153,6 +159,7 @@ public class DonHangFragment extends Fragment {
         EditText etMaDonHang = dialogView.findViewById(R.id.et_order_edit_madonhang);
         EditText etNgay = dialogView.findViewById(R.id.et_order_edit_ngay);
         EditText etTongCong = dialogView.findViewById(R.id.et_order_edit_tongcong);
+        etTongCong.setVisibility(View.GONE);
         EditText etThanhToan = dialogView.findViewById(R.id.et_order_edit_thanhtoan);
         EditText etGhiChu = dialogView.findViewById(R.id.et_order_edit_ghichu);
         Spinner spHinhThuc = dialogView.findViewById(R.id.sp_order_edit_hinhthuc);
@@ -242,14 +249,13 @@ public class DonHangFragment extends Fragment {
                             String tinhTrang = spTinhTrang.getSelectedItem().toString();
 
                             // Kiểm tra tính hợp lệ
-                            if (maDonHang.isEmpty() || ngay.isEmpty() || tongCongStr.isEmpty() || thanhToanStr.isEmpty()) {
+                            if (maDonHang.isEmpty() || ngay.isEmpty() || thanhToanStr.isEmpty()) {
                                 Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
                             double tongCong = 0.0;
                             double thanhToan = Double.parseDouble(thanhToanStr);
-
 
                             // Lấy danh sách sản phẩm đã chỉnh sửa từ ListView
                             int totalProducts = 0;
@@ -275,71 +281,17 @@ public class DonHangFragment extends Fragment {
                                 Toast.makeText(requireContext(), "Danh sách sản phẩm trống!", Toast.LENGTH_SHORT).show();
                                 return;
                             }
+                            checkStockAvailability(products).addOnCompleteListener(task -> {
+                                if (task.isSuccessful() && task.getResult()) {
+                                    // Số lượng trong kho đủ, tiến hành lưu đơn hàng
+                                    saveOrder(maDonHang, ngay, thanhToan, ghiChu, hinhThuc, tinhTrang, products);
+                                } else {
+                                    // Số lượng không đủ
+                                    Toast.makeText(requireContext(), "Không thể lưu đơn hàng vì kho không đủ!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
 
-                            // 3. Tạo đối tượng đơn hàng
-                            Map<String, Object> orderData = new HashMap<>();
-                            orderData.put("orderId", maDonHang);
-                            orderData.put("Date", ngay);
-                            orderData.put("Total", tongCong);
-                            orderData.put("paidAmount", thanhToan);
-                            orderData.put("note", ghiChu);
-                            orderData.put("paymentMethod", hinhThuc);
-                            orderData.put("Paymentstatus", tinhTrang);
-                            orderData.put("products", productList);
-                            orderData.put("Productcount", totalProducts);
-                            orderData.put("Quantity", totalQuantity);
-
-                            List<String> productIds = new ArrayList<>();
-                            for (Map<String, Object> productData : products) {
-                                productIds.add((String) productData.get("productId"));
-                            }
-
-                            orderData.put("MaSPList", productIds);
-
-                            db.collection("company")
-                                    .document(companyId)
-                                    .collection("donhang")
-                                    .document(maDonHang)
-                                    .set(orderData)
-                                    .addOnSuccessListener(aVoid -> {
-                                        // Cập nhật kho hàng
-                                        for (Map<String, Object> productData : products) {
-                                            String productId = (String) productData.get("productId");
-                                            Double quantity = (Double) productData.get("quantity");
-
-                                            db.collection("company")
-                                                    .document(companyId)
-                                                    .collection("khohang")
-                                                    .document(productId)
-                                                    .get()
-                                                    .addOnSuccessListener(snapshot -> {
-                                                        if (snapshot.exists()) {
-                                                            Double currentQuantity = snapshot.getDouble("soLuong");
-                                                            if (currentQuantity == null || currentQuantity < quantity) {
-                                                                // Số lượng không đủ, hiển thị thông báo lỗi
-                                                                Toast.makeText(requireContext(), "Sản phẩm " + productId + " không đủ số lượng trong kho!", Toast.LENGTH_SHORT).show();
-                                                                return; // Dừng thao tác
-                                                            } else {
-                                                                // Số lượng đủ, tiến hành cập nhật kho
-                                                                Double updatedQuantity = currentQuantity - quantity;
-                                                                db.collection("company")
-                                                                        .document(companyId)
-                                                                        .collection("khohang")
-                                                                        .document(productId)
-                                                                        .update("soLuong", updatedQuantity)
-                                                                        .addOnSuccessListener(aVoid1 -> Log.d("Firestore", "Cập nhật thành công sản phẩm " + productId))
-                                                                        .addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi cập nhật sản phẩm " + productId, e));
-                                                            }
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(e -> Log.e("Firestore", "Không thể lấy thông tin sản phẩm " + productId, e));
-                                        }
-
-                                        Toast.makeText(requireContext(), "Đơn hàng đã lưu! Tong cong: ", Toast.LENGTH_SHORT).show();
-
-                                    })
-                                    .addOnFailureListener(e -> Toast.makeText(requireContext(), "Lỗi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                         });
 
                         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
@@ -349,109 +301,97 @@ public class DonHangFragment extends Fragment {
                     }
                 });
     }
-
-    private void setupSpinner(Spinner spinner, List<String> items) {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerAdapter);
+    private void refreshFragment() {
+        if (getFragmentManager() != null) {
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.detach(this).attach(this).commit();
+        }
     }
+    private Task<Boolean> checkStockAvailability(List<Map<String, Object>> products) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        TaskCompletionSource<Boolean> taskSource = new TaskCompletionSource<>();
+        AtomicBoolean isStockSufficient = new AtomicBoolean(true);
 
-    private void addProductToStorage(List<ProductMini> sanPhamNhap, String ngayNhap, String ghiChu, View view) {
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        for (Map<String, Object> productData : products) {
+            String productId = (String) productData.get("productId");
+            Double requiredQuantity = (Double) productData.get("quantity");
 
-        for (ProductMini product : sanPhamNhap) {
-            String maSP = product.getMaSP();
-            double soLuongNhapMoi = product.getSoLuong();
-
-            firestore.collection("company")
+            db.collection("company")
                     .document(companyId)
                     .collection("khohang")
-                    .document(maSP)
+                    .document(productId)
                     .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            Double soLuongHienTai = documentSnapshot.getDouble("soLuong");
-                            if (soLuongHienTai == null) soLuongHienTai = 0.0;
-
-                            double soLuongMoi = soLuongHienTai + soLuongNhapMoi;
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("soLuong", soLuongMoi);
-                            data.put("ngayNhap", ngayNhap);
-                            data.put("ghiChu", ghiChu);
-
-                            firestore.collection("company")
-                                    .document(companyId)
-                                    .collection("khohang")
-                                    .document(maSP)
-                                    .update(data)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d("Firestore", "Cập nhật thành công: " + maSP);
-
-                                        ListView storageListView = view.findViewById(R.id.lv_storage);
-                                        List<BusinessStorage> StorageList = new ArrayList<>();
-                                        BusinessKhoHangAdapter storageAdapter = new BusinessKhoHangAdapter(requireContext(), StorageList);
-                                        storageListView.setAdapter(storageAdapter);
-                                        firestore.collection("company")
-                                                .document(companyId)
-                                                .collection("khohang")
-                                                .get()
-                                                .addOnCompleteListener(task -> {
-                                                    if (task.isSuccessful() && task.getResult() != null) {
-                                                        StorageList.clear();
-                                                        int SoSanPham = 0;
-                                                        double SoLuongSP = 0.0, GiaTri = 0.0;
-                                                        for (QueryDocumentSnapshot KhDoc : task.getResult()) {
-                                                            Double giaBan = KhDoc.getDouble("giaBan");
-                                                            Double soLuong = KhDoc.getDouble("soLuong");
-                                                            giaBan = giaBan != null ? giaBan : 0.0;
-                                                            soLuong = soLuong != null ? soLuong : 0.0;
-
-                                                            SoSanPham++;
-                                                            SoLuongSP += soLuong;
-                                                            GiaTri += giaBan * soLuong;
-
-                                                            String tongGiaTri = String.format("%.2f", giaBan * soLuong);
-                                                            BusinessStorage Storage = new BusinessStorage(
-                                                                    KhDoc.getId(),
-                                                                    KhDoc.getString("NhaCungCap"),
-                                                                    KhDoc.getString("phanLoai"),
-                                                                    String.valueOf(giaBan),
-                                                                    KhDoc.getString("ngayNhap"),
-                                                                    String.valueOf(soLuong),
-                                                                    soLuong > 0 ? "Còn hàng" : "Hết hàng",
-                                                                    tongGiaTri,
-                                                                    KhDoc.getId()
-                                                            );
-                                                            StorageList.add(Storage);
-                                                        }
-                                                        TextView etSSP = view.findViewById(R.id.tv_storage_slpham);
-                                                        TextView etSLSP = view.findViewById(R.id.tv_storage_slton);
-                                                        TextView etGT = view.findViewById(R.id.tv_storage_gtton);
-
-                                                        etSSP.setText(String.valueOf(SoSanPham));
-                                                        etSLSP.setText(String.format("%.0f", SoLuongSP));
-                                                        etGT.setText(String.format("%.0f", GiaTri));
-
-                                                        storageAdapter.notifyDataSetChanged();
-                                                    } else {
-                                                        Toast.makeText(requireContext(), "Lỗi khi tải danh sách kho hàng!", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                })
-                                                .addOnFailureListener(e ->
-                                                        Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                                                );
-
-                                    });
-
-
+                    .addOnSuccessListener(snapshot -> {
+                        if (snapshot.exists()) {
+                            Double currentQuantity = snapshot.getDouble("soLuong");
+                            if (currentQuantity == null || currentQuantity < requiredQuantity) {
+                                isStockSufficient.set(false);
+                                taskSource.trySetResult(false); // Kết thúc nếu phát hiện thiếu kho
+                                Toast.makeText(requireContext(), "Sản phẩm " + productId + " không đủ số lượng trong kho!", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            isStockSufficient.set(false);
+                            taskSource.trySetResult(false);
+                            Toast.makeText(requireContext(), "Sản phẩm " + productId + " không tồn tại!", Toast.LENGTH_SHORT).show();
                         }
-
-
-
+                    })
+                    .addOnFailureListener(e -> {
+                        isStockSufficient.set(false);
+                        taskSource.trySetResult(false);
+                        Log.e("Firestore", "Lỗi khi kiểm tra sản phẩm " + productId, e);
                     });
         }
 
-        Toast.makeText(requireContext(), "Đã lưu thành công!", Toast.LENGTH_SHORT).show();
+        // Nếu không thiếu sản phẩm nào, trả về true
+        new Handler().postDelayed(() -> {
+            if (isStockSufficient.get()) {
+                taskSource.trySetResult(true);
+            }
+        }, 500); // Delay để đảm bảo tất cả Firestore queries hoàn tất
+
+        return taskSource.getTask();
     }
+    private void saveOrder(String maDonHang, String ngay, double thanhToan, String ghiChu, String hinhThuc, String tinhTrang, List<Map<String, Object>> products) {
+        double tongCong = 0.0;
+        int totalProducts = 0;
+        double totalQuantity = 0.0;
+
+        for (Map<String, Object> product : products) {
+            String productId = (String) product.get("productId");
+            double quantity = (double) product.get("quantity");
+            double giaBan = 0.0; // Giá bán cần được lấy từ adapter hoặc danh sách sản phẩm
+            tongCong += giaBan * quantity;
+            totalProducts++;
+            totalQuantity += quantity;
+        }
+
+        Map<String, Object> orderData = new HashMap<>();
+        orderData.put("orderId", maDonHang);
+        orderData.put("Date", ngay);
+        orderData.put("Total", tongCong);
+        orderData.put("paidAmount", thanhToan);
+        orderData.put("note", ghiChu);
+        orderData.put("paymentMethod", hinhThuc);
+        orderData.put("Paymentstatus", tinhTrang);
+        orderData.put("products", products);
+        orderData.put("Productcount", totalProducts);
+        orderData.put("Quantity", totalQuantity);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("company")
+                .document(companyId)
+                .collection("donhang")
+                .document(maDonHang)
+                .set(orderData)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(requireContext(), "Đơn hàng đã lưu thành công!", Toast.LENGTH_SHORT).show();
+                    refreshFragment();// Gọi lại dữ liệu sau khi lưu
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Lỗi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
 }
 

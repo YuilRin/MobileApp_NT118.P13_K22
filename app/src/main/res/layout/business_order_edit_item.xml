@@ -32,7 +32,8 @@
         android:id="@+id/et_order_edit_tongcong"
         android:hint="Tổng cộng"
         app:layout_constraintTop_toBottomOf="@id/et_order_edit_madonhang"
-        app:layout_constraintStart_toStartOf="@id/et_order_edit_madonhang"/>
+        app:layout_constraintStart_toStartOf="@id/et_order_edit_madonhang"
+        />
 
     <EditText
         android:layout_width="170dp"
