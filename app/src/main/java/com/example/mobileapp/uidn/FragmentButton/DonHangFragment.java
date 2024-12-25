@@ -267,8 +267,10 @@ public class DonHangFragment extends Fragment {
                                 ProductMini product = (ProductMini) lvSanPham.getAdapter().getItem(i);
                                 if (product.getSoLuong() > 0) {
                                     Map<String, Object> productData = new HashMap<>();
-                                    productData.put("productId", product.getMaSP());
-                                    productData.put("quantity", product.getSoLuong());
+                                    productData.put("maSP", product.getMaSP());
+                                    productData.put("soLuong", product.getSoLuong());
+                                    productData.put("giaBan",product.getGiaBan());
+
                                     products.add(productData);
 
                                     tongCong += product.getGiaBan() * product.getSoLuong();
@@ -313,8 +315,9 @@ public class DonHangFragment extends Fragment {
         AtomicBoolean isStockSufficient = new AtomicBoolean(true);
 
         for (Map<String, Object> productData : products) {
-            String productId = (String) productData.get("productId");
-            Double requiredQuantity = (Double) productData.get("quantity");
+            String productId = (String) productData.get("maSP");
+            Double requiredQuantity = (Double) productData.get("soLuong");
+            Double requiredGiaBan = (Double) productData.get("giaBan");
 
             db.collection("company")
                     .document(companyId)
@@ -357,9 +360,9 @@ public class DonHangFragment extends Fragment {
         double totalQuantity = 0.0;
 
         for (Map<String, Object> product : products) {
-            String productId = (String) product.get("productId");
-            double quantity = (double) product.get("quantity");
-            double giaBan = 0.0; // Giá bán cần được lấy từ adapter hoặc danh sách sản phẩm
+            String productId = (String) product.get("maSP");
+            double quantity = (double) product.get("soLuong");
+            double giaBan = (double) product.get("giaBan");; // Giá bán cần được lấy từ adapter hoặc danh sách sản phẩm
             tongCong += giaBan * quantity;
             totalProducts++;
             totalQuantity += quantity;

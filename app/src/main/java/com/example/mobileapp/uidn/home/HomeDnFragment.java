@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -21,6 +22,8 @@ import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.BusinessFragmentHomeBinding;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -42,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 public class HomeDnFragment extends Fragment {
 
@@ -68,23 +72,29 @@ public class HomeDnFragment extends Fragment {
         btnThongBao = binding.btnThongbao;
 
         spinnerYear = binding.spinnerYear;
-        fetchCompanyId(() -> Update());
-
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        List<String> years = new ArrayList<>();
-        for (int i = currentYear; i >= currentYear - 10; i--) {
-            years.add(String.valueOf(i));
-        }
 
 
-        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, years);
-        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerYear.setAdapter(yearAdapter);
+
+        combinedChart = binding.Chart;
 
 
-        Calendar calendar = Calendar.getInstance();
+        fetchCompanyId(() -> {
+            if (companyId == null || companyId.isEmpty()) {
+                Toast.makeText(requireContext(), "Không tìm thấy Company ID. Vui lòng kiểm tra dữ liệu!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Update();
 
-        spinnerYear.setSelection(years.indexOf(String.valueOf(currentYear)));
+            initializeViews();
+            setupYearSpinner();
+            configureChart();
+
+            String selectedYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+            spinnerYear.setSelection(((ArrayAdapter<String>) spinnerYear.getAdapter()).getPosition(selectedYear));
+
+            updateChartData(selectedYear);
+
+        });
 
         // Xử lý sự kiện khi nhấn button
         btnCaidat.setOnClickListener(new View.OnClickListener() {
@@ -161,37 +171,153 @@ public class HomeDnFragment extends Fragment {
             }
         });
 
-        combinedChart = binding.Chart;
 
-        // Configure the chart
-        combinedChart.getAxisLeft().setAxisMinimum(0f);
-        combinedChart.getAxisRight().setEnabled(false); // Disable right axis
-        combinedChart.getDescription().setEnabled(false);
-        combinedChart.getLegend().setEnabled(true);
-
-        Legend legend = combinedChart.getLegend();
-        legend.setEnabled(true);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER); // Align vertically at the center
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT); // Align horizontally to the right
-        legend.setOrientation(Legend.LegendOrientation.VERTICAL); // Display legend items vertically
-        legend.setDrawInside(false); // Make sure it doesn't overlap with the chart content
-        legend.setWordWrapEnabled(true); // Wrap the legend text if it’s too long
-
-        // Prepare data
-        CombinedData data = new CombinedData();
-
-        // Add bar data for gross profit and net profit
-        data.setData(generateBarData());
-
-        // Add line data for revenue
-        data.setData(generateLineData());
-
-        // Set the data to the chart
-        combinedChart.setData(data);
-        combinedChart.invalidate(); // Refresh the chart
-        combinedChart.setExtraOffsets(10, 10, 10, 10);
         return root;
     }
+    private void initializeViews() {
+        spinnerYear = binding.spinnerYear;
+    }
+    private void setupYearSpinner() {
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        List<String> years = new ArrayList<>();
+        for (int i = currentYear; i >= currentYear - 10; i--) {
+            years.add(String.valueOf(i));
+        }
+
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, years);
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedYear = parent.getItemAtPosition(position).toString();
+                updateChartData(selectedYear);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void configureChart() {
+        combinedChart.getAxisLeft().setAxisMinimum(0f);
+        combinedChart.getAxisRight().setAxisMinimum(0f);
+        combinedChart.getDescription().setEnabled(false);
+        combinedChart.setExtraOffsets(10, 10, 10, 10);
+
+        Legend legend = combinedChart.getLegend();
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        legend.setOrientation(Legend.LegendOrientation.VERTICAL);
+        legend.setDrawInside(false);
+        legend.setWordWrapEnabled(true);
+    }
+    private void updateChartData(String selectedYear) {
+        CombinedData data = new CombinedData();
+
+        fetchBarData(selectedYear, barData -> {
+            data.setData(barData);
+            combinedChart.setData(data);
+            combinedChart.invalidate();
+        });
+
+        fetchLineData(selectedYear, lineData -> {
+            data.setData(lineData);
+            combinedChart.setData(data);
+            combinedChart.invalidate();
+        });
+
+        configureChartAxes(); // Gọi hàm cấu hình trục Y.
+    }
+
+    private void fetchBarData(String selectedYear, Consumer<BarData> callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("company").document(companyId).collection("donhang").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    ArrayList<BarEntry> orderEntries = new ArrayList<>();
+                    int[] totalOrders = new int[12];
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Map<String, Object> data = document.getData();
+                        String date = (String) data.get("Date");
+
+                        if (date != null && date.endsWith(selectedYear)) {
+                            int month = Integer.parseInt(date.split("/")[1]) - 1;
+                            totalOrders[month]++;
+                        }
+                    }
+
+                    for (int i = 0; i < 12; i++) {
+                        orderEntries.add(new BarEntry(i+1, totalOrders[i]));
+                    }
+
+                    BarDataSet orderDataSet = new BarDataSet(orderEntries, "Số đơn hàng");
+                    orderDataSet.setColor(Color.GREEN);
+                    orderDataSet.setAxisDependency(YAxis.AxisDependency.RIGHT); // Gắn vào trục Y bên phải.
+
+                    BarData barData = new BarData(orderDataSet);
+                    callback.accept(barData);
+                })
+                .addOnFailureListener(e -> Log.e("ChartError", "Failed to load bar data", e));
+    }
+
+
+    private void fetchLineData(String selectedYear, Consumer<LineData> callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("company").document(companyId).collection("donhang").get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    ArrayList<Entry> revenueEntries = new ArrayList<>();
+                    float[] monthlyRevenue = new float[12];
+
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Map<String, Object> data = document.getData();
+                        String date = (String) data.get("Date");
+                        Number total = (Number) data.get("Total");
+
+                        if (date != null && date.endsWith(selectedYear)) {
+                            int month = Integer.parseInt(date.split("/")[1]) - 1;
+                            monthlyRevenue[month] += total != null ? total.floatValue() : 0;
+                        }
+                    }
+
+                    for (int i = 0; i < monthlyRevenue.length; i++) {
+                        revenueEntries.add(new Entry(i+1, monthlyRevenue[i]));
+                    }
+
+                    LineDataSet revenueDataSet = new LineDataSet(revenueEntries, "Doanh thu");
+                    revenueDataSet.setColor(Color.BLUE);
+                    revenueDataSet.setLineWidth(2f);
+                    revenueDataSet.setAxisDependency(YAxis.AxisDependency.LEFT); // Gắn vào trục Y bên trái.
+
+                    LineData lineData = new LineData(revenueDataSet);
+                    callback.accept(lineData);
+                })
+                .addOnFailureListener(e -> Log.e("ChartError", "Failed to load line data", e));
+    }
+    private void configureChartAxes() {
+        // Trục Y bên trái cho Doanh thu.
+        YAxis leftAxis = combinedChart.getAxisLeft();
+        leftAxis.setAxisMinimum(0f); // Không cho phép giá trị âm.
+        leftAxis.setTextColor(Color.BLUE); // Màu xanh cho Doanh thu.
+        leftAxis.setDrawGridLines(true);
+
+        // Trục Y bên phải cho Số đơn hàng.
+        YAxis rightAxis = combinedChart.getAxisRight();
+        rightAxis.setAxisMinimum(0f); // Không cho phép giá trị âm.
+        rightAxis.setTextColor(Color.GREEN); // Màu xanh lá cho Số đơn hàng.
+        rightAxis.setDrawGridLines(true);
+
+        // Ẩn trục X nếu không cần thiết.
+        XAxis xAxis = combinedChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+    }
+
+
+
+
+
     private void fetchCompanyId(Runnable onComplete) {
 
         FirebaseFirestore.getInstance().collection("users")
@@ -205,11 +331,14 @@ public class HomeDnFragment extends Fragment {
                         } else {
                             onComplete.run();
                         }
+                    } else {
+                        Toast.makeText(requireContext(), "Tài liệu người dùng không tồn tại.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(requireContext(), "Lỗi khi lấy thông tin công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
+
     }
     private void Update() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -273,50 +402,6 @@ public class HomeDnFragment extends Fragment {
 
     //////////////////////////////////////////////////////////////////////////////
 
-    private BarData generateBarData() {
-        ArrayList<BarEntry> grossProfitEntries = new ArrayList<>();
-        grossProfitEntries.add(new BarEntry(0, 2.29f));
-        grossProfitEntries.add(new BarEntry(1, 187.66f));
-        grossProfitEntries.add(new BarEntry(2, 2.44f));
-        grossProfitEntries.add(new BarEntry(3, 251.2f));
-        grossProfitEntries.add(new BarEntry(4, 638.29f));
-
-        BarDataSet grossProfitSet = new BarDataSet(grossProfitEntries, "Gross Profit");
-        grossProfitSet.setColor(Color.RED);
-
-        ArrayList<BarEntry> netProfitEntries = new ArrayList<>();
-        netProfitEntries.add(new BarEntry(0, 3.11f));
-        netProfitEntries.add(new BarEntry(1, 10.54f));
-        netProfitEntries.add(new BarEntry(2, 4.85f));
-        netProfitEntries.add(new BarEntry(3, 160.54f));
-        netProfitEntries.add(new BarEntry(4, 438.93f));
-
-        BarDataSet netProfitSet = new BarDataSet(netProfitEntries, "Net Profit");
-        netProfitSet.setColor(Color.GRAY);
-
-        BarData barData = new BarData(grossProfitSet, netProfitSet);
-        barData.setBarWidth(0.3f); // Adjust the bar width as needed
-        return barData;
-    }
-
-    private LineData generateLineData() {
-        ArrayList<Entry> revenueEntries = new ArrayList<>();
-        revenueEntries.add(new Entry(0, 0f));
-        revenueEntries.add(new Entry(1, 505.14f));
-        revenueEntries.add(new Entry(2, 104.83f));
-        revenueEntries.add(new Entry(3, 395.79f));
-        revenueEntries.add(new Entry(4, 1315.90f));
-
-        LineDataSet lineDataSet = new LineDataSet(revenueEntries, "Revenue");
-        lineDataSet.setColor(Color.BLUE);
-        lineDataSet.setLineWidth(2.5f);
-        lineDataSet.setCircleColor(Color.BLUE);
-        lineDataSet.setCircleRadius(4f);
-        lineDataSet.setFillColor(Color.BLUE);
-        lineDataSet.setMode(LineDataSet.Mode.LINEAR);
-
-        return new LineData(lineDataSet);
-    }
 
     @Override
     public void onDestroyView() {
