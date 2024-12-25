@@ -13,17 +13,20 @@
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp"
         android:background="@drawable/business_background_gradient">
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:orientation="vertical"
-            android:weightSum="2">
+            android:weightSum="5">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
                 android:background="@color/white"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:weightSum="2"
                 android:layout_marginTop="10dp">
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +35,7 @@
                     android:layout_weight="1">
 
                     <TextView
-                        android:id="@+id/tv_donhang"
+                        android:id="@+id/tv_donhangnhap"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
@@ -51,14 +54,14 @@
                         android:layout_marginTop="32dp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
-                        android:text="Chờ xử lý"
+                        android:text="Da xử lý"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.496"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tv_numcho"
+                        android:id="@+id/tv_numDa"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -105,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="horizontal"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:weightSum="1"
                 android:layout_marginTop="15dp">
 
@@ -121,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
-                        android:text="Tạm tính"
+                        android:text="Tạm tính hom nay"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="parent"
@@ -461,6 +464,27 @@
 
             </LinearLayout>
 
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chọn năm:"
+                android:textSize="16sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinner_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

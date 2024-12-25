@@ -26,8 +26,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mobileapp.Class.BusinessOrder;
 import com.example.mobileapp.Class.BusinessProvider;
 import com.example.mobileapp.Class.Product;
 import com.example.mobileapp.Custom.BusinessProviderAdapter;
@@ -47,7 +49,7 @@ import java.util.Objects;
 
 public class NhaCungCapFragment extends Fragment {
 
-    private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+    private String userId;
     private String companyId; // Tái sử dụng để giảm truy vấn Firestore
 
     @Override
@@ -65,7 +67,8 @@ public class NhaCungCapFragment extends Fragment {
             }
         }
 
-        UpdateList(view);
+        userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        fetchCompanyId(() -> UpdateList(view));
 
         // Nút thêm nhà cung cấp
         ImageButton addButton = view.findViewById(R.id.add_button);
@@ -288,58 +291,169 @@ public class NhaCungCapFragment extends Fragment {
         // Tham chiếu đến ListView
         userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         ListView providerListView = view.findViewById(R.id.supplier_list);
-        if (companyId == null) {
-            FirebaseFirestore.getInstance().collection("users")
-                    .document(userId)
-                    .get()
-                    .addOnSuccessListener(userDoc -> {
-                        if (userDoc.exists()) {
-                            companyId = userDoc.getString("companyId");
+                                    // Tạo danh sách nhà cung cấp
+                List<BusinessProvider> providerList = new ArrayList<>();
+                BusinessProviderAdapter providerAdapter = new BusinessProviderAdapter(requireContext(), providerList);
+                providerListView.setAdapter(providerAdapter);
 
-                            if (companyId == null || companyId.isEmpty()) {
-                                Toast.makeText(requireContext(), "Company ID không hợp lệ!", Toast.LENGTH_SHORT).show();
-                                return; // Dừng phương thức nếu companyId không hợp lệ
-                            }
-
-                            // Tạo danh sách nhà cung cấp
-                            List<BusinessProvider> providerList = new ArrayList<>();
-                            BusinessProviderAdapter providerAdapter = new BusinessProviderAdapter(requireContext(), providerList);
-                            providerListView.setAdapter(providerAdapter);
-
-                            // Lấy dữ liệu từ Firestore
-                            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-                            firestore.collection("company")
-                                    .document(companyId)
-                                    .collection("nhacungcap")
-                                    .get()
-                                    .addOnCompleteListener(task -> {
-                                        if (task.isSuccessful() && task.getResult() != null) {
-                                            providerList.clear(); // Xóa danh sách cũ
-                                            for (QueryDocumentSnapshot NccDoc : task.getResult()) {
-                                                // Lấy dữ liệu từ tài liệu Firestore
-                                                BusinessProvider provider = new BusinessProvider(
-                                                        NccDoc.getId(),
-                                                        NccDoc.getString("Ten"),
-                                                        "SP01", // Tạm thời dùng giá trị mẫu cho mã sản phẩm
-                                                        NccDoc.getString("SDT"),
-                                                        NccDoc.getString("DaiDien"),
-                                                        NccDoc.getString("Email"),
-                                                        NccDoc.getString("Ngay"),
-                                                        NccDoc.getString("TinhTrang"),
-                                                        NccDoc.getString("GhiChu")
-                                                );
-                                                providerList.add(provider); // Thêm vào danh sách nhà cung cấp
-                                            }
-                                            providerAdapter.notifyDataSetChanged(); // Làm mới adapter
-                                        } else {
-                                            Toast.makeText(requireContext(), "Lỗi khi tải danh sách nhà cung cấp!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    })
-                                    .addOnFailureListener(e ->
-                                            Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                // Lấy dữ liệu từ Firestore
+                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+                firestore.collection("company")
+                        .document(companyId)
+                        .collection("nhacungcap")
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                providerList.clear(); // Xóa danh sách cũ
+                                for (QueryDocumentSnapshot NccDoc : task.getResult()) {
+                                    // Lấy dữ liệu từ tài liệu Firestore
+                                    BusinessProvider provider = new BusinessProvider(
+                                            NccDoc.getId(),
+                                            NccDoc.getString("Ten"),
+                                            "SP01", // Tạm thời dùng giá trị mẫu cho mã sản phẩm
+                                            NccDoc.getString("SDT"),
+                                            NccDoc.getString("DaiDien"),
+                                            NccDoc.getString("Email"),
+                                            NccDoc.getString("Ngay"),
+                                            NccDoc.getString("TinhTrang"),
+                                            NccDoc.getString("GhiChu")
                                     );
-                        }
-                    });
-        }
+                                    providerList.add(provider); // Thêm vào danh sách nhà cung cấp
+                                }
+                                providerAdapter.notifyDataSetChanged(); // Làm mới adapter
+                            } else {
+                                Toast.makeText(requireContext(), "Lỗi khi tải danh sách nhà cung cấp!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        );
+
+
+        providerListView.setOnItemLongClickListener((parent, view1, position, id) -> {
+            BusinessProvider selectedProvider = providerList.get(position);
+            showOrderOptionsDialog(selectedProvider, () -> UpdateList(view));
+            return true;
+        });
     }
+
+    private void showOrderOptionsDialog(BusinessProvider Provider, Runnable onComplete) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Lựa chọn hành động")
+                .setItems(new String[]{"Sửa", "Xóa"}, (dialog, which) -> {
+                    if (which == 0) {
+                        openEditOrderDialog(Provider, onComplete);
+                    } else if (which == 1) {
+                        deleteOrder(Provider, onComplete);
+                    }
+                })
+                .show();
+    }
+    private void openEditOrderDialog(BusinessProvider provider, Runnable onComplete) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_supplier_edit_item, null);
+        builder.setView(dialogView);
+
+        // Bind UI components
+        EditText etMaNhaCC = dialogView.findViewById(R.id.et_supplier_edit_manhacc);
+        EditText etDaDien = dialogView.findViewById(R.id.et_supplier_edit_daidien);
+        EditText etGhiChu = dialogView.findViewById(R.id.et_supplier_edit_ghichu);
+        EditText etNgay = dialogView.findViewById(R.id.et_supplier_edit_ngay);
+        EditText etSDT = dialogView.findViewById(R.id.et_supplier_edit_sdt);
+        EditText etTenNCC = dialogView.findViewById(R.id.et_supplier_edit_tennhacc);
+        EditText etEmail = dialogView.findViewById(R.id.et_supplier_edit_email);
+        Spinner spinner = dialogView.findViewById(R.id.sp_supplier_edit_tinhtrang);
+
+        ListView listView = dialogView.findViewById(R.id.lv_supplier_edit_sp);
+        TextView textView = dialogView.findViewById(R.id.tv_supplier_edit_listsp);
+        textView.setVisibility(View.GONE);
+        listView.setVisibility(View.GONE);
+
+
+        // Pre-fill fields with existing data
+        etMaNhaCC.setText(provider.getProviderId());
+        etTenNCC.setText(provider.getProviderName());
+        etDaDien.setText(provider.getProviderStatus());
+        etGhiChu.setText(provider.getProviderNote());
+        etNgay.setText(provider.getProviderDate());
+        etSDT.setText(provider.getProviderPhone());
+        etEmail.setText(provider.getProviderEmail());
+
+        // Set up Spinner adapter
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        sharedViewModel.getStatusList(2).observe(getViewLifecycleOwner(), spinnerAdapter::addAll);
+
+        builder.setPositiveButton("Cập nhật", (dialog, which) -> {
+            // Collect updated data
+            String tenNCC = etTenNCC.getText().toString().trim();
+            if (tenNCC.isEmpty()) {
+                Toast.makeText(getContext(), "Tên nhà cung cấp không được để trống!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            Map<String, Object> updatedData = new HashMap<>();
+            updatedData.put("Ten", tenNCC);
+            updatedData.put("DaiDien", etDaDien.getText().toString().trim());
+            updatedData.put("GhiChu", etGhiChu.getText().toString().trim());
+            updatedData.put("Ngay", etNgay.getText().toString().trim());
+            updatedData.put("SDT", etSDT.getText().toString().trim());
+            updatedData.put("Email", etEmail.getText().toString().trim());
+            updatedData.put("TinhTrang", spinner.getSelectedItem().toString());
+
+            // Update Firestore
+            FirebaseFirestore.getInstance().collection("company").document(companyId)
+                    .collection("nhacungcap").document(provider.getProviderId())
+                    .update(updatedData)
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(getContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                        onComplete.run();
+                    })
+                    .addOnFailureListener(e -> Toast.makeText(getContext(), "Lỗi cập nhật!", Toast.LENGTH_SHORT).show());
+        });
+
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
+
+
+    private void fetchCompanyId(Runnable onComplete) {
+        FirebaseFirestore.getInstance().collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    if (userDoc.exists()) {
+                        companyId = userDoc.getString("companyId");
+                        if (companyId == null || companyId.isEmpty()) {
+                            Toast.makeText(requireContext(), "Không tìm thấy Company ID!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            onComplete.run();
+                        }
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(requireContext(), "Lỗi khi lấy thông tin công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+    private void deleteOrder(BusinessProvider provider, Runnable onComplete) {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Xóa nhà cung cấp")
+                .setMessage("Bạn có chắc chắn muốn xóa nhà cung cấp này?")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    FirebaseFirestore.getInstance().collection("company").document(companyId)
+                            .collection("nhacungcap").document(provider.getProviderId())
+                            .delete()
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(getContext(), "Xóa nhà cung cấp thành công!", Toast.LENGTH_SHORT).show();
+                                onComplete.run();
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(getContext(), "Lỗi khi xóa nhà cung cấp!", Toast.LENGTH_SHORT).show());
+                })
+                .setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
 }

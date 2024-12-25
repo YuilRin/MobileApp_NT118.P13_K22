@@ -130,7 +130,8 @@
         app:layout_constraintStart_toEndOf="@id/tv_supplier_edit_listsp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_supplier_edit_listsp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_supplier_edit_listsp"/>
+        app:layout_constraintBottom_toBottomOf="@id/tv_supplier_edit_listsp"
+        android:visibility="gone"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="200dp"

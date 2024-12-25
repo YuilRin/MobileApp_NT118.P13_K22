@@ -11,6 +11,7 @@ public class BusinessStorage {
     private String tinhTrang;
     private String giaTriTon;
     private String maSanPham;
+    private String ghiChu;
 
     /// donGia đang de gia ban, tồn kho  đang để so luong tồn
 
@@ -18,11 +19,12 @@ public class BusinessStorage {
                            String nhaCungCap,
                            String phanLoai,
                            String donGia,
-                       String ngayNhap,
+                           String ngayNhap,
                            String tonKho,
                            String tinhTrang,
                            String giaTriTon,
-                           String maSanPham) {
+                           String maSanPham,
+                           String ghiChu) {
         this.tenSanPham = tenSanPham;
         this.nhaCungCap = nhaCungCap;
         this.phanLoai = phanLoai;
@@ -32,6 +34,7 @@ public class BusinessStorage {
         this.tinhTrang = tinhTrang;
         this.giaTriTon = giaTriTon;
         this.maSanPham = maSanPham;
+        this.ghiChu= ghiChu;
     }
 
     public String getDonGia() {
@@ -72,5 +75,9 @@ public class BusinessStorage {
     public void setTonKho(String tk)
     {
         this.tonKho = tk;
+    }
+
+    public String getGhiChu() {
+        return ghiChu;
     }
 }

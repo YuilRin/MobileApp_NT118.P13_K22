@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/et_edit_ma_san_pham"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mã sản phẩm"
+        android:inputType="text" />
+
+
+    <EditText
+        android:id="@+id/et_edit_ten_san_pham"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên sản phẩm"
+        android:inputType="text" />
+    <Spinner
+        android:id="@+id/sp_edit_loai"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    <EditText
+        android:id="@+id/et_edit_ngay_nhap"
+        android:layout_weight="35"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Ngày nhap"
+        android:inputType="text" />
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
+            android:id="@+id/ib_date"
+            android:src="@drawable/business_ic_date"
+            android:layout_marginEnd="5dp"
+            android:background="#00FFFFFF"
+            android:scaleType="centerCrop"
+            />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_edit_nha_cung_cap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhà cung cấp"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/et_edit_gia_ban"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Giá bán"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/et_edit_so_luong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Số lượng"
+        android:inputType="number" />
+    <EditText
+        android:id="@+id/et_edit_ghi_chu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ghi chú"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btn_save_edit_storage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Lưu thay đổi"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

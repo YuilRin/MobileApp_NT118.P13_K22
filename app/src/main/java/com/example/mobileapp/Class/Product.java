@@ -5,6 +5,7 @@ package com.example.mobileapp.Class;public class Product {
     private String supplier;
     private String costPrice;
     private String sellingPrice;
+    private String note;
 
     // Getter và Setter
     public String getProductCode() {
@@ -53,6 +54,14 @@ package com.example.mobileapp.Class;public class Product {
 
     public void setSellingPrice(String sellingPrice) {
         this.sellingPrice = sellingPrice;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+    public String getNote()
+    {
+        return note;
     }
 }
 

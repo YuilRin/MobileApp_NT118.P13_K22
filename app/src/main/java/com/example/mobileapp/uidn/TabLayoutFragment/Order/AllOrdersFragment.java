@@ -54,9 +54,6 @@ public class AllOrdersFragment extends Fragment {
 
         return rootView;
     }
-    public void refreshData(View view) {
-        UpdateList(view);
-    }
 
     private void fetchCompanyId(Runnable onComplete) {
         FirebaseFirestore.getInstance().collection("users")

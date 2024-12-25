@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,6 +104,74 @@ public class HomeFragment extends Fragment {
                 expenseManager.showAddExpenseDialog();
             }
         });
+        Spinner spinnerMonth = root.findViewById(R.id.spinner_month);
+        Spinner spinnerYear = root.findViewById(R.id.spinner_year);
+
+
+        List<String> months = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            months.add(String.format(Locale.getDefault(), "%02d", i));
+        }
+
+
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        List<String> years = new ArrayList<>();
+        for (int i = currentYear; i >= currentYear - 10; i--) {
+            years.add(String.valueOf(i));
+        }
+
+
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, months);
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMonth.setAdapter(monthAdapter);
+
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, years);
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+
+        Calendar calendar = Calendar.getInstance();
+        spinnerMonth.setSelection(calendar.get(Calendar.MONTH)); // Tháng hiện tại (0-based index)
+        spinnerYear.setSelection(years.indexOf(String.valueOf(currentYear)));
+
+
+        spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedMonth = months.get(position);
+                String selectedYear = spinnerYear.getSelectedItem().toString();
+
+                // Cập nhật currentMonth và tải dữ liệu
+                currentMonth = selectedYear + "-" + selectedMonth;
+                getDayKeys();
+                loadMonthlyExpenses(userId, currentMonth);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Không cần xử lý
+            }
+        });
+
+        spinnerYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedMonth = spinnerMonth.getSelectedItem().toString();
+                String selectedYear = years.get(position);
+
+                // Cập nhật currentMonth và tải dữ liệu
+                currentMonth = selectedYear + "-" + selectedMonth;
+                getDayKeys();
+                loadMonthlyExpenses(userId, currentMonth);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Không cần xử lý
+            }
+        });
+
+
 
         return root;
     }
@@ -173,7 +243,6 @@ public class HomeFragment extends Fragment {
                                             float amount = Float.parseFloat(value.toString());
                                             categoryTotals.put(category, categoryTotals.getOrDefault(category, 0f) + amount);
 
-                                            // Prepare data for ListView
                                             String formattedItem = category + " - " + String.format("%.2f", amount) + "k";
                                             listItems.add(formattedItem);
 

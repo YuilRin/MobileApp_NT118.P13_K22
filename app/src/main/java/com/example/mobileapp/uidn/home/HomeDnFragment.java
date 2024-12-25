@@ -1,11 +1,16 @@
 package com.example.mobileapp.uidn.home;
 
 import android.graphics.Color;
+import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,14 +28,29 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HomeDnFragment extends Fragment {
 
     private BusinessFragmentHomeBinding binding;
     private CombinedChart combinedChart;
     ImageButton btnCaidat,btnDonHang,btnSanPham,btnBaoCao,btnNhaCungCap,btnKhoHang,btnNhanVien,btnThongBao;
+    Spinner spinnerYear;
+    private String userId=Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();;
+    private String companyId;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +66,25 @@ public class HomeDnFragment extends Fragment {
         btnKhoHang = binding.btnKhohang;
         btnNhanVien = binding.btnNhanvien;
         btnThongBao = binding.btnThongbao;
+
+        spinnerYear = binding.spinnerYear;
+        fetchCompanyId(() -> Update());
+
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        List<String> years = new ArrayList<>();
+        for (int i = currentYear; i >= currentYear - 10; i--) {
+            years.add(String.valueOf(i));
+        }
+
+
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, years);
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+
+        Calendar calendar = Calendar.getInstance();
+
+        spinnerYear.setSelection(years.indexOf(String.valueOf(currentYear)));
 
         // Xử lý sự kiện khi nhấn button
         btnCaidat.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +192,86 @@ public class HomeDnFragment extends Fragment {
         combinedChart.setExtraOffsets(10, 10, 10, 10);
         return root;
     }
+    private void fetchCompanyId(Runnable onComplete) {
+
+        FirebaseFirestore.getInstance().collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    if (userDoc.exists()) {
+                        companyId = userDoc.getString("companyId");
+                        if (companyId == null || companyId.isEmpty()) {
+                            Toast.makeText(requireContext(), "Không tìm thấy Company ID!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            onComplete.run();
+                        }
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(requireContext(), "Lỗi khi lấy thông tin công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
+    }
+    private void Update() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Đường dẫn: company -> companyId -> donhang
+        CollectionReference ordersRef = db.collection("company")
+                .document(companyId)
+                .collection("donhang");
+
+        // Biến đếm số lượng và tổng tiền
+        AtomicInteger countPaid = new AtomicInteger(0);
+        AtomicInteger countPending = new AtomicInteger(0);
+        AtomicReference<Double> totalPaid = new AtomicReference<>(0.0);
+
+
+        CollectionReference donhangRef = db.collection("company")
+                .document(companyId)
+                .collection("donhang");
+
+// Lấy ngày và tháng hiện tại
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String today = dateFormat.format(calendar.getTime());
+
+
+        donhangRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            int totalDonHangToday = 0;
+            int totalRevenueToday = 0;
+            int ordersPaid = 0;
+            int ordersPending = 0;
+
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                Map<String, Object> data = document.getData();
+                String date = (String) data.get("Date");
+                Number total = (Number) data.get("Total");
+                String paymentStatus = (String) data.get("Paymentstatus");
+
+                // Today's orders
+                if (date.equals(today)) {
+                    totalDonHangToday++;
+                    totalRevenueToday += total.intValue();
+                    if ("Đã thanh toán".equals(paymentStatus)) {
+                        ordersPaid++;
+                    } else {
+                        ordersPending++;
+                    }
+                }
+
+
+            }
+
+            // Update TextViews
+            binding.tvDonHang.setText("Đơn hàng: " + totalDonHangToday);
+            binding.tvDanhThu.setText("Doanh thu: " + totalRevenueToday);
+            binding.tvNumDa.setText(""+ordersPaid);
+            binding.tvNumDang.setText(""+ordersPending);
+        }).addOnFailureListener(e -> {
+            Log.e("FirestoreError", "Error fetching data", e);
+        });
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
 
     private BarData generateBarData() {
         ArrayList<BarEntry> grossProfitEntries = new ArrayList<>();

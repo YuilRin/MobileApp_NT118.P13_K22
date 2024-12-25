@@ -38,11 +38,11 @@ public class BusinessProviderAdapter extends ArrayAdapter<BusinessProvider> {
 
         providerId.setText(provider.getProviderId());
         providerName.setText(provider.getProviderName());
-        providerProductId.setText("Số sp cc: " + provider.getProviderProductId());
-        providerPhone.setText("Số điện thoại: " + provider.getProviderPhone());
+        providerProductId.setText("MaSP: " + provider.getProviderProductId());
+        providerPhone.setText("SĐT: " + provider.getProviderPhone());
         providerHead.setText("Đại diện: " + provider.getProviderHead());
         providerEmail.setText("Email: " + provider.getProviderEmail());
-        providerDate.setText("Ngày hợp tác: " + provider.getProviderDate());
+        providerDate.setText("Date: " + provider.getProviderDate());
         providerStatus.setText("Tình trạng: " + provider.getProviderStatus());
         providerNote.setText("Ghi chú: " + provider.getProviderNote());
 
