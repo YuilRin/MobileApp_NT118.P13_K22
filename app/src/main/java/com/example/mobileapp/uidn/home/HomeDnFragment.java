@@ -31,6 +31,7 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -304,9 +305,20 @@ public class HomeDnFragment extends Fragment {
 
         // Trục Y bên phải cho Số đơn hàng.
         YAxis rightAxis = combinedChart.getAxisRight();
-        rightAxis.setAxisMinimum(0f); // Không cho phép giá trị âm.
-        rightAxis.setTextColor(Color.GREEN); // Màu xanh lá cho Số đơn hàng.
-        rightAxis.setDrawGridLines(true);
+        rightAxis.setAxisMinimum(0f);
+        rightAxis.setTextColor(Color.GREEN);
+        rightAxis.setDrawGridLines(false);
+
+        float scaleFactor = 1.5f; // Tăng giá trị hiển thị trên trục Y bên phải
+        rightAxis.setAxisMinimum(0f);
+        rightAxis.setAxisMaximum(10f * scaleFactor); // Tối đa trục Y bên phải tương ứng
+        rightAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return String.valueOf((int) (value / scaleFactor)); // Chuyển đổi ngược lại để hiển thị giá trị thực
+            }
+
+        });// 1.5f là scaleFactor
 
         // Ẩn trục X nếu không cần thiết.
         XAxis xAxis = combinedChart.getXAxis();
@@ -343,17 +355,6 @@ public class HomeDnFragment extends Fragment {
     private void Update() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Đường dẫn: company -> companyId -> donhang
-        CollectionReference ordersRef = db.collection("company")
-                .document(companyId)
-                .collection("donhang");
-
-        // Biến đếm số lượng và tổng tiền
-        AtomicInteger countPaid = new AtomicInteger(0);
-        AtomicInteger countPending = new AtomicInteger(0);
-        AtomicReference<Double> totalPaid = new AtomicReference<>(0.0);
-
-
         CollectionReference donhangRef = db.collection("company")
                 .document(companyId)
                 .collection("donhang");
@@ -367,6 +368,7 @@ public class HomeDnFragment extends Fragment {
         donhangRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             int totalDonHangToday = 0;
             int totalRevenueToday = 0;
+            int TongLoiNhan =0;
             int ordersPaid = 0;
             int ordersPending = 0;
 
@@ -374,18 +376,22 @@ public class HomeDnFragment extends Fragment {
                 Map<String, Object> data = document.getData();
                 String date = (String) data.get("Date");
                 Number total = (Number) data.get("Total");
+                Number loiNhuan = data.get("TongVon")!= null ?(Number) data.get("TongVon"):0.0;
                 String paymentStatus = (String) data.get("Paymentstatus");
 
                 // Today's orders
                 if (date.equals(today)) {
                     totalDonHangToday++;
                     totalRevenueToday += total.intValue();
+                    TongLoiNhan += loiNhuan.intValue();
+
                     if ("Đã thanh toán".equals(paymentStatus)) {
                         ordersPaid++;
                     } else {
                         ordersPending++;
                     }
                 }
+                TongLoiNhan=totalRevenueToday-TongLoiNhan;
 
 
             }
@@ -393,6 +399,7 @@ public class HomeDnFragment extends Fragment {
             // Update TextViews
             binding.tvDonHang.setText("Đơn hàng: " + totalDonHangToday);
             binding.tvDanhThu.setText("Doanh thu: " + totalRevenueToday);
+            binding.tvLoiNhuan.setText("Lợi nhuận: "+ TongLoiNhan);
             binding.tvNumDa.setText(""+ordersPaid);
             binding.tvNumDang.setText(""+ordersPending);
         }).addOnFailureListener(e -> {

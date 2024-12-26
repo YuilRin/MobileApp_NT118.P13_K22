@@ -136,8 +136,6 @@ public class KhoHangFragment extends Fragment {
             datePickerDialog.show();
         });
 
-
-
         List<ProductMini> productList = new ArrayList<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("company")
@@ -148,7 +146,9 @@ public class KhoHangFragment extends Fragment {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String maSP = document.getId();
-                            ProductMini product = new ProductMini(maSP, 0);
+                            double giaBan = document.getDouble("giaBan") != null ? document.getDouble("giaBan") : 0.0;
+                            double giaVon = document.getDouble("giaVon") != null ? document.getDouble("giaVon") : 0.0;
+                            ProductMini product = new ProductMini(maSP, 0,giaBan,giaVon);
                             productList.add(product);
                         }
                         BusinessStorageEditAdapter adapter = new BusinessStorageEditAdapter(requireContext(), productList);
@@ -163,7 +163,6 @@ public class KhoHangFragment extends Fragment {
             String ngayNhap = etNgayNhap.getText().toString().trim();
             String ghiChu = etGhiChu.getText().toString().trim();
 
-
             List<ProductMini> sanPhamNhap = new ArrayList<>();
             for (ProductMini product : productList) {
                 if (product.getSoLuong() > 0) {
@@ -176,7 +175,7 @@ public class KhoHangFragment extends Fragment {
                 return;
             }
 
-            addProductToStorage(sanPhamNhap, ngayNhap, ghiChu,parentView);
+            addProductToStorage(maNhap,sanPhamNhap, ngayNhap, ghiChu,parentView);
 
         });
 
@@ -184,11 +183,28 @@ public class KhoHangFragment extends Fragment {
         builder.create().show();
     }
 
-    private void addProductToStorage(List<ProductMini> sanPhamNhap,
+    private void addProductToStorage(String maNhap,List<ProductMini> sanPhamNhap,
                                      String ngayNhap,
                                      String ghiChu, View view) {
-
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+        // Tạo thông tin phiếu nhập
+        Map<String, Object> phieuNhap = new HashMap<>();
+        phieuNhap.put("maNhap", maNhap);
+        phieuNhap.put("ngayNhap", ngayNhap);
+        phieuNhap.put("ghiChu", ghiChu);
+        phieuNhap.put("sanPhamNhap", sanPhamNhap);
+
+        firestore.collection("company")
+                .document(companyId)
+                .collection("phieunhap")
+                .document(maNhap)
+                .set(phieuNhap)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Phiếu nhập đã được tạo: " + maNhap))
+                .addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi tạo phiếu nhập", e));
+
+
+
 
         for (ProductMini product : sanPhamNhap) {
             String maSP = product.getMaSP();

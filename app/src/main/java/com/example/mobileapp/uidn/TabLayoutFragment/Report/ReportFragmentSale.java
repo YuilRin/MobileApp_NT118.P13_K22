@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,13 +42,34 @@ public class ReportFragmentSale extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Lấy userId hiện tại
 
+        Spinner spinnerMonth = rootView.findViewById(R.id.spinner_month);
+
+        // Tạo danh sách các tháng (01 đến 12)
+        List<String> months = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            months.add(String.format(Locale.getDefault(), "%02d", i));
+        }
+
+        // Tạo Adapter cho Spinner
+        ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                months
+        );
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerMonth.setAdapter(monthAdapter);
+
+        // Lấy tháng hiện tại
+        Calendar calendar = Calendar.getInstance();
+        int currentMonth = calendar.get(Calendar.MONTH); // Giá trị từ 0 (tháng 1) đến 11 (tháng 12)
+        spinnerMonth.setSelection(currentMonth); // Đặt vị trí mặc định của Spinner
+
+
         db.collection("users").document(userId).get().addOnSuccessListener(userDoc -> {
             if (userDoc.exists()) {
                 String companyId = userDoc.getString("companyId");
                 if (companyId != null) {
-                    Spinner spinnerMonth = rootView.findViewById(R.id.spinner_month);
 
-                    // Đặt sự kiện khi chọn tháng
                     spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -60,6 +82,9 @@ public class ReportFragmentSale extends Fragment {
                             // Không làm gì
                         }
                     });
+                    // Tải dữ liệu ban đầu cho tháng hiện tại
+                    int selectedMonth = currentMonth + 1; // Chuyển từ 0-based sang 1-based
+                    loadReportData(companyId, selectedMonth, rootView);
                 } else {
                     Log.e("Firestore", "Không tìm thấy companyId trong tài khoản người dùng.");
                 }
@@ -71,17 +96,19 @@ public class ReportFragmentSale extends Fragment {
 
     private void loadReportData(String companyId, int selectedMonth, View view) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference donHangRef = db.collection("company").document(companyId).collection("donhang");
+        CollectionReference donHangRef = db.collection("company")
+                .document(companyId).collection("donhang");
 
         List<Map<String, Object>> productSales = new ArrayList<>();
         Map<String, Double> salesMap = new HashMap<>();
 
-
         donHangRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 double doanhThu = 0.0;
+                double loiNhuan =0.0;
                 int soDonHang = 0;
                 int soSanPhamBanRa = 0;
+
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String date = document.getString("Date");
                     if (date != null) {
@@ -99,8 +126,8 @@ public class ReportFragmentSale extends Fragment {
                                 List<Map<String, Object>> products = (List<Map<String, Object>>) document.get("products");
                                 if (products != null && !products.isEmpty()) {
                                     for (Map<String, Object> product : products) {
-                                        String maSP = (String) product.get("maSP");
 
+                                        String maSP = (String) product.get("maSP");
                                         // Lấy giá bán
                                         double giaBan = 0.0;
                                         if (product.get("giaBan") instanceof Number) {
@@ -113,8 +140,14 @@ public class ReportFragmentSale extends Fragment {
                                             soLuong = ((Number) product.get("soLuong")).doubleValue();
                                         }
 
+                                        double giaVon =0.0;
+                                        if (product.get("giaVon") instanceof Number) {
+                                            giaVon = ((Number) product.get("giaVon")).doubleValue();
+                                        }
+
                                         // Cộng dồn doanh thu và số lượng
                                         doanhThu += giaBan * soLuong;
+                                        loiNhuan += giaVon*soLuong;
                                         soSanPhamBanRa += soLuong;
 
                                         // Tính tổng số lượng bán của từng sản phẩm
@@ -127,6 +160,7 @@ public class ReportFragmentSale extends Fragment {
                         }
                     }
                 }
+                loiNhuan=doanhThu-loiNhuan;
 
                 // Tạo danh sách sản phẩm từ salesMap
                 for (Map.Entry<String, Double> entry : salesMap.entrySet()) {
@@ -151,12 +185,15 @@ public class ReportFragmentSale extends Fragment {
                 TextView tvDoanhThu = view.findViewById(R.id.business_report_sale_doanh_thu);
                 TextView tvSoDonHang = view.findViewById(R.id.business_report_sale_don_hang);
                 TextView tvSanPhamBanRa = view.findViewById(R.id.business_report_sale_so_luong_ban_ra);
+                TextView tvLoiNhuan = view.findViewById(R.id.business_report_sale_Loi_nhuan);
                 TextView tvDoanhSo = view.findViewById(R.id.tv_report_sale_doanhso);
 
                 tvDoanhThu.setText(String.format(Locale.getDefault(), "%.0f", doanhThu));
+                tvLoiNhuan.setText(String.format(Locale.getDefault(), "%.0f", loiNhuan));
                 tvSoDonHang.setText(String.format(Locale.getDefault(), "%d", soDonHang));
                 tvSanPhamBanRa.setText(String.format(Locale.getDefault(), "%d", soSanPhamBanRa));
                 tvDoanhSo.setText(String.format(Locale.getDefault(), "Doanh số bán hàng: %.0f VNĐ", doanhThu));
+
 
             } else {
                 Log.e("Firestore", "Lỗi khi tải dữ liệu đơn hàng", task.getException());

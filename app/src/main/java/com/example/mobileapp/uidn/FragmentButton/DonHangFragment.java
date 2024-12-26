@@ -228,8 +228,9 @@ public class DonHangFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         for (QueryDocumentSnapshot document : task.getResult()) {
                                             String maSP = document.getId();
-                                            double giaBan = document.getDouble("giaBan") != null ? document.getDouble("giaBan") : 0.0; // Giá bán
-                                            ProductMini product = new ProductMini(maSP, 0,giaBan);
+                                            double giaBan = document.getDouble("giaBan") != null ? document.getDouble("giaBan") : 0.0;
+                                            double giaVon = document.getDouble("giaVon") != null ? document.getDouble("giaVon") : 0.0;// Giá bán
+                                            ProductMini product = new ProductMini(maSP, 0,giaBan,giaVon);
                                             productList.add(product);
                                         }
                                         BusinessStorageEditAdapter adapter = new BusinessStorageEditAdapter(requireContext(), productList);
@@ -242,7 +243,7 @@ public class DonHangFragment extends Fragment {
                         builder.setPositiveButton("Save", (dialog, which) -> {
                             String maDonHang = etMaDonHang.getText().toString().trim();
                             String ngay = etNgay.getText().toString().trim();
-                            String tongCongStr = etTongCong.getText().toString().trim();
+                           // String tongCongStr = etTongCong.getText().toString().trim();
                             String thanhToanStr = etThanhToan.getText().toString().trim();
                             String ghiChu = etGhiChu.getText().toString().trim();
                             String hinhThuc = spHinhThuc.getSelectedItem().toString();
@@ -254,12 +255,8 @@ public class DonHangFragment extends Fragment {
                                 return;
                             }
 
-                            double tongCong = 0.0;
                             double thanhToan = Double.parseDouble(thanhToanStr);
 
-                            // Lấy danh sách sản phẩm đã chỉnh sửa từ ListView
-                            int totalProducts = 0;
-                            Double totalQuantity = 0.0;
 
                             List<Map<String, Object>> products = new ArrayList<>();
 
@@ -270,12 +267,9 @@ public class DonHangFragment extends Fragment {
                                     productData.put("maSP", product.getMaSP());
                                     productData.put("soLuong", product.getSoLuong());
                                     productData.put("giaBan",product.getGiaBan());
+                                    productData.put("giaVon",product.getGiaVon());
 
                                     products.add(productData);
-
-                                    tongCong += product.getGiaBan() * product.getSoLuong();
-                                    totalProducts++;
-                                    totalQuantity += product.getSoLuong();
                                 }
                             }
 
@@ -355,17 +349,21 @@ public class DonHangFragment extends Fragment {
         return taskSource.getTask();
     }
     private void saveOrder(String maDonHang, String ngay, double thanhToan, String ghiChu, String hinhThuc, String tinhTrang, List<Map<String, Object>> products) {
-        double tongCong = 0.0;
+        double tongCong = 0.0,tongVon=0.0;
         int totalProducts = 0;
         double totalQuantity = 0.0;
 
         for (Map<String, Object> product : products) {
             String productId = (String) product.get("maSP");
             double quantity = (double) product.get("soLuong");
-            double giaBan = (double) product.get("giaBan");; // Giá bán cần được lấy từ adapter hoặc danh sách sản phẩm
+            double giaBan = (double) product.get("giaBan");
+            double giaVon = (double) product.get("giaVon");
+
+            ; // Giá bán cần được lấy từ adapter hoặc danh sách sản phẩm
             tongCong += giaBan * quantity;
             totalProducts++;
             totalQuantity += quantity;
+            tongVon+=giaVon*quantity;
         }
 
         Map<String, Object> orderData = new HashMap<>();
@@ -379,6 +377,7 @@ public class DonHangFragment extends Fragment {
         orderData.put("products", products);
         orderData.put("Productcount", totalProducts);
         orderData.put("Quantity", totalQuantity);
+        orderData.put("TongVon",tongVon);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("company")
