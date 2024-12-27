@@ -1,49 +1,116 @@
 package com.example.mobileapp.ui.budget.Custom;
 
-public class Debt {
-    public String title;
-    public String SoTien;
-    public String NguonNo;
-    public String NgayNo; // NgayDenHan
-    public String NgayDenHan; //NgayNo
-    public boolean daTra;
-    public boolean quaHan;
-    public String NgayTra;
-    public boolean isSlected;
+import android.widget.ImageView;
 
-    public Debt(String title, String Sotien, String nguonNo, String ngayNo, String NgayDenhan, boolean daTra, boolean quaHan, String NgayTra ){
-        this.title = title;
-        this.SoTien = Sotien;
-        this.NguonNo = nguonNo;
-        this.NgayNo = ngayNo;
-        this.NgayDenHan = NgayDenhan;
-        this.daTra = daTra;
-        this.quaHan = quaHan;
-        this.NgayTra = NgayTra;
-        isSlected = false;
+public class Debt {
+    private String title;
+    private String soTien;
+    private String nguonNo;
+    private String ngayNo;
+    private String ngayDenHan;
+    private boolean daTra;
+    private boolean quaHan;
+    private String ngayTra;
+    private boolean isSelected;
+    private int imgeResId;
+
+    // Hàm khởi tạo mặc định
+    public Debt() {
+        this.title = "";
+        this.soTien = "0";
+        this.nguonNo = "";
+        this.ngayNo = "00/00/0000";
+        this.ngayDenHan = "00/00/0000";
+        this.daTra = false;
+        this.quaHan = false;
+        this.ngayTra = "00/00/0000";
+        this.isSelected = false;
+        this.imgeResId = 0;
     }
 
-    // Getter methods
+    // Hàm khởi tạo đầy đủ
+    public Debt(int imgeResId, String title, String soTien, String nguonNo, String ngayNo, String ngayDenHan, boolean daTra, boolean quaHan, String ngayTra) {
+        this.imgeResId = imgeResId;
+        this.title = title;
+        this.soTien = soTien;
+        this.nguonNo = nguonNo;
+        this.ngayNo = ngayNo;
+        this.ngayDenHan = ngayDenHan;
+        this.daTra = daTra;
+        this.quaHan = quaHan;
+        this.ngayTra = (ngayTra != null) ? ngayTra : "00/00/0000";
+        this.isSelected = false;
+    }
+
+    // Getter và Setter
     public String getTitle() {
         return title;
     }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getSoTien() {
-        return SoTien;
-    } // So tien
+        return soTien;
+    }
+    public void setSoTien(String soTien) {
+        this.soTien = soTien;
+    }
+
+    public String getNguonNo() {
+        return nguonNo;
+    }
+    public void setNguonNo(String nguonNo) {
+        this.nguonNo = nguonNo;
+    }
 
     public String getNgayNo() {
-        return NgayNo;
+        return ngayNo;
     }
-    public String getNgayDenHan() {return  NgayDenHan;} // ngay han
+    public void setNgayNo(String ngayNo) {
+        this.ngayNo = ngayNo;
+    }
 
-    public String getNguonNo() {return  NguonNo;}
+    public String getNgayDenHan() {
+        return ngayDenHan;
+    }
+    public void setNgayDenHan(String ngayDenHan) {
+        this.ngayDenHan = ngayDenHan;
+    }
 
-    public boolean getdaTra() {return daTra;}
-    public boolean getquaHan() {return  quaHan;}
-    public String getNgayTra() {return NgayTra;}
+    public boolean isDaTra() {
+        return daTra;
+    }
+    public void setDaTra(boolean daTra) {
+        this.daTra = daTra;
+    }
 
+    public boolean isQuaHan() {
+        return quaHan;
+    }
+    public void setQuaHan(boolean quaHan) {
+        this.quaHan = quaHan;
+    }
+
+    public String getNgayTra() {
+        return ngayTra;
+    }
+    public void setNgayTra(String ngayTra) {
+        this.ngayTra = ngayTra;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
     public void setSelected(boolean selected) {
-        this.isSlected = selected;
+        this.isSelected = selected;
+    }
+
+    public int getImgeResId() {
+        return imgeResId;
+    }
+    public void setImgeResId(int imgeResId) {
+        this.imgeResId = imgeResId;
     }
 }
+
