@@ -17,41 +17,44 @@
         android:id="@+id/et_edit_ten_san_pham"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
         android:hint="Tên sản phẩm"
         android:inputType="text" />
+
     <Spinner
         android:id="@+id/sp_edit_loai"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
 
-    <EditText
-        android:id="@+id/et_edit_ngay_nhap"
-        android:layout_weight="35"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="Ngày nhap"
-        android:inputType="text" />
+        <EditText
+            android:id="@+id/et_edit_ngay_nhap"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="35"
+            android:hint="Ngày nhập"
+            android:inputType="text" />
+
         <ImageButton
-            android:layout_width="30dp"
-            android:layout_weight="1"
-            android:layout_height="30dp"
             android:id="@+id/ib_date"
-            android:src="@drawable/business_ic_date"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="5dp"
+            android:layout_weight="1"
             android:background="#00FFFFFF"
             android:scaleType="centerCrop"
-            />
+            android:src="@drawable/business_ic_date" />
     </LinearLayout>
 
     <EditText
         android:id="@+id/et_edit_nha_cung_cap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
         android:hint="Nhà cung cấp"
         android:inputType="text" />
 
@@ -68,17 +71,18 @@
         android:layout_height="wrap_content"
         android:hint="Số lượng"
         android:inputType="number" />
+
     <EditText
         android:id="@+id/et_edit_ghi_chu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ghi chú"
-        android:inputType="number" />
+        android:inputType="text" />
 
     <Button
         android:id="@+id/btn_save_edit_storage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lưu thay đổi"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:text="Lưu thay đổi" />
 </LinearLayout>

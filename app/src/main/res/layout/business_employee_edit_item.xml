@@ -1,131 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tv_employee_edit_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_employee_edit_header"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
         android:text="Thêm nhân viên"
         android:textSize="25dp"
         android:textStyle="bold"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_employee_edit_manv"
-        android:hint="Mã nhân viên"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_employee_edit_header"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:hint="Mã nhân viên"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_employee_edit_header" />
 
     <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_employee_edit_tennv"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
         android:hint="Tên nhân viên"
-        app:layout_constraintTop_toBottomOf="@id/et_employee_edit_manv"
-        app:layout_constraintStart_toStartOf="@id/et_employee_edit_manv"/>
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@id/et_employee_edit_manv"
+        app:layout_constraintTop_toBottomOf="@id/et_employee_edit_manv" />
 
     <EditText
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_employee_edit_danhgia"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
         android:hint="Đánh giá"
-        app:layout_constraintStart_toEndOf="@id/et_employee_edit_ghichu"
-        app:layout_constraintTop_toTopOf="@+id/et_employee_edit_ghichu"
+        android:inputType="text"
         app:layout_constraintBottom_toBottomOf="@id/et_employee_edit_ghichu"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_employee_edit_ghichu"
+        app:layout_constraintTop_toTopOf="@+id/et_employee_edit_ghichu" />
 
     <EditText
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_employee_edit_sdt"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
         android:hint="Số điện thoại"
-        app:layout_constraintTop_toBottomOf="@id/et_employee_edit_tennv"
-        app:layout_constraintStart_toStartOf="@id/et_employee_edit_manv"/>
+        android:inputType="phone"
+        android:maxLength="15"
+        app:layout_constraintStart_toStartOf="@id/et_employee_edit_manv"
+        app:layout_constraintTop_toBottomOf="@id/et_employee_edit_tennv" />
 
     <EditText
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_employee_edit_ghichu"
-        android:hint="Ghi chú"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/sp_employee_edit_bophan"
-        app:layout_constraintStart_toStartOf="@id/sp_employee_edit_bophan"/>
-
-    <Spinner
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:id="@+id/sp_employee_edit_tinhtrang"
-        app:layout_constraintTop_toTopOf="@id/et_employee_edit_tennv"
-        app:layout_constraintStart_toEndOf="@id/et_employee_edit_tennv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/et_employee_edit_tennv"/>
-
-    <Spinner
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sp_employee_edit_bophan"
         android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/et_employee_edit_sdt"
-        app:layout_constraintStart_toStartOf="@id/et_employee_edit_manv"/>
+        android:hint="Ghi chú"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@id/sp_employee_edit_bophan"
+        app:layout_constraintTop_toBottomOf="@id/sp_employee_edit_bophan" />
 
     <Spinner
-        android:layout_width="100dp"
+        android:id="@+id/sp_employee_edit_tinhtrang"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:id="@+id/sp_employee_edit_cap"
-        app:layout_constraintTop_toTopOf="@id/sp_employee_edit_bophan"
-        app:layout_constraintStart_toEndOf="@id/sp_employee_edit_bophan"
-        app:layout_constraintEnd_toStartOf="@id/sp_employee_edit_loai"
-        app:layout_constraintBottom_toBottomOf="@id/sp_employee_edit_bophan"/>
-
-    <Spinner
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sp_employee_edit_loai"
-        app:layout_constraintTop_toTopOf="@id/sp_employee_edit_cap"
-        app:layout_constraintStart_toEndOf="@id/sp_employee_edit_cap"
+        app:layout_constraintBottom_toBottomOf="@id/et_employee_edit_tennv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/sp_employee_edit_cap"/>
+        app:layout_constraintStart_toEndOf="@id/et_employee_edit_tennv"
+        app:layout_constraintTop_toTopOf="@id/et_employee_edit_tennv" />
+
+    <Spinner
+        android:id="@+id/sp_employee_edit_bophan"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@id/et_employee_edit_manv"
+        app:layout_constraintTop_toBottomOf="@id/et_employee_edit_sdt" />
+
+    <Spinner
+        android:id="@+id/sp_employee_edit_cap"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/sp_employee_edit_bophan"
+        app:layout_constraintEnd_toStartOf="@id/sp_employee_edit_loai"
+        app:layout_constraintStart_toEndOf="@id/sp_employee_edit_bophan"
+        app:layout_constraintTop_toTopOf="@id/sp_employee_edit_bophan" />
+
+    <Spinner
+        android:id="@+id/sp_employee_edit_loai"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/sp_employee_edit_cap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sp_employee_edit_cap"
+        app:layout_constraintTop_toTopOf="@id/sp_employee_edit_cap" />
 
     <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_employee_edit_email"
-        android:hint="Email"
-        app:layout_constraintStart_toEndOf="@id/et_employee_edit_sdt"
-        app:layout_constraintTop_toTopOf="@+id/et_employee_edit_sdt"
-        app:layout_constraintBottom_toBottomOf="@id/et_employee_edit_sdt"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <EditText
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="@id/et_employee_edit_sdt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_employee_edit_sdt"
+        app:layout_constraintTop_toTopOf="@+id/et_employee_edit_sdt" />
+
+    <EditText
         android:id="@+id/et_employee_edit_ngay"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:hint="DD/MM/YYYY"
-        app:layout_constraintStart_toEndOf="@id/et_employee_edit_manv"
-        app:layout_constraintTop_toTopOf="@+id/et_employee_edit_manv"
         app:layout_constraintBottom_toBottomOf="@id/et_employee_edit_manv"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_employee_edit_manv"
+        app:layout_constraintTop_toTopOf="@+id/et_employee_edit_manv" />
 
     <ImageButton
+        android:id="@+id/ib_employee_date"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:id="@+id/ib_employee_date"
-        android:src="@drawable/business_ic_date"
         android:layout_marginEnd="5dp"
         android:background="#00FFFFFF"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="@id/et_employee_edit_ngay"
+        android:src="@drawable/business_ic_date"
         app:layout_constraintBottom_toBottomOf="@id/et_employee_edit_ngay"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_employee_edit_ngay" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

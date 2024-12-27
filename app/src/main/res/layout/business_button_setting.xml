@@ -49,6 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nhập họ và tên"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
+            android:inputType="text"
             android:backgroundTint="@color/black"
             android:layout_marginBottom="16dp" />
 
@@ -65,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nhập liên hệ"
+            android:inputType="text"
             android:backgroundTint="@color/black"
             android:layout_marginBottom="16dp" />
 
@@ -96,6 +99,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nhập tên doanh nghiệp"
+            android:inputType="text"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
             android:backgroundTint="@color/black"
             android:layout_marginBottom="16dp" />
 
@@ -112,6 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nhập địa chỉ"
+            android:inputType="text"
             android:backgroundTint="@color/black"
             android:layout_marginBottom="16dp" />
 
