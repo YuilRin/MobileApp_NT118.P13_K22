@@ -82,6 +82,11 @@ public class RegisterFragment extends Fragment {
                     Toast.makeText(getActivity(), "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                // Kiểm tra độ mạnh của mật khẩu
+                if (!isPasswordStrong(password)) {
+                    Toast.makeText(getActivity(), "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm 1 chữ cái in hoa và 1 kí tự số", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (!password.equals(confirmPassword)) {
                     Toast.makeText(getActivity(), "Mật khẩu và xác nhận mật khẩu không khớp", Toast.LENGTH_SHORT).show();
@@ -163,6 +168,7 @@ public class RegisterFragment extends Fragment {
 
         return view;
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -181,6 +187,7 @@ public class RegisterFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -190,12 +197,18 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    private boolean isPasswordStrong(String password) {
+        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$";
+        return password.matches(passwordPattern);
+    }
+
     private void saveUserEmail(String email) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("USER_EMAIL", email);
         editor.apply();
     }
+
     private void saveUserName(String userName) {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

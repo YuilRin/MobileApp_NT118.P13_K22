@@ -18,6 +18,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_order_edit_sp_sl"
         android:hint="Số lượng"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/sp_order_edit_sp_sanpham"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/sp_order_edit_sp_sanpham"

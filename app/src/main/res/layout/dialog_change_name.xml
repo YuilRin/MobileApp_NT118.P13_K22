@@ -9,12 +9,14 @@
         android:id="@+id/edit_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your name" />
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
+        android:hint="Nhập tên"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/btn_save_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save" />
+        android:text="Lưu" />
 
 </LinearLayout>

@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lb_product_phanloaisp"
-        android:text="Phan loai"
+        android:text="Phân loại"
         android:textColor="@color/black"
         android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,146 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tv_supplier_edit_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_supplier_edit_header"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
         android:text="Thêm nhà cung cấp"
         android:textSize="25sp"
         android:textStyle="bold"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_supplier_edit_manhacc"
-        android:hint="Mã nhà cung cấp"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_supplier_edit_header"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:hint="Mã nhà cung cấp"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_supplier_edit_header" />
 
     <EditText
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_supplier_edit_tennhacc"
-        android:hint="Tên nhà cung cấp"
-        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_manhacc"
-        app:layout_constraintStart_toStartOf="@id/et_supplier_edit_manhacc"/>
-
-    <EditText
         android:layout_width="160dp"
         android:layout_height="wrap_content"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
+        android:hint="Tên nhà cung cấp"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@id/et_supplier_edit_manhacc"
+        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_manhacc" />
+
+    <EditText
         android:id="@+id/et_supplier_edit_daidien"
-        android:hint="Dai dien"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        app:layout_constraintTop_toTopOf="@id/et_supplier_edit_tennhacc"
+        android:hint="Đại diện"
+        android:inputType="text"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZàáâãèéêìíòóôõùúýỳĂÂÊÔƠƯăêôưÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝỲĐđ "
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/et_supplier_edit_tennhacc"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/et_supplier_edit_tennhacc" />
 
     <EditText
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_supplier_edit_sdt"
-        android:hint="So dien thoai"
-        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_tennhacc"
-        app:layout_constraintStart_toStartOf="@id/et_supplier_edit_manhacc"/>
-
-    <EditText
         android:layout_width="160dp"
         android:layout_height="wrap_content"
+        android:hint="Số điện thoại"
+        android:inputType="phone"
+        android:maxLength="15"
+        app:layout_constraintStart_toStartOf="@id/et_supplier_edit_manhacc"
+        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_tennhacc" />
+
+    <EditText
         android:id="@+id/et_supplier_edit_ghichu"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
         android:hint="Ghi chú"
-        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_sdt"
-        app:layout_constraintStart_toStartOf="@id/et_supplier_edit_manhacc"/>
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@id/et_supplier_edit_manhacc"
+        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_sdt" />
 
     <Spinner
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
         android:id="@+id/sp_supplier_edit_tinhtrang"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        app:layout_constraintStart_toEndOf="@id/et_supplier_edit_ghichu"
-        app:layout_constraintTop_toTopOf="@+id/et_supplier_edit_ghichu"
         app:layout_constraintBottom_toBottomOf="@id/et_supplier_edit_ghichu"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_supplier_edit_ghichu"
+        app:layout_constraintTop_toTopOf="@+id/et_supplier_edit_ghichu" />
 
     <EditText
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
         android:id="@+id/et_supplier_edit_email"
-        android:hint="Email"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        app:layout_constraintStart_toEndOf="@id/et_supplier_edit_sdt"
-        app:layout_constraintTop_toTopOf="@+id/et_supplier_edit_sdt"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="@id/et_supplier_edit_sdt"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_supplier_edit_sdt"
+        app:layout_constraintTop_toTopOf="@+id/et_supplier_edit_sdt" />
 
 
     <EditText
+        android:id="@+id/et_supplier_edit_ngay"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:id="@+id/et_supplier_edit_ngay"
-        android:hint="DD/MM/YYYY"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        app:layout_constraintStart_toEndOf="@id/et_supplier_edit_manhacc"
-        app:layout_constraintTop_toTopOf="@+id/et_supplier_edit_manhacc"
+        android:hint="DD/MM/YYYY"
         app:layout_constraintBottom_toBottomOf="@id/et_supplier_edit_manhacc"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_supplier_edit_manhacc"
+        app:layout_constraintTop_toTopOf="@+id/et_supplier_edit_manhacc" />
 
     <ImageButton
+        android:id="@+id/ib_supplier_date"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:id="@+id/ib_supplier_date"
-        android:src="@drawable/business_ic_date"
         android:layout_marginEnd="5dp"
         android:background="#00FFFFFF"
         android:scaleType="centerCrop"
-        app:layout_constraintTop_toTopOf="@id/et_supplier_edit_ngay"
+        android:src="@drawable/business_ic_date"
         app:layout_constraintBottom_toBottomOf="@id/et_supplier_edit_ngay"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/et_supplier_edit_ngay" />
 
     <TextView
+        android:id="@+id/tv_supplier_edit_listsp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_supplier_edit_listsp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:text="Danh sách sản phẩm"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_ghichu"
         app:layout_constraintStart_toStartOf="parent"
-       />
+        app:layout_constraintTop_toBottomOf="@id/et_supplier_edit_ghichu" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Thêm"
         android:textSize="10dp"
-        app:layout_constraintStart_toEndOf="@id/tv_supplier_edit_listsp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_supplier_edit_listsp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/tv_supplier_edit_listsp"
-        android:visibility="gone"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_supplier_edit_listsp"
+        app:layout_constraintTop_toTopOf="@id/tv_supplier_edit_listsp" />
+
     <ListView
+        android:id="@+id/lv_supplier_edit_sp"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:id="@+id/lv_supplier_edit_sp"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_supplier_edit_listsp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
+        app:layout_constraintTop_toBottomOf="@id/tv_supplier_edit_listsp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,6 +21,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_storage_edit_manhap"
         android:hint="Mã nhập hàng"
+        android:inputType="text"
         android:layout_marginStart="15dp"
         app:layout_constraintTop_toBottomOf="@+id/tv_storage_edit_header"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -30,6 +31,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_storage_edit_ghichu"
         android:hint="Ghi chú"
+        android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/et_storage_edit_manhap"
         app:layout_constraintStart_toStartOf="@id/et_storage_edit_manhap"/>
 
