@@ -334,9 +334,43 @@ public class NhanVienFragment extends Fragment {
         Spinner spRank = dialogView.findViewById(R.id.sp_employee_edit_cap);
         Spinner spType = dialogView.findViewById(R.id.sp_employee_edit_loai);
 
-        setupSpinner(spStatus, Arrays.asList("Đang làm việc", "Chưa làm việc", "Nghỉ việc"));
-        setupSpinner(spBoPhan, Arrays.asList("IT", "Kế toán"));
-        setupSpinner(spRank, Arrays.asList("Trưởng phòng", "Nhân viên"));
+        SharedViewModel sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spStatus.setAdapter(spinnerAdapter);
+
+
+        sharedViewModel.getStatusList(7).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter.clear();
+            spinnerAdapter.addAll(newList);
+            spinnerAdapter.notifyDataSetChanged();
+        });
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter2 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spBoPhan.setAdapter(spinnerAdapter2);
+
+        // Quan sát danh sách từ button thứ 3 (buttonId = 2)
+        sharedViewModel.getStatusList(5).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter2.clear();
+            spinnerAdapter2.addAll(newList);
+            spinnerAdapter2.notifyDataSetChanged();
+        });
+
+        // Adapter cho Spinner
+        ArrayAdapter<String> spinnerAdapter3 = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new ArrayList<>());
+        spinnerAdapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRank.setAdapter(spinnerAdapter3);
+
+        // Quan sát danh sách từ button thứ 3 (buttonId = 2)
+        sharedViewModel.getStatusList(6).observe(getViewLifecycleOwner(), newList -> {
+            spinnerAdapter3.clear();
+            spinnerAdapter3.addAll(newList);
+            spinnerAdapter3.notifyDataSetChanged();
+        });
 
 
         setupSpinner(spType, Arrays.asList("Full time", "Part-time"));
