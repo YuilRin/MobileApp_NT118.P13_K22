@@ -13,6 +13,7 @@ public class Debt {
     private String ngayTra;
     private boolean isSelected;
     private int imgeResId;
+    private String DDocId;
 
     // Hàm khởi tạo mặc định
     public Debt() {
@@ -26,10 +27,12 @@ public class Debt {
         this.ngayTra = "00/00/0000";
         this.isSelected = false;
         this.imgeResId = 0;
+
     }
 
     // Hàm khởi tạo đầy đủ
     public Debt(int imgeResId, String title, String soTien, String nguonNo, String ngayNo, String ngayDenHan, boolean daTra, boolean quaHan, String ngayTra) {
+        this.DDocId = DDocId;
         this.imgeResId = imgeResId;
         this.title = title;
         this.soTien = soTien;
@@ -41,6 +44,9 @@ public class Debt {
         this.ngayTra = (ngayTra != null) ? ngayTra : "00/00/0000";
         this.isSelected = false;
     }
+
+    public String getDDocId() {return DDocId;}
+    public void setDDocId(String DDocId){this.DDocId = DDocId;}
 
     // Getter và Setter
     public String getTitle() {

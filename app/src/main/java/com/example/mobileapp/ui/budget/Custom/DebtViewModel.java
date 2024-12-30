@@ -105,6 +105,9 @@ public class DebtViewModel extends ViewModel {
                    Log.d("Success", "Debt added successfully: " + documentReference.getId());
                   List<Debt> DanhSachHientai = debtListNo.getValue();
                   if(DanhSachHientai != null) {
+                      String docID = documentReference.getId();
+                      debt.setDDocId(docID);
+
                       DanhSachHientai.add(debt);
                       debtListNo.setValue(DanhSachHientai);
                   }
@@ -129,7 +132,7 @@ public class DebtViewModel extends ViewModel {
                 });
     }
 
-    public void updateDebtNo(String debtId, Debt debt) {
+    public void CapNhatDebtNoLenFireBase(String debtId, Debt debt) {
         firestore.collection("users")
                 .document(UserId)
                 .collection("debt_no")
@@ -151,7 +154,7 @@ public class DebtViewModel extends ViewModel {
         }
     }
 
-    public void updateDebtKhoanThu(String debtId, Debt debt) {
+    public void CapNhatDebtKhoanThuLenFireBase(String debtId, Debt debt) {
         firestore.collection("users")
                 .document(UserId)
                 .collection("debt_khoan_thu")
@@ -173,20 +176,60 @@ public class DebtViewModel extends ViewModel {
         }
     }
 
+
+
     public void removeDebtNo(int position) {
         List<Debt> currentList = debtListNo.getValue();
         if (currentList != null && position >= 0 && position < currentList.size()) {
+
+            Debt debt = currentList.get(position);
+
             currentList.remove(position);
             debtListNo.setValue(currentList);
+
+
+            if (debt.getDDocId() != null && !debt.getDDocId().isEmpty()) {
+                firestore.collection("users")
+                        .document(UserId)
+                        .collection("debt_no")
+                        .document(debt.getDDocId())
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+
+                        })
+                        .addOnFailureListener(e -> {
+
+                        });
+            }
         }
     }
 
+    // Similarly, for khoan thu:
     public void removeDebtKhoanThu(int position) {
         List<Debt> currentList = debtListKhoanThu.getValue();
         if (currentList != null && position >= 0 && position < currentList.size()) {
+
+            Debt debt = currentList.get(position);
+
             currentList.remove(position);
             debtListKhoanThu.setValue(currentList);
+
+
+            if (debt.getDDocId() != null && !debt.getDDocId().isEmpty()) {
+                firestore.collection("users")
+                        .document(UserId)
+                        .collection("debt_khoan_thu") // Tùy tên subcollection của bạn
+                        .document(debt.getDDocId())
+                        .delete()
+                        .addOnSuccessListener(aVoid -> {
+
+                        })
+                        .addOnFailureListener(e -> {
+
+                        });
+            }
         }
     }
+
 
 }
