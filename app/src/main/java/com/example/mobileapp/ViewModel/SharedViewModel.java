@@ -16,6 +16,16 @@ public class SharedViewModel extends ViewModel {
     private final Map<Integer, MutableLiveData<List<String>>> statusMap = new HashMap<>();
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    private final MutableLiveData<Integer> selectedMonth = new MutableLiveData<>();
+
+    public LiveData<Integer> getSelectedMonth() {
+        return selectedMonth;
+    }
+
+    public void setSelectedMonth(int month) {
+        selectedMonth.setValue(month);
+    }
+
     public SharedViewModel() {
         // Khởi tạo 8 danh sách rỗng
         for (int i = 0; i < 8; i++) {
