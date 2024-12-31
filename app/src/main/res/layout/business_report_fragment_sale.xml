@@ -5,278 +5,289 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/business_background_gradient">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="3"
-    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="248dp"
-        android:layout_weight="1"
-        android:background="#9ACBC6C6"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:weightSum="5">
+        android:weightSum="3">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-            <Spinner
-                android:id="@+id/spinner_month"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:spinnerMode="dropdown"
-                android:entries="@array/month_array" >
-            </Spinner>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_height="248dp"
+            android:layout_weight="1"
+            android:background="#9ACBC6C6"
             android:orientation="vertical"
-            android:weightSum="2">
+            android:weightSum="5">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_weight="1">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <LinearLayout
-
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:background="@drawable/business_shape_green"
-                        android:textColor="@color/black"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tv_report_sale_doanh_thu"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Doanh thu"
-                            android:textAlignment="center"
-                            android:textColor="@color/black" />
-                        <TextView
-                            android:id="@+id/business_report_sale_doanh_thu"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/demo_0"
-                            android:textSize="25sp"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
-
-                    <LinearLayout
-
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:background="@drawable/business_shape_green"
-                        android:textColor="@color/black"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tv_report_sale_Loi_nhuan"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Loi nhuan"
-                            android:textAlignment="center"
-                            android:textColor="@color/black" />
-                        <TextView
-                            android:id="@+id/business_report_sale_Loi_nhuan"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/demo_0"
-                            android:textSize="25sp"/>
-                    </LinearLayout>
-                </LinearLayout>
+                <Spinner
+                    android:id="@+id/spinner_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:entries="@array/month_array"
+                    android:spinnerMode="dropdown"></Spinner>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
+                android:layout_weight="4"
+                android:orientation="vertical"
                 android:weightSum="2">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
                     <LinearLayout
-
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:background="@drawable/business_shape_red"
-                        android:textColor="@color/black"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tv_report_sale_don_hang"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:text="Đơn hàng"
-                            android:textAlignment="center"
-                            android:textColor="@color/black" />
-                        <TextView
-                            android:id="@+id/business_report_sale_don_hang"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/demo_0"
-                            android:textSize="25sp"/>
+                            android:layout_marginStart="25dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="25dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/business_shape_green"
+                            android:orientation="vertical"
+                            android:textColor="@color/black">
+
+                            <TextView
+                                android:id="@+id/tv_report_sale_doanh_thu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Doanh thu"
+                                android:textAlignment="center"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/business_report_sale_doanh_thu"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/demo_0"
+                                android:textSize="25sp" />
+                        </LinearLayout>
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
+                        <LinearLayout
 
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="25dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/business_shape_green"
+                            android:orientation="vertical"
+                            android:textColor="@color/black">
+
+                            <TextView
+                                android:id="@+id/tv_report_sale_Loi_nhuan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Loi nhuan"
+                                android:textAlignment="center"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/business_report_sale_Loi_nhuan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/demo_0"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
                     <LinearLayout
-
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginEnd="25dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
-                        android:background="@drawable/business_shape_red"
-                        android:textColor="@color/black"
-                        android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/tv_report_sale_so_luong_ban_ra"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <LinearLayout
+
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:text="So luong ban ra"
-                            android:textAlignment="center"
-                            android:textColor="@color/black" />
-                        <TextView
-                            android:id="@+id/business_report_sale_so_luong_ban_ra"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/demo_0"
-                            android:textSize="25sp"/>
+                            android:layout_marginStart="25dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="25dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/business_shape_red"
+                            android:orientation="vertical"
+                            android:textColor="@color/black">
+
+                            <TextView
+                                android:id="@+id/tv_report_sale_don_hang"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Đơn hàng"
+                                android:textAlignment="center"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/business_report_sale_don_hang"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/demo_0"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+
+
                     </LinearLayout>
 
-                </LinearLayout>
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
 
+                        <LinearLayout
+
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="25dp"
+                            android:layout_marginBottom="15dp"
+                            android:background="@drawable/business_shape_red"
+                            android:orientation="vertical"
+                            android:textColor="@color/black">
+
+                            <TextView
+                                android:id="@+id/tv_report_sale_so_luong_ban_ra"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="So luong ban ra"
+                                android:textAlignment="center"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/business_report_sale_so_luong_ban_ra"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="@string/demo_0"
+                                android:textSize="25sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="169dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:id="@+id/tv_report_sale_giaban"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Giá bán"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/tv_report_sale_giavon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Giá vốn"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/tv_report_sale_loinhuangop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Lợi nhuận"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/tv_report_sale_doanhso"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Doanh số bán hàng"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="293dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1"
-        android:background="@drawable/business_shape_white"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="169dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Sản phẩm bán chạy"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <ListView
+            <TextView
+                android:id="@+id/tv_report_sale_giaban"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Giá bán"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/tv_report_sale_giavon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Giá vốn"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/tv_report_sale_loinhuangop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Lợi nhuận"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/tv_report_sale_doanhso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Doanh số bán hàng"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/lv_top_products"
-            android:background="#75CBA7FD" />
+            android:layout_height="293dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/business_shape_white"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Sản phẩm bán chạy"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <ListView
+                android:id="@+id/lv_top_products"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#75CBA7FD" />
+        </LinearLayout>
+
+
     </LinearLayout>
-
-
-</LinearLayout>
 
 </ScrollView>
