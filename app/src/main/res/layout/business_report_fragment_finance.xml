@@ -4,58 +4,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="3"
+    android:background="@drawable/business_background_gradient"
     android:orientation="vertical"
-    android:background="@drawable/business_background_gradient">
+    android:weightSum="3">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:weightSum="5"
+        android:background="#8BD6CDCD"
         android:orientation="vertical"
-        android:background="#8BD6CDCD">
+        android:weightSum="5">
 
+        <!-- Spinner for selecting the year -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
             <Spinner
+                android:id="@+id/spinner_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp">
-            </Spinner>
+                android:layout_marginTop="15dp"></Spinner>
         </LinearLayout>
 
+        <!-- Layout for 'Tổng thu', 'Tổng chi', 'Lợi nhuận' -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            android:weightSum="2"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="2">
 
+            <!-- 'Tổng thu' and 'Tổng chi' columns -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:weightSum="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 
-                    <TextView
-                        android:id="@+id/tv_report_finance_khoanthu"
-                        android:layout_width="149dp"
-                        android:layout_height="69dp"
-                        android:background="@drawable/business_shape_green"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:text="Khoản thu"
-                        android:layout_marginStart="25dp" />
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/business_shape_green"
+                        android:orientation="vertical"
+                        android:textColor="@color/black">
+
+                        <TextView
+                            android:id="@+id/tv_report_finance_khoan_thu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Khoản thu"
+                            android:textAlignment="center"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/business_report_finance_khoan_thu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/demo_0"
+                            android:textSize="25sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -63,107 +86,99 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 
-                    <TextView
-                        android:id="@+id/tv_report_finance_chovay"
-                        android:layout_width="149dp"
-                        android:layout_height="69dp"
-                        android:background="@drawable/business_shape_green"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:text="Cho vay"
-                        android:layout_marginStart="25dp" />
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/business_shape_red"
+                        android:orientation="vertical"
+                        android:textColor="@color/black">
+
+                        <TextView
+                            android:id="@+id/tv_report_finance_khoan_chi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Khoản chi"
+                            android:textAlignment="center"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/business_report_finance_khoan_chi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/demo_0"
+                            android:textSize="25sp" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- 'Lợi nhuận' section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:weightSum="2"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="2">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="2">
 
-                    <TextView
-                        android:id="@+id/tv_report_finance_khoanchi"
-                        android:layout_width="149dp"
-                        android:layout_height="69dp"
-                        android:background="@drawable/business_shape_red"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:text="Khoản chi"
-                        android:layout_marginStart="25dp" />
-                </LinearLayout>
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="25dp"
+                        android:layout_marginBottom="15dp"
+                        android:background="@drawable/business_shape_button"
+                        android:orientation="vertical"
+                        android:textColor="@color/black">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+                        <TextView
+                            android:id="@+id/tv_report_finance_loi_nhuan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Lợi nhuận hằng năm"
+                            android:textAlignment="center"
+                            android:textColor="@color/black" />
 
-                    <TextView
-                        android:id="@+id/tv_report_finance_khoanno"
-                        android:layout_width="149dp"
-                        android:layout_height="69dp"
-                        android:background="@drawable/business_shape_red"
-                        android:layout_gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:text="Khoản nợ"
-                        android:layout_marginStart="25dp" />
+                        <TextView
+                            android:id="@+id/business_report_finance_loi_nhuan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/demo_0"
+                            android:textSize="25sp" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="Thống kê hằng tháng"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="25sp" />
+
+    <ListView
+        android:id="@+id/listView_monthly_report"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginStart="10dp">
-
-        <TextView
-            android:id="@+id/tv_report_finance_nothu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Tổng nợ phải thu"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/tv_report_finance_notra"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Tổng nợ phải trả"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/tv_report_finance_hangtonkho"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Hàng tồn kho"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-        <TextView
-            android:id="@+id/tv_report_finance_thuchi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="15dp"
-            android:text="Thu - chi"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-
-    </LinearLayout>
+        android:layout_weight="2"
+        android:background="#75CBA7FD"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
 </LinearLayout>
