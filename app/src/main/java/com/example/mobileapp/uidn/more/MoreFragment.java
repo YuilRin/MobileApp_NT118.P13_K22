@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,6 +27,7 @@ import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.BusinessFragmentMoreBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 
@@ -111,12 +113,122 @@ public class MoreFragment extends Fragment {
                         }
                                         });// Truyền ID công ty
                 }
+                if (position == 4) {  // "Cài đặt" là mục thứ 5 (index 4)
+                    showCompanySelectionDialog();
+                }
 
 
             }
         });
         return root;
-    }private void getCompanyID(FirestoreCallback callback) {
+    }
+
+    private void showCompanySelectionDialog() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Lấy công ty hiện tại từ người dùng
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String currentCompanyId = documentSnapshot.getString("companyId");
+
+                    // Lấy danh sách tất cả các công ty
+                    db.collection("company").get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                ArrayList<String> companyNames = new ArrayList<>();
+                                ArrayList<String> companyIds = new ArrayList<>();
+
+                                for (DocumentSnapshot doc : queryDocumentSnapshots) { // Use DocumentSnapshot explicitly
+                                    String companyName = doc.getString("businessName");
+                                    String companyId = doc.getId();
+
+                                    if (companyId.equals(currentCompanyId)) {
+                                        companyNames.add(companyName + " (Hiện tại)"); // Đánh dấu công ty hiện tại
+                                    } else {
+                                        companyNames.add(companyName);
+                                    }
+
+                                    companyIds.add(companyId);
+                                }
+
+                                // Hiển thị danh sách công ty trong Dialog
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Chọn Công Ty");
+                                builder.setItems(companyNames.toArray(new String[0]), (dialog, which) -> {
+                                    String selectedCompanyId = companyIds.get(which);
+                                    String selectedCompanyName = companyNames.get(which);
+
+                                    if (!selectedCompanyId.equals(currentCompanyId)) {
+                                        checkUserRoleInCompany(selectedCompanyId, selectedCompanyName);
+                                    } else {
+                                        Toast.makeText(getContext(), "Bạn đã ở công ty này.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                                builder.setNegativeButton("Đóng", (dialog, which) -> dialog.dismiss());
+                                builder.create().show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(getContext(), "Lỗi khi lấy danh sách công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Lỗi khi lấy công ty hiện tại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void checkUserRoleInCompany(String companyId, String companyName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail(); // Lấy email người dùng hiện tại
+
+        db.collection("company").document(companyId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> roles = (Map<String, Object>) documentSnapshot.get("roles");
+                        if (roles != null && roles.containsKey(userEmail) && roles.get(userEmail).equals("member")) {
+                            showConfirmationDialog(companyId, companyName);
+                        }
+                        else
+                            if (roles != null && roles.containsKey("boss") && roles.get("boss").equals(userId)){
+                            showConfirmationDialog(companyId, companyName);
+                        }
+
+                            else {
+                            Toast.makeText(getContext(), "Bạn không phải thành viên của công ty này.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Công ty không tồn tại.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Lỗi khi kiểm tra vai trò: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void showConfirmationDialog(String companyId, String companyName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Xác nhận");
+        builder.setMessage("Bạn có muốn chuyển sang công ty " + companyName + " không?");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> updateUserCompanyId(companyId));
+        builder.setNegativeButton("No", null);
+        builder.create().show();
+    }
+    private void updateUserCompanyId(String newCompanyId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        db.collection("users").document(userId)
+                .update("companyId", newCompanyId)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(getContext(), "Cập nhật công ty thành công.", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Lỗi khi cập nhật công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void getCompanyID(FirestoreCallback callback) {
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         firestore.collection("users")
@@ -265,42 +377,21 @@ public class MoreFragment extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String userEmail = user.getEmail();
+            String currentUserId = user.getUid();
 
             db.collection("company").document(companyId).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
-                            // Lấy trường "roles"
                             Map<String, Object> roles = (Map<String, Object>) documentSnapshot.get("roles");
-
                             if (roles == null) {
-                                // Nếu roles null, thêm roles với thông tin boss
-                                String bossUserId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // ID của boss
-                                Map<String, Object> newRoles = new HashMap<>();
-                                newRoles.put("boss", bossUserId);
-
-                                // Cập nhật trường roles trong Firestore
-                                db.collection("company").document(companyId)
-                                        .update("roles", newRoles)
-                                        .addOnSuccessListener(aVoid -> {
-                                            Toast.makeText(getContext(), "Đã thiết lập roles với boss.", Toast.LENGTH_SHORT).show();
-                                            showAddMemberDialog(companyId, newRoles); // Gọi dialog thêm thành viên
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Toast.makeText(getContext(), "Lỗi khi thiết lập roles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        });
-                            } else {
-                                // Nếu roles đã tồn tại và không null
-                                String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                String bossUserId = (String) roles.get("boss");
-
-                                if (currentUserId.equals(bossUserId)) {
-                                    // Nếu user hiện tại là boss
-                                    showAddMemberDialog(companyId, roles);
-                                } else {
-                                    Toast.makeText(getContext(), "Bạn không phải là boss.", Toast.LENGTH_SHORT).show();
-                                }
+                                Toast.makeText(getContext(), "Không có danh sách roles trong công ty.", Toast.LENGTH_SHORT).show();
+                                return;
                             }
+
+                            String bossUserId = (String) roles.get("boss");
+                            boolean isBoss = currentUserId.equals(bossUserId);
+
+                            showMemberListDialog(companyId, roles, isBoss); // Hiển thị danh sách thành viên
                         } else {
                             Toast.makeText(getContext(), "Dữ liệu công ty không tồn tại.", Toast.LENGTH_SHORT).show();
                         }
@@ -308,9 +399,43 @@ public class MoreFragment extends Fragment {
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(), "Lỗi khi lấy dữ liệu công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
-
         }
     }
+    private void showMemberListDialog(String companyId, Map<String, Object> roles, boolean isBoss) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_member_list, null);
+        builder.setView(dialogView);
+
+        ListView listView = dialogView.findViewById(R.id.member_list_view);
+        Button btnAddMember = dialogView.findViewById(R.id.btn_add_member);
+
+        // Ẩn nút "Thêm thành viên" nếu không phải boss
+        if (!isBoss) {
+            btnAddMember.setVisibility(View.GONE);
+        }
+
+        ArrayList<String> members = new ArrayList<>();
+        for (Map.Entry<String, Object> entry : roles.entrySet()) {
+            String email = entry.getKey();
+            String role = entry.getValue().toString();
+            members.add(email + " (" + role + ")");
+        }
+
+        // Gán danh sách thành viên vào ListView
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, members);
+        listView.setAdapter(adapter);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        // Xử lý thêm thành viên nếu là boss
+        btnAddMember.setOnClickListener(v -> {
+            showAddMemberDialog(companyId, roles);
+            dialog.dismiss(); // Đóng dialog danh sách thành viên
+        });
+    }
+
+
 
     private void showAddMemberDialog(String companyId, Map<String, Object> roles) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
