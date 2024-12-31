@@ -125,7 +125,9 @@ public class ReportFragmentFinance extends Fragment {
             monthlyKhoanChi.put(month, 0.0);
         }
 
-        db.collection("company").document(companyId).collection("khoanChi").get().addOnSuccessListener(queryDocumentSnapshots -> {
+        db.collection("company")
+                .document(companyId).collection("khoanChi")
+                .get().addOnSuccessListener(queryDocumentSnapshots -> {
             for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                 Log.d("FinanceDebug", "Document data: " + doc.getData());
                 String date = doc.getString("ngay");
@@ -133,8 +135,9 @@ public class ReportFragmentFinance extends Fragment {
                 if (date != null && date.endsWith("/" + yearFilter) && soTienChi != null) {
                     try {
                         totalKhoanChi[0] += soTienChi;
-                        int month = Integer.parseInt(date.split("/")[0]);
-                        monthlyKhoanChi.put(month, monthlyKhoanChi.get(month) + soTienChi);
+                        int month = Integer.parseInt(date.split("/")[1]);
+                        monthlyKhoanChi.put(month, monthlyKhoanChi.getOrDefault(month, 0.0) + soTienChi);
+
                     } catch (Exception e) {
                         Log.e("FinanceDebug", "Error parsing data", e);
                     }
@@ -157,8 +160,9 @@ public class ReportFragmentFinance extends Fragment {
                     totalKhoanThu[0] += soTienThu;
 
                     // Cập nhật doanh thu cho từng tháng
-                    int month = Integer.parseInt(date.split("/")[0]);
-                    monthlyKhoanThu.put(month, monthlyKhoanThu.get(month) + soTienThu);
+                    int month = Integer.parseInt(date.split("/")[1]);
+                    monthlyKhoanThu.put(month, monthlyKhoanThu.getOrDefault(month, 0.0) + soTienThu);
+
                 }
             }
             tvKhoanThu.setText(String.format(Locale.getDefault(), "%.2f", totalKhoanThu[0]));
