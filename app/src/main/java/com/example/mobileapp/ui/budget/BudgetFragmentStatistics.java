@@ -92,11 +92,12 @@ public class BudgetFragmentStatistics extends Fragment {
 
         // Khởi tạo Adapter và set cho RecyclerView
         debtAdapterKhoanNo = new DebtAdapter(getContext(), new ArrayList<>(), (position, debt) ->
-            showEditDebtDialog(position, debt, "no") , true);
+            showEditDebtDialog(debt.getDDocId(), position, debt, "no") , true);
         recyclerViewKhoanNo.setAdapter(debtAdapterKhoanNo);
 
 
-        debtAdapterKhoanThu = new DebtAdapter(getContext(), new ArrayList<>(), ((position, debt) -> showEditDebtDialog(position, debt, "khoan_thu")), false);
+        debtAdapterKhoanThu = new DebtAdapter(getContext(), new ArrayList<>(), ((position, debt) ->
+                showEditDebtDialog(debt.getDDocId(), position, debt, "khoan_thu")), false);
         recylerKhoanThu.setAdapter(debtAdapterKhoanThu);
 
         // Đặt mặc định tab "Nợ" là tab được chọn
@@ -144,7 +145,11 @@ public class BudgetFragmentStatistics extends Fragment {
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
                 debt.setNgayTra(sdf.format(new Date())); // Cập nhật ngày trả
                 debt.setSelected(false); // Bỏ chọn
-                anySelected = true;
+
+               if( isDebtTab ) debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+               else debtViewModel.CapNhatDebtKhoanThuLenFireBase(debt.getDDocId(), debt);
+
+               anySelected = true;
             }
         }
         AdapterHienTai.notifyDataSetChanged();
@@ -169,6 +174,8 @@ public class BudgetFragmentStatistics extends Fragment {
             if (debt.isSelected()) {
                 debt.setDaTra(false);
                 debt.setSelected(false);
+                if( isDebtTab ) debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+                else debtViewModel.CapNhatDebtKhoanThuLenFireBase(debt.getDDocId(), debt);
                 anySelected = true;
             }
         }
@@ -273,7 +280,7 @@ public class BudgetFragmentStatistics extends Fragment {
             if(!noidung.isEmpty() && !SoTien.isEmpty() && !NguonNo.isEmpty() && !NgayNo.isEmpty() && !NgayDenHan.isEmpty() && ChonAnhDeLuu != null)
             {
                 //
-                Debt newDebt = new Debt(ChonAnhDeLuu, noidung, SoTien, NguonNo, NgayNo, NgayDenHan, false,false,null);
+                Debt newDebt = new Debt(ChonAnhDeLuu, noidung, SoTien, NguonNo, NgayNo, NgayDenHan, false, false, null);
                 if (isDebtTab) {
                     debtViewModel.addDebtNo(newDebt);
                 } else {
@@ -364,7 +371,7 @@ public class BudgetFragmentStatistics extends Fragment {
     }
 
 
-    private void showEditDebtDialog(int position, Debt debt, String Type) {
+    private void showEditDebtDialog(String docID ,int position, Debt debt, String Type) {
         boolean isDebtTab  = recyclerViewKhoanNo.getVisibility() == View.VISIBLE;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -428,9 +435,13 @@ public class BudgetFragmentStatistics extends Fragment {
                 if (Type.equals("no")) {
                     debtViewModel.updateDebtNo(position,debt);
                     debtAdapterKhoanNo.notifyItemChanged(position);
+
+                    debtViewModel.CapNhatDebtNoLenFireBase(docID, debt);
                 } else {
                     debtViewModel.updateDebtKhoanThu(position,debt);
                     debtAdapterKhoanThu.notifyItemChanged(position);
+
+                    debtViewModel.CapNhatDebtKhoanThuLenFireBase(docID, debt);
                 }
 
                 ChonAnhDeLuu = null; // Xài xong trả
@@ -450,6 +461,8 @@ public class BudgetFragmentStatistics extends Fragment {
                       {
                           debtViewModel.removeDebtNo(position);
                           debtAdapterKhoanNo.notifyItemRemoved(position);
+                          //
+
                       }else {
                           debtViewModel.removeDebtKhoanThu(position);
                           debtAdapterKhoanThu.notifyItemRemoved(position);
