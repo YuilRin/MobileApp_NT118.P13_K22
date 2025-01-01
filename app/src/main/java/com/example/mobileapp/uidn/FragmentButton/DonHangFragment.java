@@ -221,6 +221,7 @@ public class DonHangFragment extends Fragment {
         Spinner spTinhTrang = dialogView.findViewById(R.id.sp_order_edit_tinhtrang);
         ListView lvSanPham = dialogView.findViewById(R.id.lv_order_edit_sp);
         ImageButton ibDate = dialogView.findViewById(R.id.ib_order_date);
+        TextView tvTongCong = dialogView.findViewById(R.id.tv_order_edit_total);
 
         // Calendar to store selected date
         final Calendar selectedDate = Calendar.getInstance();
@@ -289,6 +290,14 @@ public class DonHangFragment extends Fragment {
                                             productList.add(product);
                                         }
                                         BusinessStorageEditAdapter adapter = new BusinessStorageEditAdapter(requireContext(), productList);
+                                        // Lắng nghe sự thay đổi số lượng và tính tổng cộng
+                                        adapter.setOnQuantityChangeListener(() -> {
+                                            double totalAmount = 0.0;
+                                            for (ProductMini product : productList) {
+                                                totalAmount += product.getSoLuong() * product.getGiaBan(); // Tính tổng tiền
+                                            }
+                                            tvTongCong.setText("Tổng cộng: " + totalAmount); // Cập nhật tổng cộng
+                                        });
                                         lvSanPham.setAdapter(adapter);
                                     } else {
                                         Log.e("Firestore", "Lỗi khi tải dữ liệu", task.getException());
@@ -448,6 +457,8 @@ public class DonHangFragment extends Fragment {
                     Toast.makeText(requireContext(), "Lỗi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
+
 
 
 }

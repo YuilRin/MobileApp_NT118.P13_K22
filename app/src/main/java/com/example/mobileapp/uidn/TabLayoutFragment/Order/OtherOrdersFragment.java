@@ -172,11 +172,11 @@ public class OtherOrdersFragment extends Fragment {
 
 
         ListView lvSanPham = dialogView.findViewById(R.id.lv_order_edit_sp);
-        Button BtnAdd= dialogView.findViewById(R.id.btn_Add);
+
         TextView txtAdd= dialogView.findViewById(R.id.tv_order_edit_listsp);
 
         txtAdd.setVisibility(View.GONE);
-        BtnAdd.setVisibility(View.GONE);
+
         lvSanPham.setVisibility(View.GONE);
 
         TextView txtHeader= dialogView.findViewById(R.id.tv_order_edit_header);

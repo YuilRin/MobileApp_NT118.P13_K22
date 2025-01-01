@@ -37,7 +37,7 @@ public class BaoCaoFragment extends Fragment {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             if (activity.getSupportActionBar() != null) {
                 activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Hiển thị nút quay lại
-                activity.getSupportActionBar().setTitle("Bao cao"); // Đặt tiêu đề cho ActionBar
+                activity.getSupportActionBar().setTitle("Báo cáo"); // Đặt tiêu đề cho ActionBar
             }
         }
         viewPager = view.findViewById(R.id.view_pager);

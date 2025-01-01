@@ -1,51 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@drawable/business_background_gradient">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="3">
+        android:weightSum="8">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="248dp"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_weight="3"
             android:background="#9ACBC6C6"
             android:orientation="vertical"
-            android:weightSum="5">
+            android:weightSum="8">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="2">
+                <TextView
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:text="Tháng">
 
+                </TextView>
                 <Spinner
                     android:id="@+id/spinner_month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:entries="@array/month_array"
-                    android:spinnerMode="dropdown">
+                    android:layout_marginTop="15dp">
 
                 </Spinner>
-                <Spinner
-                    android:id="@+id/spinner_year"
-                    android:layout_marginTop="15dp"
+                <TextView
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="3dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:text="Năm">
+
+                </TextView>
+                <Spinner
+                    android:id="@+id/spinner_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
                     android:spinnerMode="dropdown" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="4"
+                android:layout_weight="6"
                 android:orientation="vertical"
                 android:weightSum="2">
 
@@ -219,43 +236,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="169dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_report_sale_giaban"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Giá bán"
-                android:textColor="@color/black"
-                android:textSize="15dp" />
-
-            <TextView
-                android:id="@+id/tv_report_sale_giavon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Giá vốn"
-                android:textColor="@color/black"
-                android:textSize="15dp" />
-
-            <TextView
-                android:id="@+id/tv_report_sale_loinhuangop"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:text="Lợi nhuận"
-                android:textColor="@color/black"
-                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/tv_report_sale_doanhso"
@@ -267,13 +248,13 @@
                 android:textColor="@color/black"
                 android:textSize="15dp" />
 
-        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="293dp"
+            android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="1"
+            android:layout_weight="5"
             android:background="@drawable/business_shape_white"
             android:orientation="vertical">
 
@@ -292,10 +273,13 @@
                 android:id="@+id/lv_top_products"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#75CBA7FD" />
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="#75CBA7FD"
+                android:layout_marginBottom="45dp"/>
         </LinearLayout>
 
 
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
