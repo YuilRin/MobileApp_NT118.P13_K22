@@ -65,4 +65,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth:21.0.6")
     implementation("com.google.firebase:firebase-firestore:24.0.0")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation ("androidx.work:work-runtime-ktx:2.8.1")
+    implementation ("com.sun.mail:android-mail:1.6.2")
+    implementation ("com.sun.mail:android-activation:1.6.2")
 }
