@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:weightSum="2">
 
             <!-- Nút đầu tiên -->
             <Button
@@ -50,18 +50,10 @@
 
                 android:textSize="8sp" />
 
-            <!-- Nút thứ ba -->
-            <Button
-                android:id="@+id/btnPayment"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
-                android:text="@string/financial_goals"
-                android:textColor="@android:color/white"
-                android:textSize="8sp" />
 
-            <!-- có thể thêm nhiều nút hơn vào đây -->
+
+
+
 
         </LinearLayout>
     </LinearLayout>

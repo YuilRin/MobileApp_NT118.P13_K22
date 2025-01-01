@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +52,7 @@ public class BudgetFragmentStatistics extends Fragment {
     private TextView tabKhoanThu, tvNgayHienTai, tvTieuDe;
     private AppCompatButton btnDuyetAll, btnBoDuyetAll, btnThem;
     private DebtViewModel debtViewModel;
+    private EditText ThanhTimKiem;
 
     @Nullable
     @Override
@@ -60,10 +63,9 @@ public class BudgetFragmentStatistics extends Fragment {
 
         // Khởi tạo ViewModel
         debtViewModel = new ViewModelProvider(this).get(DebtViewModel.class);
+        ThanhTimKiem = view.findViewById(R.id.search_edit_text);
 
-        // Khởi tạo RecyclerView
 
-        //recyclerView = binding.recyclerView;
         recyclerViewKhoanNo = view.findViewById(R.id.recycler_view);
         recyclerViewKhoanNo.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -82,12 +84,9 @@ public class BudgetFragmentStatistics extends Fragment {
 
         tvTieuDe= view.findViewById(R.id.DanhSachNo);
 
-
         btnDuyetAll = view.findViewById(R.id.btn_Duyet);
         btnBoDuyetAll = view.findViewById(R.id.btnBoDuyet);
         btnThem = view.findViewById(R.id.btn_Them);
-
-
 
 
         // Khởi tạo Adapter và set cho RecyclerView
@@ -105,7 +104,6 @@ public class BudgetFragmentStatistics extends Fragment {
 
         // Xử lý khi nhấn vào tab "Nợ"
         tabNo.setOnClickListener(v -> ChonTab(tabNo));
-
 
         // Xử lý khi nhấn vào tab "Khoản Thu"
         tabKhoanThu.setOnClickListener(v -> ChonTab(tabKhoanThu));
@@ -127,6 +125,38 @@ public class BudgetFragmentStatistics extends Fragment {
 
         btnThem.setOnClickListener(v -> showThemDiaLog());
 
+        ThanhTimKiem.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String truyvan = editable.toString().trim().toLowerCase(Locale.getDefault());
+
+                //kiem tra tab dang hien thi
+                boolean isDebtab = (recyclerViewKhoanNo.getVisibility() == TextView.VISIBLE);
+                List<Debt> DanhsachHienTai = isDebtab ? debtViewModel.getDebtListNo().getValue() : debtViewModel.getDebtListKhoanThu().getValue();
+                DebtAdapter AdapterHienTai = isDebtab ? debtAdapterKhoanNo : debtAdapterKhoanThu;
+                List<Debt> DanhSachLoc = new ArrayList<>();
+
+
+                List<Debt> LocKhoanNo = new ArrayList<>();
+                for(Debt debt : DanhsachHienTai) {
+                    if (debt.getTitle().toLowerCase(Locale.getDefault()).contains(truyvan)) {
+                        DanhSachLoc.add(debt);
+                    }
+                }
+                AdapterHienTai.updateDebtList(DanhSachLoc);
+
+            }
+        });
 
         return view;
     }
