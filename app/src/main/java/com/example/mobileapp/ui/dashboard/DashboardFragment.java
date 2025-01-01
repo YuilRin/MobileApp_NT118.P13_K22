@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,7 +46,7 @@ public class DashboardFragment extends Fragment {
     Button buttonInput;
     ListView listView;
     GridView gridView;
-    Spinner monthSpinner;
+    Spinner monthSpinner,yearSpinner;
     String userId,userName;
     List <String> money;
 
@@ -115,6 +116,49 @@ public class DashboardFragment extends Fragment {
                 String monthKey = String.format("%02d", position + 1);
 
                 currentMonth= currentYear+"-"+monthKey;
+                ExpenseUtils expenseUtils = new ExpenseUtils(userId, currentMonth);
+                expenseUtils.loadExpenses(new ExpenseUtils.OnExpensesLoadedListener() {
+                    @Override
+                    public void onExpensesLoaded(List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
+                        if (listItems != null && !listItems.isEmpty()) {
+                            updateListView(listItems);
+                        }
+                        else {
+                            updateListView(new ArrayList<>());
+                            Log.d("ExpenseUtils", "No expenses found for the selected month.");
+
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Handle the case where no month is selected (optional)
+            }
+        });
+        yearSpinner = root.findViewById(R.id.year_spinner);
+        List<String> years = new ArrayList<>();
+        int currentYearInt = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = currentYearInt - 5; i <= currentYearInt + 5; i++) {
+            years.add(String.valueOf(i));
+        }
+
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, years);
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        yearSpinner.setAdapter(yearAdapter);
+
+        // Lấy năm hiện tại mặc định trong spinner
+        yearSpinner.setSelection(years.indexOf(String.valueOf(currentYearInt)));
+
+        yearSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedMonth = months[position];
+                String monthKey = String.format("%02d", monthSpinner.getSelectedItemPosition() + 1);
+                currentYear = (String) yearSpinner.getSelectedItem();  // Get the selected year from the spinner
+                currentMonth = currentYear + "-" + monthKey;
+
                 ExpenseUtils expenseUtils = new ExpenseUtils(userId, currentMonth);
                 expenseUtils.loadExpenses(new ExpenseUtils.OnExpensesLoadedListener() {
                     @Override
