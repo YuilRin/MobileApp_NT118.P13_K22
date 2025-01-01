@@ -38,6 +38,7 @@ public class ReportFragmentStorage extends Fragment {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Lấy userId hiện tại
 
         Spinner spinnerMonth = rootView.findViewById(R.id.spinner_month);
+        Spinner spinnerYear = rootView.findViewById(R.id.spinner_year);
 
         // Tạo danh sách các tháng (01 đến 12)
         List<String> months = new ArrayList<>();
@@ -45,7 +46,14 @@ public class ReportFragmentStorage extends Fragment {
             months.add(String.format(Locale.getDefault(), "%02d", i));
         }
 
-        // Tạo Adapter cho Spinner
+        // Tạo danh sách năm (2020 đến năm hiện tại)
+        List<String> years = new ArrayList<>();
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 2020; i <= currentYear; i++) {
+            years.add(String.valueOf(i));
+        }
+
+        // Tạo Adapter cho Spinner tháng và năm
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
@@ -54,40 +62,55 @@ public class ReportFragmentStorage extends Fragment {
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMonth.setAdapter(monthAdapter);
 
-        // Lấy tháng hiện tại
-        Calendar calendar = Calendar.getInstance();
-        int currentMonth = calendar.get(Calendar.MONTH); // Giá trị từ 0 (tháng 1) đến 11 (tháng 12)
-        spinnerMonth.setSelection(currentMonth); // Đặt vị trí mặc định của Spinner
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                years
+        );
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+        // Đặt giá trị mặc định cho Spinner tháng và năm
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH); // 0-based index
+        spinnerMonth.setSelection(currentMonth);
+        spinnerYear.setSelection(years.indexOf(String.valueOf(currentYear)));
 
 
         db.collection("users").document(userId).get().addOnSuccessListener(userDoc -> {
             if (userDoc.exists()) {
                 String companyId = userDoc.getString("companyId");
                 if (companyId != null) {
-
-                    spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    // Xử lý khi thay đổi tháng hoặc năm
+                    AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            int selectedMonth = position + 1; // Vì position 0 là tháng 1
-                            loadReportData(companyId, selectedMonth, rootView); // Gọi hàm xử lý báo cáo
+                            int selectedMonth = spinnerMonth.getSelectedItemPosition() + 1; // 1-based index
+                            int selectedYear = Integer.parseInt(spinnerYear.getSelectedItem().toString());
+                            loadReportData(companyId, selectedMonth, selectedYear, rootView); // Gọi hàm xử lý dữ liệu
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> parent) {
                             // Không làm gì
                         }
-                    });
-                    // Tải dữ liệu ban đầu cho tháng hiện tại
+                    };
+
+                    spinnerMonth.setOnItemSelectedListener(listener);
+                    spinnerYear.setOnItemSelectedListener(listener);
+
+                    // Tải dữ liệu ban đầu
                     int selectedMonth = currentMonth + 1; // Chuyển từ 0-based sang 1-based
-                    loadReportData(companyId, selectedMonth, rootView);
+                    loadReportData(companyId, selectedMonth, currentYear, rootView);
                 } else {
                     Log.e("Firestore", "Không tìm thấy companyId trong tài khoản người dùng.");
                 }
             }
         }).addOnFailureListener(e -> Log.e("Firestore", "Lỗi khi lấy companyId", e));
 
-        return  rootView;
-    }private void loadReportData(String companyId, int selectedMonth, View rootView) {
+        return rootView;
+    }
+
+    private void loadReportData(String companyId,  int selectedMonth, int selectedYear, View rootView) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Tham chiếu tới các TextView trong layout
@@ -152,8 +175,6 @@ public class ReportFragmentStorage extends Fragment {
                         lvProductsBroken.setAdapter(brokenAdapter);
                     }
                 });
-
-        // Lấy dữ liệu phiếu nhập (lọc theo tháng)
         db.collection("company").document(companyId).collection("phieunhap").get()
                 .addOnCompleteListener(taskNhap -> {
                     if (taskNhap.isSuccessful() && taskNhap.getResult() != null) {
@@ -166,8 +187,9 @@ public class ReportFragmentStorage extends Fragment {
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(importDate);
                                     int month = calendar.get(Calendar.MONTH) + 1;
+                                    int year = calendar.get(Calendar.YEAR);
 
-                                    if (month == selectedMonth) {
+                                    if (month == selectedMonth && year == selectedYear) {
                                         soPhieuNhap[0]++;
                                     }
                                 } catch (Exception e) {
@@ -175,11 +197,11 @@ public class ReportFragmentStorage extends Fragment {
                                 }
                             }
                         }
-                        txtNhapKho.setText(String.format(Locale.getDefault(), " %d", soPhieuNhap[0]));
+                        txtNhapKho.setText(String.format(Locale.getDefault(), "%d", soPhieuNhap[0]));
                     }
                 });
 
-        // Lấy dữ liệu đơn hàng (lọc theo tháng)
+        // Lọc đơn hàng theo tháng và năm
         db.collection("company").document(companyId).collection("donhang").get()
                 .addOnCompleteListener(taskXuat -> {
                     if (taskXuat.isSuccessful() && taskXuat.getResult() != null) {
@@ -192,8 +214,9 @@ public class ReportFragmentStorage extends Fragment {
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(orderDate);
                                     int month = calendar.get(Calendar.MONTH) + 1;
+                                    int year = calendar.get(Calendar.YEAR);
 
-                                    if (month == selectedMonth) {
+                                    if (month == selectedMonth && year == selectedYear) {
                                         soDonXuat[0]++;
                                     }
                                 } catch (Exception e) {

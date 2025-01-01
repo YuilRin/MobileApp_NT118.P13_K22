@@ -1,0 +1,171 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_NhanDan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thêm Ngân Sách"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:layout_marginRight="30dp"
+            android:paddingBottom="16dp" />
+
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/Spinner_ThuHayChi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/llRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_ChonPhanLoai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            />
+
+        <TextView
+            android:id="@+id/tv_ChonTheLoai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn phân loại"
+            android:textSize="@dimen/txt_size_14sp"
+            />
+
+        <RadioButton
+            android:id="@+id/radio_TaoPhanLoai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="42dp"
+           />
+
+        <TextView
+            android:id="@+id/tv_TaoPhanLoai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tạo Phân Loại"
+            android:textSize="@dimen/txt_size_14sp"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="7">
+
+        <Spinner
+            android:id="@+id/Spinner_PhanLoai"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/txt_size_12sp"
+            android:layout_marginBottom="@dimen/txt_size_12sp"
+            android:layout_weight="6"
+            />
+
+        <Button
+            android:id="@+id/btn_XoaPhanLoai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="Xóa phân loại này"
+            android:textSize="8sp"/>
+
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/edt_NhapPhanLoai"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập phân loại"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corners_select_image"
+            android:layout_marginRight="@dimen/txt_size_12sp"
+            android:layout_gravity="center"
+            android:padding="@dimen/txt_size_12sp"
+            >
+            <ImageView
+                android:id="@+id/imv_show_image"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+
+                />
+        </LinearLayout>
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_ChonAnh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corners_select_image"
+            android:text="Chọn ảnh đại diện cho thể loại"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical|start"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            />
+
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/etTenNganSach"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên ngân sách:"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/etSoTien"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Số tiền:"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thêm"
+        android:layout_gravity="end"/>
+
+
+
+
+</LinearLayout>

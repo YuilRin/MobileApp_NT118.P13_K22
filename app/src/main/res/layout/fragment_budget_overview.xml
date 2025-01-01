@@ -4,17 +4,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.budget.BudgetFragmentOverView">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:fillViewport="true">
 
         <!-- LinearLayout có layout_width là match_parent để lấp đầy chiều ngang -->
         <LinearLayout
@@ -40,7 +40,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#A6AEBF"
+                        android:background="#1A1A1D"
                         android:padding="16dp">
 
                         <!-- Nội dung tài chính -->
@@ -126,7 +126,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="#A6AEBF"
+                    android:background="#1A1A1D"
                     android:orientation="vertical">
 
                     <View
@@ -167,7 +167,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+              />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -177,6 +178,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/TvTongThuNhap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Tổng thu nhập: 10,0000.000 đ"
@@ -205,11 +207,12 @@
         </LinearLayout>
 
             <!-- Xây dựng chi tiêu cá nhân -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewExpenditure"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-        />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewExpenditure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -219,6 +222,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/TvTongChiPhi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tổng chi phí: -4,900,000.000 đ"
@@ -228,7 +232,6 @@
                 android:layout_marginEnd="8dp"/>
 
         </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

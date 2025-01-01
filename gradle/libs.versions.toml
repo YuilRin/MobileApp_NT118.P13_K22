@@ -15,6 +15,7 @@ gridlayout = "1.0.0"
 legacySupportV4 = "1.0.0"
 firebaseAuth = "23.1.0"
 firebaseDatabase = "21.0.0"
+core = "1.15.0"
 
 [libraries]
 mpandroidchart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpandroidchart" }
@@ -32,6 +33,7 @@ gridlayout = { group = "androidx.gridlayout", name = "gridlayout", version.ref =
 legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
+core = { group = "androidx.core", name = "core", version.ref = "core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

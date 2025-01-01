@@ -44,7 +44,17 @@ public class CaiDatFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.business_button_setting, container, false);
+
+        if (getActivity() != null) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true); // Hiển thị nút quay lại
+                activity.getSupportActionBar().setTitle("Cai Dat"); // Đặt tiêu đề cho ActionBar
+            }
+        }
+
 
         db = FirebaseFirestore.getInstance();
         nameEditText = view.findViewById(R.id.name);
@@ -53,8 +63,6 @@ public class CaiDatFragment extends Fragment {
         addressEditText = view.findViewById(R.id.address);
         BusinessNameEditText = view.findViewById(R.id.business_name);
 
-
-        // Lấy userId từ Firebase Authentication hoặc từ đối tượng khác
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         // Lấy companyId từ userId
@@ -241,4 +249,5 @@ public class CaiDatFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

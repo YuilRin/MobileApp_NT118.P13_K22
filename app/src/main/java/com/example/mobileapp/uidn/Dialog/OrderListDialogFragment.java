@@ -42,7 +42,7 @@ public class OrderListDialogFragment extends DialogFragment {
         listView.setAdapter(adapter);
 
 
-        btnAdd=rootView.findViewById(R.id.btn_Add);
+
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,34 +1,78 @@
 package com.example.mobileapp.ui.budget.Custom;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class AllowanceItem {
     private int avatarResId;
-    private String position;
+    private String content;
     private String money;
-    private String titlemoney;
+    private String moneyTitle;
+    private String id;
 
-    public AllowanceItem(int avatarResId, String position, String money, String titlemoney) {
+    public AllowanceItem() {}
+
+    public AllowanceItem(int avatarResId, String content, String money, String moneyTitle) {
         this.avatarResId = avatarResId;
-        this.position = position;
+        this.content = content;
         this.money = money;
-        this.titlemoney = titlemoney;
+        this.moneyTitle = moneyTitle;
+        this.id = UUID.randomUUID().toString();
     }
 
+    public String getId() {return id;}
+    public void setId(String id) {this.id = id;}
 
     public int getAvatarResId() {
         return avatarResId;
     }
+    public  void  setAvatarResId(int avatarResId) {
+        this.avatarResId = avatarResId;
+    }
 
-    public String getPosition() {
-        return position;
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getMoney() {
         return money;
     }
-
-    public String getMoneyTitle() {
-        return titlemoney;
+    public void setMoney(String money) {
+        this.money = money;
     }
+
+    public String getmoneyTitle() {
+        return moneyTitle;
+    }
+    public void setMoneyTitle(String moneyTitle) {
+        this.moneyTitle = moneyTitle;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AllowanceItem that = (AllowanceItem) o;
+
+        if (this.avatarResId != that.avatarResId) return false;
+        if (!Objects.equals(this.id, that.id)) return false;
+        if (!Objects.equals(this.content, that.content)) return false;
+        if (!Objects.equals(this.money, that.money)) return false;
+        if (!Objects.equals(this.moneyTitle, that.moneyTitle)) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, avatarResId, content, money, moneyTitle);
+    }
+
+
 
 }
 

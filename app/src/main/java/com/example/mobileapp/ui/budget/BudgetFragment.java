@@ -19,7 +19,7 @@ import com.example.mobileapp.databinding.FragmentBudgetBinding;
 public class BudgetFragment extends Fragment {
     private FragmentBudgetBinding binding;
     private final Button[] selectedButton = {null};
-    private Button btn_Budget, btn_Statistics, btn_Payment;
+    private Button btn_Budget, btn_Statistics ;
     //private HorizontalScrollView scrollViewOption; // bổ sung cuộn ngang sau này nếu thêm
     private Fragment currentFragment;
     @Nullable
@@ -33,7 +33,7 @@ public class BudgetFragment extends Fragment {
         // thêm các activity tại đây
         btn_Budget = root.findViewById(R.id.btnBudget);
         btn_Statistics = root.findViewById(R.id.btnStatistics);
-        btn_Payment = root.findViewById(R.id.btnPayment);
+
         //scrollViewOption = root.findViewById(R.id.horizontalScrollViewOption);
 
 
@@ -42,7 +42,7 @@ public class BudgetFragment extends Fragment {
         selectedButton[0] = btn_Budget;
         btn_Budget.setEnabled(false); // ON
         btn_Statistics.setEnabled(true); // OFF
-        btn_Payment.setEnabled(true); // OFF
+
 
         // Hiển thị giao diện overview
         if (savedInstanceState == null) {
@@ -74,15 +74,6 @@ public class BudgetFragment extends Fragment {
                 if(btn_Statistics.isEnabled())
                     SwitchFragment(new BudgetFragmentStatistics());
                 changeButtonState(view, btn_Statistics);
-
-            }
-        });
-        btn_Payment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(btn_Payment.isEnabled())
-                    SwitchFragment(new BudgetFragmentPayment());
-                changeButtonState(view, btn_Payment);
 
             }
         });

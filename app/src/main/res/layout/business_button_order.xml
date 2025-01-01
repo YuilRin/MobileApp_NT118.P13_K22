@@ -7,6 +7,17 @@
     android:padding="0dp"
     android:background="@drawable/business_background_gradient">
 
+    <EditText
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search orders"
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:background="@android:color/white"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="8dp"
+        android:visibility="gone" />
     <!-- TabLayout for Tabs -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
@@ -21,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2">
-    <!-- Horizontal ScrollView for Headers -->
+        <!-- Horizontal ScrollView for Headers -->
 
     </androidx.viewpager2.widget.ViewPager2>
     <!-- Combined Content Area with ListView -->
@@ -66,5 +77,4 @@
             android:src="@drawable/business_ic_add"
             android:layout_marginTop="10dp"/>
     </LinearLayout>
-
 </LinearLayout>

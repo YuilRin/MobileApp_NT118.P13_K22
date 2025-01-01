@@ -20,7 +20,7 @@
         android:id="@+id/etAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập số lượng"
+        android:hint="Giá tiền"
         android:inputType="numberDecimal" />
 
     <!-- Nút chọn ngày -->

@@ -24,6 +24,7 @@ public class DebtViewModel extends ViewModel {
     private String UserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
+
     public MutableLiveData<List<Debt>> getDebtListNo() {
         if (debtListNo == null) {
             debtListNo = new MutableLiveData<>(new ArrayList<>());
