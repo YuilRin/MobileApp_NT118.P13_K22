@@ -40,9 +40,12 @@ public class SanPhamFragment extends Fragment {
     String companyId;
     FirebaseFirestore firestore;
 
-
-    List<Product> productList;
+    List<Product> productList;          // Danh sách sản phẩm hiển thị
+    List<Product> fullProductList;      // Danh sách đầy đủ sản phẩm
     ProductAdapter productAdapter;
+
+    private EditText searchBar;
+    private ImageButton searchButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,11 +57,46 @@ public class SanPhamFragment extends Fragment {
 
         ListView productListView = view.findViewById(R.id.listProduct);
         productList = new ArrayList<>();
+        fullProductList = new ArrayList<>();
         productAdapter = new ProductAdapter(requireContext(), productList);
         productListView.setAdapter(productAdapter);
 
         userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         firestore = FirebaseFirestore.getInstance();
+
+        // Khởi tạo searchBar và searchButton
+        searchBar = view.findViewById(R.id.search_bar);
+        searchButton = view.findViewById(R.id.search_button);
+
+        // Ẩn searchBar khi khởi động
+        searchBar.setVisibility(View.GONE);
+
+        // Xử lý khi nhấn vào nút tìm kiếm
+        searchButton.setOnClickListener(v -> {
+            if (searchBar.getVisibility() == View.GONE) {
+                searchBar.setVisibility(View.VISIBLE);
+            } else {
+                searchBar.setVisibility(View.GONE);
+                searchBar.setText(""); // Reset lại thanh tìm kiếm khi ẩn
+                filterProductList(""); // Hiển thị toàn bộ danh sách
+            }
+        });
+
+        // Xử lý sự kiện tìm kiếm khi nhập dữ liệu
+        searchBar.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterProductList(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+            }
+        });
 
         loadProductList();
 
@@ -66,7 +104,6 @@ public class SanPhamFragment extends Fragment {
             Product selectedProduct = productList.get(position);
             showProductOptionsDialog(selectedProduct);
         });
-
 
         ImageButton addSP = view.findViewById(R.id.add_button);
         addSP.setOnClickListener(v -> showAddProductDialog());
@@ -121,10 +158,8 @@ public class SanPhamFragment extends Fragment {
                                 product.setCostPrice(costPrice.toString());
 
                                 sanPhamMap.put(productCode, product);
-                                Log.d("SanPhamInfo", "SanPham-id: " + productCode + " {Tên sản phẩm: " + name + ", Giá vốn: " + costPrice + "}");
                             }
                         }
-
                         loadStockInfo(sanPhamMap);
                     } else {
                         Toast.makeText(requireContext(), "Lỗi khi tải dữ liệu sản phẩm", Toast.LENGTH_SHORT).show();
@@ -140,12 +175,13 @@ public class SanPhamFragment extends Fragment {
                 .addOnCompleteListener(khoTask -> {
                     if (khoTask.isSuccessful()) {
                         productList.clear();
+                        fullProductList.clear();
                         for (QueryDocumentSnapshot khoDoc : khoTask.getResult()) {
                             String productCode = khoDoc.getId();
                             String category = khoDoc.getString("phanLoai");
                             String supplier = khoDoc.getString("NhaCungCap");
                             Double sellingPrice = khoDoc.getDouble("giaBan");
-                            Double costPrice =khoDoc.getDouble("giaVon");
+                            Double costPrice = khoDoc.getDouble("giaVon");
                             String note = khoDoc.getString("ghiChu");
 
                             Product product = sanPhamMap.get(productCode);
@@ -157,6 +193,7 @@ public class SanPhamFragment extends Fragment {
                                 product.setCostPrice(String.valueOf(costPrice));
 
                                 productList.add(product);
+                                fullProductList.add(product);
                             }
                         }
                         productAdapter.notifyDataSetChanged();
@@ -164,6 +201,20 @@ public class SanPhamFragment extends Fragment {
                         Toast.makeText(requireContext(), "Lỗi khi tải kho hàng", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void filterProductList(String query) {
+        productList.clear();
+        if (query.isEmpty()) {
+            productList.addAll(fullProductList);
+        } else {
+            for (Product product : fullProductList) {
+                if (product.getName().toLowerCase().contains(query.toLowerCase())) {
+                    productList.add(product);
+                }
+            }
+        }
+        productAdapter.notifyDataSetChanged();
     }
 
     private void showAddProductDialog() {

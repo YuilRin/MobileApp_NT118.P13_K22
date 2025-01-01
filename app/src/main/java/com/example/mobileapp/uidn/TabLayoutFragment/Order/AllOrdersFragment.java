@@ -42,6 +42,9 @@ public class AllOrdersFragment extends Fragment {
 
     private String userId;
     private String companyId;
+    private List<BusinessOrder> orderList = new ArrayList<>();
+    private BusinessOrderAdapter orderAdapter;
+    private List<BusinessOrder> fullOrderList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -76,8 +79,7 @@ public class AllOrdersFragment extends Fragment {
 
     private void UpdateList(View view) {
         ListView allOrderListView = view.findViewById(R.id.lv_order_all);
-        List<BusinessOrder> orderList = new ArrayList<>();
-        BusinessOrderAdapter orderAdapter = new BusinessOrderAdapter(requireContext(), orderList);
+        orderAdapter = new BusinessOrderAdapter(requireContext(), orderList);
         allOrderListView.setAdapter(orderAdapter);
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -88,6 +90,7 @@ public class AllOrdersFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         orderList.clear();
+                        fullOrderList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             BusinessOrder order = new BusinessOrder(
                                     document.getId(),
@@ -98,6 +101,7 @@ public class AllOrdersFragment extends Fragment {
                                     document.getDouble("Quantity")
                             );
                             orderList.add(order);
+                            fullOrderList.add(order);
                         }
                         orderAdapter.notifyDataSetChanged();
                     } else {
@@ -107,12 +111,33 @@ public class AllOrdersFragment extends Fragment {
                 .addOnFailureListener(e ->
                         Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
-
         allOrderListView.setOnItemLongClickListener((parent, view1, position, id) -> {
             BusinessOrder selectedOrder = orderList.get(position);
             showOrderOptionsDialog(selectedOrder, () -> UpdateList(view));
             return true;
         });
+    }
+
+    public void filterOrders(String query) {
+        if (query == null || query.isEmpty()) {
+            resetOrders();
+            return;
+        }
+        List<BusinessOrder> filteredList = new ArrayList<>();
+        for (BusinessOrder order : fullOrderList) {
+            if (order.getOrderId().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(order);
+            }
+        }
+        orderList.clear();
+        orderList.addAll(filteredList);
+        orderAdapter.notifyDataSetChanged();
+    }
+
+    public void resetOrders() {
+        orderList.clear();
+        orderList.addAll(fullOrderList);
+        orderAdapter.notifyDataSetChanged();
     }
 
     private void showOrderOptionsDialog(BusinessOrder order, Runnable onComplete) {

@@ -13,6 +13,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -32,10 +34,16 @@ import com.example.mobileapp.Class.BusinessStorage;
 import com.example.mobileapp.Class.Product;
 import com.example.mobileapp.Class.ProductMini;
 import com.example.mobileapp.Custom.BusinessKhoHangAdapter;
+import com.example.mobileapp.Custom.BusinessOrderAdapter;
 import com.example.mobileapp.Custom.BusinessProviderAdapter;
 import com.example.mobileapp.Custom.BusinessStorageEditAdapter;
 import com.example.mobileapp.R;
 import com.example.mobileapp.ViewModel.SharedViewModel;
+import com.example.mobileapp.uidn.TabLayoutFragment.Fragment.StorageFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.AllOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.OtherOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.PaidOrdersFragment;
+import com.example.mobileapp.uidn.TabLayoutFragment.Order.UnpaidOrdersFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -50,12 +58,18 @@ public class KhoHangFragment extends Fragment {
 
     private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     private String companyId;
+    private EditText searchBar;
+    private ImageButton searchButton;
+    private List<BusinessStorage> fullStorageList = new ArrayList<>();
+    private List<BusinessStorage> storageList = new ArrayList<>();
+    private BusinessKhoHangAdapter storageAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.business_button_storage, container, false);
-
+        searchBar = view.findViewById(R.id.search_bar);
+        searchButton = view.findViewById(R.id.search_button);
         if (getActivity() != null) {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             if (activity.getSupportActionBar() != null) {
@@ -68,6 +82,28 @@ public class KhoHangFragment extends Fragment {
 
         ImageButton addButton = view.findViewById(R.id.add_button);
         addButton.setOnClickListener(v -> showAddProductDialog(view));
+
+        searchButton.setOnClickListener(v -> {
+            if (searchBar.getVisibility() == View.GONE) {
+                searchBar.setVisibility(View.VISIBLE);
+            } else {
+                searchBar.setVisibility(View.GONE);
+                searchBar.setText(""); // Clear search when hidden
+            }
+        });
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterStorage(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         return view;
     }
@@ -216,34 +252,33 @@ public class KhoHangFragment extends Fragment {
                     .document(maSP)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
-                            Double soLuongHienTai = documentSnapshot.getDouble("soLuong");
-                            if (soLuongHienTai == null)
-                                soLuongHienTai = 0.0;
+                        Double soLuongHienTai = documentSnapshot.getDouble("soLuong");
+                        if (soLuongHienTai == null)
+                            soLuongHienTai = 0.0;
 
-                            double soLuongMoi = soLuongHienTai + soLuongNhapMoi;
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("soLuong", soLuongMoi);
-                            data.put("ngayNhap", ngayNhap);
-                            data.put("ghiChu", ghiChu);
+                        double soLuongMoi = soLuongHienTai + soLuongNhapMoi;
+                        Map<String, Object> data = new HashMap<>();
+                        data.put("soLuong", soLuongMoi);
+                        data.put("ngayNhap", ngayNhap);
+                        data.put("ghiChu", ghiChu);
 
-                            firestore.collection("company")
-                                    .document(companyId)
-                                    .collection("khohang")
-                                    .document(maSP)
-                                    .update(data)
-                                    .addOnSuccessListener(aVoid -> {
-                                        Log.d("Firestore", "Cập nhật thành công: " + maSP);
-                                    });
-                        });
+                        firestore.collection("company")
+                                .document(companyId)
+                                .collection("khohang")
+                                .document(maSP)
+                                .update(data)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Firestore", "Cập nhật thành công: " + maSP);
+                                });
+                    });
         }
         Toast.makeText(requireContext(), "Đã lưu thành công!", Toast.LENGTH_SHORT).show();
     }
 
     private void UpdateList(View view) {
+        // Initialize the ListView and adapter
         ListView storageListView = view.findViewById(R.id.lv_storage);
-
-        List<BusinessStorage> StorageList = new ArrayList<>();
-        BusinessKhoHangAdapter storageAdapter = new BusinessKhoHangAdapter(requireContext(), StorageList);
+        storageAdapter = new BusinessKhoHangAdapter(requireContext(), storageList); // Use class-level storageAdapter
         storageListView.setAdapter(storageAdapter);
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -253,7 +288,8 @@ public class KhoHangFragment extends Fragment {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
-                        StorageList.clear();
+                        fullStorageList.clear(); // Clear fullStorageList for new data
+                        storageList.clear(); // Clear storageList before populating
                         int SoSanPham = 0;
                         double SoLuongSP = 0.0, GiaTri = 0.0;
 
@@ -280,9 +316,11 @@ public class KhoHangFragment extends Fragment {
                                     KhDoc.getId(),
                                     KhDoc.getString("ghiChu")
                             );
-                            StorageList.add(Storage);
+                            fullStorageList.add(Storage);
+                            storageList.add(Storage);
                         }
 
+                        // Update summary views
                         TextView etSSP = view.findViewById(R.id.tv_storage_slpham);
                         TextView etSLSP = view.findViewById(R.id.tv_storage_slton);
                         TextView etGT = view.findViewById(R.id.tv_storage_gtton);
@@ -296,17 +334,48 @@ public class KhoHangFragment extends Fragment {
                         Toast.makeText(requireContext(), "Lỗi khi tải danh sách kho hàng!", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
-
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Không thể kết nối Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
 
         storageListView.setOnItemLongClickListener((parent, view1, position, id) -> {
-            BusinessStorage selectedStorage = StorageList.get(position);
+            BusinessStorage selectedStorage = storageList.get(position);
             showOrderOptionsDialog(selectedStorage, () -> UpdateList(view));
             return true;
         });
     }
+
+    private void filterStorage(String query) {
+        if (query == null || query.isEmpty()) {
+            resetStorage();
+            return;
+        }
+
+        List<BusinessStorage> filteredList = new ArrayList<>();
+        for (BusinessStorage storage : fullStorageList) {
+            String productName = storage.getTenSanPham();
+            if (productName != null && productName.toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(storage);
+            }
+        }
+
+        storageList.clear();
+        storageList.addAll(filteredList);
+        if (storageAdapter != null) {
+            storageAdapter.notifyDataSetChanged();
+        } else {
+            Log.e("ERROR", "storageAdapter is null during filter!");
+        }
+    }
+
+    private void resetStorage() {
+        storageList.clear();
+        storageList.addAll(fullStorageList);
+        if (storageAdapter != null) {
+            storageAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     private void showOrderOptionsDialog(BusinessStorage Storage, Runnable onComplete) {
         new AlertDialog.Builder(requireContext())
