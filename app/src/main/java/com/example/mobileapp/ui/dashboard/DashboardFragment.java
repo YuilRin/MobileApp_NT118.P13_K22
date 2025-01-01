@@ -112,8 +112,7 @@ public class DashboardFragment extends Fragment {
                 // Get the selected month
                 String selectedMonth = months[position];
 
-                // Convert the month string to a format that your data uses (for example "Tháng 1" -> "01")
-                String monthKey = String.format("%02d", position + 1);  // Get the corresponding month key (01-12)
+                String monthKey = String.format("%02d", position + 1);
 
                 currentMonth= currentYear+"-"+monthKey;
                 ExpenseUtils expenseUtils = new ExpenseUtils(userId, currentMonth);
@@ -122,8 +121,11 @@ public class DashboardFragment extends Fragment {
                     public void onExpensesLoaded(List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
                         if (listItems != null && !listItems.isEmpty()) {
                             updateListView(listItems);
-                        } else {
+                        }
+                        else {
+                            updateListView(new ArrayList<>());
                             Log.d("ExpenseUtils", "No expenses found for the selected month.");
+
                         }
                     }
                 });
@@ -143,36 +145,50 @@ public class DashboardFragment extends Fragment {
         return sdf.format(new Date());
     }
     private void updateListView(List<ExpenseItem> listItems) {
-        // Tính tổng chi tiêu và thu nhập
         float tongChi = 0, tongthu = 0;
-        for (ExpenseItem item : listItems) {
-            if (item.getCategory().charAt(0) != '*') {
-                tongChi += item.getAmount();
-            } else {
-                tongthu += item.getAmount();
+
+        if (listItems != null && !listItems.isEmpty()) {
+            for (ExpenseItem item : listItems) {
+                if (item.getCategory().charAt(0) != '*') {
+                    tongChi += item.getAmount();
+                } else {
+                    tongthu += item.getAmount();
+                }
             }
+
+            // Sử dụng CustomAdapter
+            CustomAdapter_Expense adapter = new CustomAdapter_Expense(getContext(), listItems);
+
+            // Cập nhật ListView
+            listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+
+            // Cập nhật GridView
+            String[] data = {
+                    "Chi tiêu: " + tongChi + "k",
+                    "Thu nhập: " + tongthu + "k",
+                    "Số dư: " + (tongthu - tongChi) + "k"
+            };
+
+            CustomAdapter_Grid gridViewAdapter = new CustomAdapter_Grid(getContext(), data);
+            gridView.setAdapter(gridViewAdapter);
+
         }
 
-        // Sử dụng CustomAdapter
-        CustomAdapter_Expense adapter = new CustomAdapter_Expense(getContext(), listItems);
+        else {
+            // Xoá dữ liệu cũ khi không có dữ liệu mới
+            listView.setAdapter(null); // Xoá danh sách cũ
+            String[] emptyData = {
+                    "Chi tiêu: 0k", "Thu nhập: 0k", "Số dư: 0k"
+            };
 
-        // Cập nhật ListView
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+            // Cập nhật GridView để hiển thị dữ liệu trống
+            CustomAdapter_Grid gridViewAdapter = new CustomAdapter_Grid(getContext(), emptyData);
+            gridView.setAdapter(gridViewAdapter);
 
-        // Cập nhật GridView
-        String[] data = {
-                "Chi tiêu: " + tongChi + "k",
-                "Thu nhập: " + tongthu,
-                "Số dư: " + (tongthu - tongChi) + "k"
-        };
-
-        // Sử dụng CustomAdapter cho GridView
-        CustomAdapter_Grid gridViewAdapter = new CustomAdapter_Grid(getContext(), data);
-        gridView.setAdapter(gridViewAdapter);
+            Toast.makeText(getContext(), "Không có dữ liệu cho tháng này!", Toast.LENGTH_SHORT).show();
+        }
     }
-
-
 
 
     @Override

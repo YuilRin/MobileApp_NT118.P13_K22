@@ -5,30 +5,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/background_gradient"
-    android:padding="16dp"><LinearLayout
+    android:padding="5dp">
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp"
+    android:padding="5dp"
     android:gravity="center_vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn tháng:"
+        android:text="Tháng:"
         android:textSize="16sp"
         android:layout_marginEnd="8dp" />
 
     <Spinner
         android:id="@+id/spinner_month"
-        android:layout_width="wrap_content"
+        android:layout_width="92dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn năm:"
+        android:text="Năm:"
         android:textSize="16sp"
         android:layout_marginEnd="8dp" />
 
@@ -44,7 +45,7 @@
         android:id="@+id/tvThang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tổng tiền Tháng 8"
+        android:text="Tổng tiền Tháng"
         android:textSize="30sp"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="8dp" />
@@ -79,7 +80,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="5dp">
 
         <TextView
             android:id="@+id/tvMoney"
@@ -98,22 +99,24 @@
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="200dp"
         android:layout_marginBottom="8dp" />
 
     <!-- Danh sách ListView -->
            <ListView
             android:id="@+id/List"
             android:layout_width="match_parent"
-            android:layout_height="230dp" />
-
-
-    <!-- Nút thêm chi tiêu -->
+            android:layout_height="200dp"/>
     <Button
         android:id="@+id/btnAddExpense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
-        android:layout_gravity="end" />
+        android:layout_gravity="end"
+        android:layout_marginEnd="45dp"
+        android:text="Add" />
+
+
+    <!-- Nút thêm chi tiêu -->
+
 
 </LinearLayout>

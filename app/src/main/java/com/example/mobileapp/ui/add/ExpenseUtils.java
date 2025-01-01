@@ -50,11 +50,21 @@ public class ExpenseUtils {
                                 // Sau khi tất cả các tác vụ hoàn thành, gọi callback để trả về kết quả
                                 listener.onExpensesLoaded(listItems, pieEntries);
                             });
+                        } else {
+                            // Nếu không có "days" trong dữ liệu tháng, gọi callback với dữ liệu trống
+                            listener.onExpensesLoaded(new ArrayList<>(), new ArrayList<>());
                         }
+                    } else {
+                        // Nếu không có dữ liệu cho monthKey (tháng đó không tồn tại trong Firestore), gọi callback với dữ liệu trống
+                        listener.onExpensesLoaded(new ArrayList<>(), new ArrayList<>());
                     }
                 })
-                .addOnFailureListener(e -> Log.e("ExpenseUtils", "Error loading expenses", e));
+                .addOnFailureListener(e -> {
+                    Log.e("ExpenseUtils", "Error loading expenses", e);
+                    listener.onExpensesLoaded(new ArrayList<>(), new ArrayList<>()); // Trả về dữ liệu trống khi gặp lỗi
+                });
     }
+
 
     private Task<Void> loadDailyExpenses(String dayKey, List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
         final TaskCompletionSource<Void> taskCompletionSource = new TaskCompletionSource<>();
@@ -86,8 +96,6 @@ public class ExpenseUtils {
 
         return taskCompletionSource.getTask();  // Trả về tác vụ đã hoàn thành
     }
-
-
 
     // Callback interface để gửi dữ liệu về Fragment
     public interface OnExpensesLoadedListener {
