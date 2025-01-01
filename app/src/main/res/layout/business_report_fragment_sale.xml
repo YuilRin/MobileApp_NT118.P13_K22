@@ -31,7 +31,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:entries="@array/month_array"
-                    android:spinnerMode="dropdown"></Spinner>
+                    android:spinnerMode="dropdown">
+
+                </Spinner>
+                <Spinner
+                    android:id="@+id/spinner_year"
+                    android:layout_marginTop="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown" />
             </LinearLayout>
 
             <LinearLayout
