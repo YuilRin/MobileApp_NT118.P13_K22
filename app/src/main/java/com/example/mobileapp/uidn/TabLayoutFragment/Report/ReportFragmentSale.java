@@ -43,14 +43,15 @@ public class ReportFragmentSale extends Fragment {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Lấy userId hiện tại
 
         Spinner spinnerMonth = rootView.findViewById(R.id.spinner_month);
+        Spinner spinnerYear = rootView.findViewById(R.id.spinner_year);
 
-        // Tạo danh sách các tháng (01 đến 12)
+        // Danh sách tháng (01-12)
         List<String> months = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
             months.add(String.format(Locale.getDefault(), "%02d", i));
         }
 
-        // Tạo Adapter cho Spinner
+        // Adapter Spinner tháng
         ArrayAdapter<String> monthAdapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_spinner_item,
@@ -59,32 +60,53 @@ public class ReportFragmentSale extends Fragment {
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMonth.setAdapter(monthAdapter);
 
-        // Lấy tháng hiện tại
-        Calendar calendar = Calendar.getInstance();
-        int currentMonth = calendar.get(Calendar.MONTH); // Giá trị từ 0 (tháng 1) đến 11 (tháng 12)
-        spinnerMonth.setSelection(currentMonth); // Đặt vị trí mặc định của Spinner
+        // Danh sách năm (5 năm gần đây và năm hiện tại)
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        List<String> years = new ArrayList<>();
+        for (int i = currentYear - 5; i <= currentYear; i++) {
+            years.add(String.valueOf(i));
+        }
 
+        // Adapter Spinner năm
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                years
+        );
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerYear.setAdapter(yearAdapter);
+
+        // Đặt giá trị mặc định là tháng hiện tại và năm hiện tại
+        int currentMonth = Calendar.getInstance().get(Calendar.MONTH); // 0-based
+        spinnerMonth.setSelection(currentMonth);
+        spinnerYear.setSelection(years.indexOf(String.valueOf(currentYear)));
 
         db.collection("users").document(userId).get().addOnSuccessListener(userDoc -> {
             if (userDoc.exists()) {
                 String companyId = userDoc.getString("companyId");
                 if (companyId != null) {
 
-                    spinnerMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    // Xử lý khi thay đổi tháng hoặc năm
+                    AdapterView.OnItemSelectedListener spinnerListener = new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            int selectedMonth = position + 1; // Vì position 0 là tháng 1
-                            loadReportData(companyId, selectedMonth, rootView); // Gọi hàm xử lý báo cáo
+                            int selectedMonth = spinnerMonth.getSelectedItemPosition() + 1;
+                            int selectedYear = Integer.parseInt((String) spinnerYear.getSelectedItem());
+                            loadReportData(companyId, selectedMonth, selectedYear, rootView);
                         }
 
                         @Override
                         public void onNothingSelected(AdapterView<?> parent) {
                             // Không làm gì
                         }
-                    });
-                    // Tải dữ liệu ban đầu cho tháng hiện tại
-                    int selectedMonth = currentMonth + 1; // Chuyển từ 0-based sang 1-based
-                    loadReportData(companyId, selectedMonth, rootView);
+                    };
+
+                    spinnerMonth.setOnItemSelectedListener(spinnerListener);
+                    spinnerYear.setOnItemSelectedListener(spinnerListener);
+
+                    // Tải dữ liệu ban đầu cho tháng và năm hiện tại
+                    int selectedMonth = currentMonth + 1;
+                    loadReportData(companyId, selectedMonth, currentYear, rootView);
                 } else {
                     Log.e("Firestore", "Không tìm thấy companyId trong tài khoản người dùng.");
                 }
@@ -93,8 +115,7 @@ public class ReportFragmentSale extends Fragment {
 
         return rootView;
     }
-
-    private void loadReportData(String companyId, int selectedMonth, View view) {
+    private void loadReportData(String companyId, int selectedMonth, int selectedYear, View view) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference donHangRef = db.collection("company")
                 .document(companyId).collection("donhang");
@@ -105,7 +126,7 @@ public class ReportFragmentSale extends Fragment {
         donHangRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 double doanhThu = 0.0;
-                double loiNhuan =0.0;
+                double loiNhuan = 0.0;
                 int soDonHang = 0;
                 int soSanPhamBanRa = 0;
 
@@ -113,44 +134,36 @@ public class ReportFragmentSale extends Fragment {
                     String date = document.getString("Date");
                     if (date != null) {
                         try {
-                            // Lọc đơn hàng theo tháng
+                            // Lọc theo tháng và năm
                             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                             Date orderDate = sdf.parse(date);
                             Calendar calendar = Calendar.getInstance();
                             calendar.setTime(orderDate);
-                            int month = calendar.get(Calendar.MONTH) + 1;
 
-                            if (month == selectedMonth) {
-                                soDonHang++; // Đếm đơn hàng
+                            int month = calendar.get(Calendar.MONTH) + 1; // 0-based
+                            int year = calendar.get(Calendar.YEAR);
+
+                            if (month == selectedMonth && year == selectedYear) {
+                                soDonHang++;
 
                                 List<Map<String, Object>> products = (List<Map<String, Object>>) document.get("products");
                                 if (products != null && !products.isEmpty()) {
                                     for (Map<String, Object> product : products) {
-
                                         String maSP = (String) product.get("maSP");
-                                        // Lấy giá bán
-                                        double giaBan = 0.0;
-                                        if (product.get("giaBan") instanceof Number) {
-                                            giaBan = ((Number) product.get("giaBan")).doubleValue();
-                                        }
 
-                                        // Lấy số lượng
-                                        double soLuong = 0.0;
-                                        if (product.get("soLuong") instanceof Number) {
-                                            soLuong = ((Number) product.get("soLuong")).doubleValue();
-                                        }
+                                        double giaBan = product.get("giaBan") instanceof Number ?
+                                                ((Number) product.get("giaBan")).doubleValue() : 0.0;
 
-                                        double giaVon =0.0;
-                                        if (product.get("giaVon") instanceof Number) {
-                                            giaVon = ((Number) product.get("giaVon")).doubleValue();
-                                        }
+                                        double soLuong = product.get("soLuong") instanceof Number ?
+                                                ((Number) product.get("soLuong")).doubleValue() : 0.0;
 
-                                        // Cộng dồn doanh thu và số lượng
+                                        double giaVon = product.get("giaVon") instanceof Number ?
+                                                ((Number) product.get("giaVon")).doubleValue() : 0.0;
+
                                         doanhThu += giaBan * soLuong;
-                                        loiNhuan += giaVon*soLuong;
+                                        loiNhuan += giaVon * soLuong;
                                         soSanPhamBanRa += soLuong;
 
-                                        // Tính tổng số lượng bán của từng sản phẩm
                                         salesMap.put(maSP, salesMap.getOrDefault(maSP, 0.0) + soLuong);
                                     }
                                 }
@@ -160,7 +173,7 @@ public class ReportFragmentSale extends Fragment {
                         }
                     }
                 }
-                loiNhuan=doanhThu-loiNhuan;
+                loiNhuan = doanhThu - loiNhuan;
 
                 // Tạo danh sách sản phẩm từ salesMap
                 for (Map.Entry<String, Double> entry : salesMap.entrySet()) {

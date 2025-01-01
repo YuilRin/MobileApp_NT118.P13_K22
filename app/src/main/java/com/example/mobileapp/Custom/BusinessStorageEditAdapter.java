@@ -44,6 +44,15 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
         return position;
     }
 
+    public interface OnQuantityChangeListener {
+        void onQuantityChanged();
+    }
+    private OnQuantityChangeListener quantityChangeListener;
+
+    public void setOnQuantityChangeListener(OnQuantityChangeListener listener) {
+        this.quantityChangeListener = listener;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -66,6 +75,9 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
             currentQuantity++;
             etSoLuong.setText(String.valueOf(currentQuantity));
             product.setSoLuong(currentQuantity); // Cập nhật số lượng trong danh sách
+            if (quantityChangeListener != null) {
+                quantityChangeListener.onQuantityChanged(); // Gửi sự kiện thay đổi
+            }
         });
 
         btnDecrease.setOnClickListener(v -> {
@@ -74,6 +86,9 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
                 currentQuantity--;
                 etSoLuong.setText(String.valueOf(currentQuantity));
                 product.setSoLuong(currentQuantity); // Cập nhật số lượng trong danh sách
+                if (quantityChangeListener != null) {
+                    quantityChangeListener.onQuantityChanged(); // Gửi sự kiện thay đổi
+                }
             }
         });
 
@@ -90,6 +105,9 @@ public class BusinessStorageEditAdapter extends BaseAdapter {
                     product.setSoLuong(soLuong); // Cập nhật số lượng trong danh sách
                 } catch (NumberFormatException e) {
                     product.setSoLuong(0); // Nếu nhập sai, đặt về 0
+                }
+                if (quantityChangeListener != null) {
+                    quantityChangeListener.onQuantityChanged(); // Gửi sự kiện thay đổi
                 }
             }
 

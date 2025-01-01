@@ -16,6 +16,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.style.UpdateLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,6 +61,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DonHangFragment extends Fragment {
     private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     private String companyId;
+    private EditText searchBar;
+    private ImageButton searchButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Nén layout cho fragment
@@ -76,6 +80,8 @@ public class DonHangFragment extends Fragment {
         }
         viewPager = view.findViewById(R.id.view_pager);
         tabLayout = view.findViewById(R.id.tab_layout);
+        searchBar = view.findViewById(R.id.search_bar);
+        searchButton = view.findViewById(R.id.search_button);
 
         // Thiết lập Adapter cho ViewPager2
         viewPager.setAdapter(new FragmentStateAdapter(this) {
@@ -123,6 +129,55 @@ public class DonHangFragment extends Fragment {
             }
         }).attach();
 
+        // Chuyển đổi trạng thái hiển thị của thanh tìm kiếm
+        searchButton.setOnClickListener(v -> {
+            if (searchBar.getVisibility() == View.GONE) {
+                searchBar.setVisibility(View.VISIBLE);
+            } else {
+                searchBar.setVisibility(View.GONE);
+                searchBar.setText(""); // Xóa nội dung tìm kiếm khi đóng
+            }
+        });
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Lấy AllOrdersFragment
+                AllOrdersFragment allOrdersFragment = (AllOrdersFragment) getChildFragmentManager()
+                        .findFragmentByTag("f0"); // Thẻ cho Fragment đầu tiên trong ViewPager2
+
+                // Lấy PaidOrdersFragment
+                PaidOrdersFragment paidOrdersFragment = (PaidOrdersFragment) getChildFragmentManager()
+                        .findFragmentByTag("f1"); // Thẻ cho Fragment thứ hai trong ViewPager2
+
+                // Lấy UnpaidOrdersFragment
+                UnpaidOrdersFragment unpaidOrdersFragment = (UnpaidOrdersFragment) getChildFragmentManager()
+                        .findFragmentByTag("f2"); // Thẻ cho Fragment thứ ba trong ViewPager2
+
+                // Lấy OtherOrdersFragment
+                OtherOrdersFragment otherOrdersFragment = (OtherOrdersFragment) getChildFragmentManager()
+                        .findFragmentByTag("f3"); // Thẻ cho Fragment thứ tư trong ViewPager2
+
+                if (s.toString().isEmpty()) {
+                    if (allOrdersFragment != null) allOrdersFragment.resetOrders();
+                    if (paidOrdersFragment != null) paidOrdersFragment.resetOrders();
+                    if (unpaidOrdersFragment != null) unpaidOrdersFragment.resetOrders();
+                    if (otherOrdersFragment != null) otherOrdersFragment.resetOrders();
+                } else {
+                    if (allOrdersFragment != null) allOrdersFragment.filterOrders(s.toString());
+                    if (paidOrdersFragment != null) paidOrdersFragment.filterOrders(s.toString());
+                    if (unpaidOrdersFragment != null) unpaidOrdersFragment.filterOrders(s.toString());
+                    if (otherOrdersFragment != null) otherOrdersFragment.filterOrders(s.toString());
+                }
+            }
+
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         add=view.findViewById(R.id.add_button);
         add.setOnClickListener(v -> showAddProductDialog(view));
@@ -166,6 +221,7 @@ public class DonHangFragment extends Fragment {
         Spinner spTinhTrang = dialogView.findViewById(R.id.sp_order_edit_tinhtrang);
         ListView lvSanPham = dialogView.findViewById(R.id.lv_order_edit_sp);
         ImageButton ibDate = dialogView.findViewById(R.id.ib_order_date);
+        TextView tvTongCong = dialogView.findViewById(R.id.tv_order_edit_total);
 
         // Calendar to store selected date
         final Calendar selectedDate = Calendar.getInstance();
@@ -234,6 +290,14 @@ public class DonHangFragment extends Fragment {
                                             productList.add(product);
                                         }
                                         BusinessStorageEditAdapter adapter = new BusinessStorageEditAdapter(requireContext(), productList);
+                                        // Lắng nghe sự thay đổi số lượng và tính tổng cộng
+                                        adapter.setOnQuantityChangeListener(() -> {
+                                            double totalAmount = 0.0;
+                                            for (ProductMini product : productList) {
+                                                totalAmount += product.getSoLuong() * product.getGiaBan(); // Tính tổng tiền
+                                            }
+                                            tvTongCong.setText("Tổng cộng: " + totalAmount); // Cập nhật tổng cộng
+                                        });
                                         lvSanPham.setAdapter(adapter);
                                     } else {
                                         Log.e("Firestore", "Lỗi khi tải dữ liệu", task.getException());
@@ -393,6 +457,8 @@ public class DonHangFragment extends Fragment {
                     Toast.makeText(requireContext(), "Lỗi lưu đơn hàng: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
+
 
 
 }

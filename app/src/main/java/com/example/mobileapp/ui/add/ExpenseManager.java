@@ -132,7 +132,6 @@ public class ExpenseManager {
             saveDailyExpense(category, amount, monthKey, dayKey, dialog);
         });
     }
-
     public void saveDailyExpense(String category, double amount, String monthKey, String dayKey, AlertDialog dialog) {
         if (currentUser == null) {
             Toast.makeText(context, "User ID not found", Toast.LENGTH_SHORT).show();
@@ -148,6 +147,7 @@ public class ExpenseManager {
 
         monthRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
+                // Lấy thông tin các ngày đã có trong tháng
                 String daysString = documentSnapshot.getString("days");
                 Set<String> daySet = new HashSet<>();
                 if (daysString != null) {
@@ -159,17 +159,42 @@ public class ExpenseManager {
                 monthRef.set(Collections.singletonMap("days", dayKey));
             }
 
-            db.collection("users").document(userId)
+            // Kiểm tra xem đã có chi tiêu cho category này trong ngày này chưa
+            DocumentReference dayRef = db.collection("users").document(userId)
                     .collection("expenses").document(monthKey)
-                    .collection(dayKey).document(category)
-                    .set(expenseData)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(context, "Expense saved successfully", Toast.LENGTH_SHORT).show();
-                        if (listener != null) {
-                            listener.onExpenseSaved();  // Trigger the callback once the expense is saved
-                        }
-                    })
-                    .addOnFailureListener(e -> Toast.makeText(context, "Error saving expense: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    .collection(dayKey).document(category);
+
+            dayRef.get().addOnSuccessListener(documentSnapshot1 -> {
+                if (documentSnapshot1.exists()) {
+                    // Nếu đã có dữ liệu, lấy giá trị cũ và cộng thêm amount
+                    double currentAmount = documentSnapshot1.getDouble(category) != null ? documentSnapshot1.getDouble(category) : 0;
+                    double newAmount = currentAmount + amount;
+
+                    // Cập nhật chi tiêu mới vào Firestore
+                    Map<String, Object> updatedExpenseData = new HashMap<>();
+                    updatedExpenseData.put(category, newAmount);
+
+                    dayRef.update(updatedExpenseData)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(context, "Expense updated successfully", Toast.LENGTH_SHORT).show();
+                                if (listener != null) {
+                                    listener.onExpenseSaved();  // Trigger the callback once the expense is saved
+                                }
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(context, "Error updating expense: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                } else {
+                    // Nếu chưa có dữ liệu cho category này, lưu dữ liệu mới
+                    dayRef.set(expenseData)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(context, "Expense saved successfully", Toast.LENGTH_SHORT).show();
+                                if (listener != null) {
+                                    listener.onExpenseSaved();  // Trigger the callback once the expense is saved
+                                }
+                            })
+                            .addOnFailureListener(e -> Toast.makeText(context, "Error saving expense: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                }
+            }).addOnFailureListener(e -> Toast.makeText(context, "Error checking daily expense: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
         }).addOnFailureListener(e -> {
             Toast.makeText(context, "Error checking month data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
@@ -177,4 +202,5 @@ public class ExpenseManager {
         // Dismiss the dialog after saving
         dialog.dismiss();
     }
+
 }

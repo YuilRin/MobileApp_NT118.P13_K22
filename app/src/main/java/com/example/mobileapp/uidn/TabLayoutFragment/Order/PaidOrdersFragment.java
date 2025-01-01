@@ -41,6 +41,9 @@ import java.util.Objects;
 public class PaidOrdersFragment extends Fragment {
     private String userId;
     private String companyId;
+    private List<BusinessOrder> orderList = new ArrayList<>();
+    private BusinessOrderAdapter orderAdapter;
+    private List<BusinessOrder> fullOrderList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -75,8 +78,7 @@ public class PaidOrdersFragment extends Fragment {
 
     private void UpdateList(View view) {
         ListView allOrderListView = view.findViewById(R.id.lv_order_all);
-        List<BusinessOrder> orderList = new ArrayList<>();
-        BusinessOrderAdapter orderAdapter = new BusinessOrderAdapter(requireContext(), orderList);
+        orderAdapter = new BusinessOrderAdapter(requireContext(), orderList);
         allOrderListView.setAdapter(orderAdapter);
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -87,6 +89,7 @@ public class PaidOrdersFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
                         orderList.clear();
+                        fullOrderList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             String paymentStatus = document.getString("Paymentstatus");
                             BusinessOrder order = new BusinessOrder(
@@ -97,8 +100,10 @@ public class PaidOrdersFragment extends Fragment {
                                     document.getDouble("Productcount"),
                                     document.getDouble("Quantity")
                             );
-                            if(paymentStatus.equals("Đã thanh toán"))
+                            if(paymentStatus.equals("Đã thanh toán")) {
                                 orderList.add(order);
+                                fullOrderList.add(order);
+                            }
                         }
                         orderAdapter.notifyDataSetChanged();
                     } else {
@@ -114,6 +119,28 @@ public class PaidOrdersFragment extends Fragment {
             showOrderOptionsDialog(selectedOrder, () -> UpdateList(view));
             return true;
         });
+    }
+
+    public void filterOrders(String query) {
+        if (query == null || query.isEmpty()) {
+            resetOrders();
+            return;
+        }
+        List<BusinessOrder> filteredList = new ArrayList<>();
+        for (BusinessOrder order : fullOrderList) {
+            if (order.getOrderId().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(order);
+            }
+        }
+        orderList.clear();
+        orderList.addAll(filteredList);
+        orderAdapter.notifyDataSetChanged();
+    }
+
+    public void resetOrders() {
+        orderList.clear();
+        orderList.addAll(fullOrderList);
+        orderAdapter.notifyDataSetChanged();
     }
 
     private void showOrderOptionsDialog(BusinessOrder order, Runnable onComplete) {
@@ -145,11 +172,11 @@ public class PaidOrdersFragment extends Fragment {
 
 
         ListView lvSanPham = dialogView.findViewById(R.id.lv_order_edit_sp);
-        Button BtnAdd= dialogView.findViewById(R.id.btn_Add);
+
         TextView txtAdd= dialogView.findViewById(R.id.tv_order_edit_listsp);
 
         txtAdd.setVisibility(View.GONE);
-        BtnAdd.setVisibility(View.GONE);
+
         lvSanPham.setVisibility(View.GONE);
 
         TextView txtHeader= dialogView.findViewById(R.id.tv_order_edit_header);
