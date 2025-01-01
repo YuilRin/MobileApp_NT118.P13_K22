@@ -5,13 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp"
-    android:background="#333333">
+    android:background="#EEEEEE">
 
     <ImageView
         android:id="@+id/imgAvatar"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_person" />
+        android:src="@drawable/ic_person"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Chức vụ"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="14sp"/>
 
 
@@ -40,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Được cấp: "
-                android:textColor="#BBE9FF"
+                android:textColor="@android:color/black"
                 />
 
             <TextView
@@ -48,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="500,000,000 đ"
-                android:textColor="@android:color/white"
+                android:textColor="#3194D1"
                 android:textSize="14sp"
                 />
         </LinearLayout>

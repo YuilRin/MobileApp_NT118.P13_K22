@@ -6,28 +6,52 @@
     android:layout_height="match_parent">
 
     <!-- TextView for title -->
-    <TextView
-        android:id="@+id/tv_title"
+    <EditText
+        android:id="@+id/tv_khoanThu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Khoản thu tháng 8"
+        android:hint="Tên khoản thu"
         android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp" />
+    <!-- DatePicker for Ngày -->
+    <Button
+        android:id="@+id/btn_select_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn ngày"
+        app:layout_constraintTop_toBottomOf="@id/tv_khoanThu"
+        app:layout_constraintStart_toEndOf="@id/tv_selected_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"/>
+    <TextView
+        android:id="@+id/tv_selected_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ngày đã chon "
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_khoanThu"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
 
     <!-- Button for create -->
 
     <!-- EditText for Số tiền chi -->
     <EditText
-        android:id="@+id/et_so_tien_chi"
+        android:id="@+id/et_so_tien_thu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Số tiền chi"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        android:hint="Số tiền thu"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/btn_select_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
@@ -40,7 +64,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
 
-        app:layout_constraintTop_toBottomOf="@id/et_so_tien_chi"
+        app:layout_constraintTop_toBottomOf="@id/et_so_tien_thu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
@@ -66,6 +90,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Ghi chú"
+        android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/spinner_nguon_tien"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

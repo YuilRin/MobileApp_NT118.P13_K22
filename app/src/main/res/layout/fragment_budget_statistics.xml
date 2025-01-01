@@ -11,61 +11,230 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#333333"
-        android:padding="16dp"
+        android:background="#B3C8CF"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:weightSum="4"
         >
 
-        <!-- Tabs - Nợ / Lịch sử -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2"
-            android:background="@drawable/tab_background">
+            android:padding="8dp"
+            android:background="@drawable/rounded_corners_search"
+            android:layout_margin="12dp">
 
-            <TextView
-                android:id="@+id/tab_no"
+            <!-- Icon kính lúp -->
+            <ImageView
+                android:id="@+id/search_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/business_ic_search"
+                android:contentDescription="Search Icon"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Ô tìm kiếm -->
+            <EditText
+                android:id="@+id/search_edit_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:padding="4dp"
-                android:text="Nợ"
-                android:textColor="@color/white"
-                android:background="@drawable/tab_selected_background"
-                android:textStyle="bold" />
+                android:hint="Tìm kiếm"
+                android:background="@android:color/transparent"
+                android:padding="0dp"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:imeOptions="actionSearch"
+                android:inputType="text" />
 
-            <TextView
-                android:id="@+id/tab_lich_su"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="4dp"
-                android:text="Lịch sử"
-                android:textColor="@color/gray"
-                android:textStyle="bold" />
+
+                <!-- Icon bộ lọc -->
+                <ImageButton
+                    android:id="@+id/btn_filter"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:src="@drawable/ic_filter"
+                    android:contentDescription="Filter Icon"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="8dp" />
+
+
         </LinearLayout>
 
-        <!-- RecyclerView hiển thị danh sách các khoản chi tiêu -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="16dp" />
 
-        <!-- Nút Thêm Nợ -->
-        <Button
-            android:id="@+id/btn_add_debt"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Thêm nợ cho tháng này"
-            android:textStyle="bold"
-            android:backgroundTint="@color/gray"
-            android:textColor="@color/black"
-            android:padding="16dp" />
+            android:orientation="vertical"
+            android:background="@drawable/rounded_corners_debt"
+            android:layout_weight="4"
+
+            >
+
+            <!-- Tabs - Nợ / Lịch sử -->
+            <LinearLayout
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginRight="25dp"
+                android:layout_marginLeft="25dp"
+                android:weightSum="2"
+                android:background="@drawable/tab_background">
+
+                <TextView
+                    android:id="@+id/tab_no"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/tab_selected_background"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:text="Nợ phải trả"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tab_lich_su"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textSize="11sp"
+                    android:text="Khoản thu"
+                    android:padding="8dp"
+                    android:textColor="#40FFFFFF"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/DanhSachNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Danh sách nợ"
+                    android:textSize="24sp"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"
+                    />
+
+                <!-- Ve sau ca lay thoi gian thuc o day -->
+                <TextView
+                    android:id="@+id/tv_NgayHienTai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="20dp"
+                    android:text="Thời gian: 14:30p 16/12/2024"
+                    android:textSize="9sp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/white"/>
+
+
+            </LinearLayout>
+            <!-- RecyclerView hiển thị danh sách các khoản chi tiêu -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="0dp"
+                android:visibility="visible"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_KhoanThu"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="0dp"
+                android:visibility="gone"/>
+            <!-- Đường kẻ ngang -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_corners_debt"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                >
+
+                <!-- Nút Thêm Nợ -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_Them"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="23dp"
+                    android:text="Thêm"
+                    android:textStyle="bold"
+                    android:textColor="#FFF8DE"
+                    android:textSize="11sp"
+                    android:background="@drawable/rounded_corners_button"
+                    android:padding="0dp" />
+
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+
+                <!-- Nút Thêm Nợ -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnBoDuyet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bỏ Duyệt"
+                    android:textStyle="bold"
+                    android:textColor="#FFF8DE"
+                    android:textSize="11sp"
+                    android:background="@drawable/rounded_corners_button"
+                    android:padding="0dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
+                <!-- Nút Thêm Nợ -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_Duyet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="23dp"
+                    android:text="Duyệt"
+                    android:textStyle="bold"
+                    android:textColor="#FFF8DE"
+                    android:layout_gravity="end"
+                    android:textSize="11sp"
+                    android:background="@drawable/rounded_corners_button"
+                    android:padding="0dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 

@@ -4,12 +4,19 @@ public class ProductMini {
     private String maSP;      // Mã sản phẩm
     private double soLuong;
     private double giaBan; // Số lượng nhập
+    private double giaVon;
 
     // Constructor
     public ProductMini(String maSP, double soLuong,double giaBan) {
         this.maSP = maSP;
         this.soLuong = soLuong;
         this.giaBan=giaBan;
+    }
+    public ProductMini(String maSP, double soLuong,double giaBan,double giaVon) {
+        this.maSP = maSP;
+        this.soLuong = soLuong;
+        this.giaBan=giaBan;
+        this.giaVon=giaVon;
     }
     public ProductMini(String maSP, double soLuong) {
         this.maSP = maSP;
@@ -45,6 +52,9 @@ public class ProductMini {
 
     public double getGiaBan() {
         return giaBan;
+    }
+    public double getGiaVon() {
+        return giaVon;
     }
 
     public void setGiaBan(double giaBan) {

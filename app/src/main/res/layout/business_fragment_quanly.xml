@@ -24,6 +24,14 @@
         app:layout_constraintBottom_toTopOf="@+id/layoutTongThuChi"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+    <Spinner
+        android:id="@+id/spinner_month"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/tvThuChi"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </Spinner>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutTongThuChi"

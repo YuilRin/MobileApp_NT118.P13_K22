@@ -7,10 +7,10 @@
     android:background="@drawable/background_gradient"
     tools:context=".ui.budget.BudgetFragment">
 
-    <HorizontalScrollView
+    <LinearLayout
         android:id="@+id/horizontalScrollViewOption"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
         android:background="#333333"
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,7 +22,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -33,10 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
-                android:padding="18dp"
                 android:text="@string/title_budget"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_size_10sp"
+                android:textSize="8sp"
                 android:textStyle="bold" />
 
             <!-- Nút thứ hai -->
@@ -46,10 +45,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
-                android:padding="18dp"
                 android:text="@string/debt"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_size_10sp" />
+
+                android:textSize="8sp" />
 
             <!-- Nút thứ ba -->
             <Button
@@ -58,21 +57,19 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
-                android:padding="18dp"
                 android:text="@string/financial_goals"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/txt_size_10sp" />
+                android:textSize="8sp" />
 
             <!-- có thể thêm nhiều nút hơn vào đây -->
 
         </LinearLayout>
-    </HorizontalScrollView>
+    </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="50dp"
         app:layout_constraintTop_toBottomOf="@id/horizontalScrollViewOption"
         app:layout_constraintBottom_toBottomOf="parent"

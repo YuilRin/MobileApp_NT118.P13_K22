@@ -6,14 +6,37 @@
     android:layout_height="match_parent">
 
     <!-- TextView for title -->
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/et_khoanchi"
+        android:layout_width="match_parent"
+        android:hint="Ten Khoan chi"
         android:layout_height="wrap_content"
-        android:text="Khoản chi"
+
         android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+    <Button
+        android:id="@+id/btn_select_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn ngày"
+        app:layout_constraintTop_toBottomOf="@id/et_khoanchi"
+        app:layout_constraintStart_toEndOf="@id/tv_selected_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"/>
+    <TextView
+        android:id="@+id/tv_selected_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ngày đã chon "
+        android:textStyle="bold"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/et_khoanchi"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp" />
@@ -26,8 +49,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Số tiền chi"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/tv_selected_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
@@ -66,6 +89,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Ghi chú"
+        android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/spinner_nguon_tien"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

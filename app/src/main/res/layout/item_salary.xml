@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="4dp"
-    android:background="#333333">
+    android:background="#EEEEEE">
 
     <TextView
         android:id="@+id/tvMainTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is Main Title"
-        android:textColor="@android:color/white"
+        android:text="Thu nhập"
+        android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal"
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Thu nhập: 1,000,000.000 đ"
-        android:textColor="@color/yellow"
+        android:textColor="#3E5879"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_gravity="end"
@@ -40,7 +40,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#FFFFFF"
+        android:background="@android:color/black"
         android:layout_marginTop="8dp" />
 
 
