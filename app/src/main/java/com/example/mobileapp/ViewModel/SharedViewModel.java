@@ -3,10 +3,12 @@ package com.example.mobileapp.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ public class SharedViewModel extends ViewModel {
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private final MutableLiveData<Integer> selectedMonth = new MutableLiveData<>();
+    private final MutableLiveData<Integer> selectedYear = new MutableLiveData<>();
 
     public LiveData<Integer> getSelectedMonth() {
         return selectedMonth;
@@ -24,6 +27,14 @@ public class SharedViewModel extends ViewModel {
 
     public void setSelectedMonth(int month) {
         selectedMonth.setValue(month);
+    }
+
+    public LiveData<Integer> getSelectedYear() {
+        return selectedYear;
+    }
+
+    public void setSelectedYear(int year) {
+        selectedYear.setValue(year);
     }
 
     public SharedViewModel() {
@@ -89,6 +100,7 @@ public class SharedViewModel extends ViewModel {
         });
     }
 
+
     // Lớp để ánh xạ dữ liệu trạng thái
     public static class StatusData {
         private List<String> statusList;
@@ -101,8 +113,7 @@ public class SharedViewModel extends ViewModel {
             this.statusList = statusList;
         }
 
-        public List<String> getStatusList()
-        {
+        public List<String> getStatusList() {
             return statusList;
         }
 
