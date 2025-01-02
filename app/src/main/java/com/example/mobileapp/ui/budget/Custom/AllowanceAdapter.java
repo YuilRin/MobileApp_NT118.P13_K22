@@ -41,7 +41,7 @@ public class AllowanceAdapter extends ListAdapter<AllowanceItem ,AllowanceAdapte
                 @Override
                 public boolean areItemsTheSame(@NonNull AllowanceItem oldItem, @NonNull AllowanceItem newItem) {
                     // So sánh ID duy nhất
-                    return Objects.equals(oldItem.getId(), newItem.getId());
+                    return false;
                 }
 
                 @Override
