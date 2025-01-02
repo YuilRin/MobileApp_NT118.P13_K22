@@ -25,45 +25,96 @@ public class ExpenseUtils {
         this.monthKey = monthKey;
     }
     public void loadExpenses(final OnExpensesLoadedListener listener) {
+        String key = monthKey;
+
+        // Tạo danh sách lưu trữ chi tiêu và thu nhập
+        final List<ExpenseItem> allItems = new ArrayList<>();
+        final ArrayList<PieEntry> allPieEntries = new ArrayList<>();
+
+        // Biến cờ kiểm tra xem chi tiêu và thu nhập đã được tải xong chưa
+        final int[] count = {0}; // Dùng mảng để thay đổi giá trị trong lambda
+
+        // Lấy chi tiêu
+        fetchData("NganSach_chi_tieu", key, false, new OnExpensesLoadedListener() {
+            @Override
+            public void onExpensesLoaded(List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
+                // Thêm chi tiêu vào danh sách chung
+                allItems.addAll(listItems);
+                allPieEntries.addAll(pieEntries);
+
+                // Tăng biến cờ
+                count[0]++;
+
+                // Kiểm tra xem cả chi tiêu và thu nhập đã được tải chưa
+                if (count[0] == 2) {
+                    // Gọi listener khi cả chi tiêu và thu nhập đã được tải xong
+                    listener.onExpensesLoaded(allItems, allPieEntries);
+                }
+            }
+        });
+
+        // Lấy thu nhập
+        fetchData("NganSach_thu_nhap", key, true, new OnExpensesLoadedListener() {
+            @Override
+            public void onExpensesLoaded(List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
+                // Thêm thu nhập vào danh sách chung
+                allItems.addAll(listItems);
+                allPieEntries.addAll(pieEntries);
+
+                // Tăng biến cờ
+                count[0]++;
+
+                // Kiểm tra xem cả chi tiêu và thu nhập đã được tải chưa
+                if (count[0] == 2) {
+                    // Gọi listener khi cả chi tiêu và thu nhập đã được tải xong
+                    listener.onExpensesLoaded(allItems, allPieEntries);
+                }
+            }
+        });
+    }
+
+    private void fetchData(String collectionName, String key, boolean isIncome, final OnExpensesLoadedListener listener) {
         db.collection("users")
                 .document(userId)
-                .collection("expenses")
-                .document(monthKey)
+                .collection(collectionName)
+                .whereEqualTo("yearMonth", key)
                 .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String daysString = documentSnapshot.getString("days");
-                        if (daysString != null) {
-                            String[] dayKeys = daysString.split(" ");
+                .addOnSuccessListener(querySnapshot -> {
+                    if (!querySnapshot.isEmpty()) {
+                        List<ExpenseItem> listItems = new ArrayList<>();
+                        ArrayList<PieEntry> pieEntries = new ArrayList<>();
 
-                            List<ExpenseItem> listItems = new ArrayList<>();
-                            ArrayList<PieEntry> pieEntries = new ArrayList<>();
-                            List<Task<Void>> tasks = new ArrayList<>();
+                        for (DocumentSnapshot doc : querySnapshot) {
+                            String date = doc.getString("date");
+                            String mainTitle = doc.getString("mainTitle");
 
-                            // Lấy chi tiêu cho mỗi ngày và thêm vào danh sách các tasks
-                            for (String dayKey : dayKeys) {
-                                tasks.add(loadDailyExpenses(dayKey, listItems, pieEntries));
+                            // Thêm dấu "*" cho thu nhập
+                            if (isIncome) {
+                                mainTitle = "*" + mainTitle;
                             }
 
-                            // Chờ tất cả các tác vụ hoàn thành
-                            Tasks.whenAllSuccess(tasks).addOnCompleteListener(task -> {
-                                // Sau khi tất cả các tác vụ hoàn thành, gọi callback để trả về kết quả
-                                listener.onExpensesLoaded(listItems, pieEntries);
-                            });
-                        } else {
-                            // Nếu không có "days" trong dữ liệu tháng, gọi callback với dữ liệu trống
-                            listener.onExpensesLoaded(new ArrayList<>(), new ArrayList<>());
+                            // Lấy tongSoTien dưới dạng float
+                            Double tongSoTienDouble = doc.getDouble("tongSoTien");
+                            float tongSoTien = (tongSoTienDouble != null) ? tongSoTienDouble.floatValue() : 0f;
+
+                            listItems.add(new ExpenseItem(mainTitle, tongSoTien, date));
+                            pieEntries.add(new PieEntry(tongSoTien, mainTitle));
                         }
+
+                        // Gọi callback với kết quả
+                        listener.onExpensesLoaded(listItems, pieEntries);
                     } else {
-                        // Nếu không có dữ liệu cho monthKey (tháng đó không tồn tại trong Firestore), gọi callback với dữ liệu trống
+                        Log.d("Firestore", "No documents found for collection: " + collectionName);
                         listener.onExpensesLoaded(new ArrayList<>(), new ArrayList<>());
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("ExpenseUtils", "Error loading expenses", e);
-                    listener.onExpensesLoaded(new ArrayList<>(), new ArrayList<>()); // Trả về dữ liệu trống khi gặp lỗi
+                    Log.e("Firestore", "Error fetching documents for collection: " + collectionName, e);
+                    listener.onExpensesLoaded(new ArrayList<>(), new ArrayList<>());
                 });
     }
+
+
 
 
     private Task<Void> loadDailyExpenses(String dayKey, List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
