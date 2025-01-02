@@ -51,10 +51,11 @@ public class BudgetFragmentOverView extends Fragment {
     private TextView tvTongThuNhap, tvTongChiPhi;
     private BudgetViewModel budgetViewModel;
     private Button ThemNganSach;
-    Spinner spinnerPhanLoai, spinnerThuChi;
-    RadioButton radioChonPhanLoai, radioTaoPhanLoai;
-    EditText edt_NhapPhanLoai, edt_NoiDung, edt_SoTien;
-    TextView tv_TongThuNhap, tv_TongHaoPhi, tv_SoDuHienTai, Tv_DenCuoiThang, tv_SoTienCoThe, tv_TrangThai;
+    private Spinner spinnerPhanLoai, spinnerThuChi;
+    private RadioButton radioChonPhanLoai, radioTaoPhanLoai;
+    private EditText edt_NhapPhanLoai, edt_NoiDung, edt_SoTien;
+    private TextView tv_TongThuNhap, tv_TongHaoPhi, tv_SoDuHienTai, Tv_DenCuoiThang, tv_SoTienCoThe, tv_TrangThai;
+
 
     @Nullable
     @Override
@@ -146,6 +147,10 @@ public class BudgetFragmentOverView extends Fragment {
         budgetViewModel.gettongTatCaSoTienChiTieu().observe(getViewLifecycleOwner(), Tong -> {
             tvTongChiPhi.setText("Tổng chi phí: " + dinhDangLaiSoTien(Tong) + " đ");
             HienThiTongQuan();
+        });
+
+        budgetViewModel.getDanhSachPhanLoai().observe(getViewLifecycleOwner(), DanhSach->{
+
         });
 
 
@@ -258,7 +263,6 @@ public class BudgetFragmentOverView extends Fragment {
         adapterThamChieu.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerThuChi.setAdapter(adapterThamChieu);
 
-        //thiet lap spinner cho phan loai
         SalaryItem thamchieuphanloai = new SalaryItem();
         thamchieuphanloai = budgetViewModel.getThuNhapItemsData().getValue().get(VitriCha);
         List<String> ThamChieuPhanLoai = new ArrayList<>();
@@ -270,6 +274,24 @@ public class BudgetFragmentOverView extends Fragment {
         );
         adapterThamChieuPhanLoai.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPhanLoai.setAdapter(adapterThamChieuPhanLoai);
+
+
+//        budgetViewModel.loadDanhSachPhanLoaiFirebase();
+//
+//        budgetViewModel.getDanhSachPhanLoai().observe(getViewLifecycleOwner(), Danhsach ->{
+//            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+//                    requireContext(),
+//                    android.R.layout.simple_spinner_item,
+//                    Danhsach
+//            );
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            spinnerPhanLoai.setAdapter(adapter);
+//
+//        });
+//
+//        spinnerPhanLoai.setSelection();
+//        budgetViewModel.loadDanhSachPhanLoaiFirebase();
+
 
         btnXoaPhanLoai.setText("Xóa thu nhập này");
         btnXoaPhanLoai.setOnClickListener(v-> {
@@ -324,7 +346,6 @@ public class BudgetFragmentOverView extends Fragment {
             ChonAnhDeLuu = null;
             dialog.dismiss();
         });
-
 
         dialog.show();
     }
@@ -720,7 +741,7 @@ public class BudgetFragmentOverView extends Fragment {
         }
 
         builder.setTitle("Bạn chắc chắn xóa phân loại này");
-        builder.setMessage("Xóa phân loại này sẽ xóa hết đi những nội dung đang có trong phân loại! \nBạn có chắc " +
+        builder.setMessage("Bạn có chắc " +
                 "chắn sẽ xóa nó đi?");
         String TenPhanLoai = selectedItem != null ? selectedItem.toString() : "";
 
@@ -731,11 +752,9 @@ public class BudgetFragmentOverView extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 //thuc hien xoa di moi noi dung trong phan loai do
                 budgetViewModel.XoaDanhSachPhanLoai(phanloai);
-                budgetViewModel.removeThuNhapTrenPhanLoai(TenPhanLoai);
-                budgetViewModel.removeChiTieuTrenPhanLoai(TenPhanLoai);
-                dialog.dismiss();
             }
         });
+
 
         builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
             @Override

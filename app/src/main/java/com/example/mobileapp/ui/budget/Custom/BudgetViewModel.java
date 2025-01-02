@@ -68,7 +68,6 @@ public class BudgetViewModel extends ViewModel {
     public MutableLiveData<List<String>> getDanhSachPhanLoai() {
         if(DanhSachPhanLoai == null) {
             DanhSachPhanLoai = new MutableLiveData<>(new ArrayList<>());
-
         }
         return DanhSachPhanLoai;
     }
@@ -115,7 +114,6 @@ public class BudgetViewModel extends ViewModel {
                     Log.e("BudgetViewModel", "Error loading thu nhap from Firestore: ", e);
                 });
     }
-
 
 
 
@@ -321,6 +319,64 @@ public class BudgetViewModel extends ViewModel {
 
 
     }
+
+    public void removeSalaryItem(boolean isIncome, String TenPhanLoai) {
+        if (TenPhanLoai == null || TenPhanLoai.isEmpty()) {
+            Log.e("BudgetViewModel", "Tên phân loại không hợp lệ");
+            return;
+        }
+
+        // Lấy danh sách cục bộ
+        List<SalaryItem> oldList = isIncome
+                ? getThuNhapItemsData().getValue()
+                : getChiTieuItemsData().getValue();
+
+        if (oldList == null) {
+            Log.e("BudgetViewModel", "Danh sách hiện tại null");
+            return;
+        }
+
+        // Tìm và xóa mục theo tên phân loại
+        List<SalaryItem> newList = new ArrayList<>(oldList);
+        SalaryItem itemToRemove = null;
+
+        // Cập nhật Firestore
+        String collectionName = isIncome ? "NganSach_thu_nhap" : "NganSach_chi_tieu";
+        if (!UserId.isEmpty()) {
+            firestore.collection("users")
+                    .document(UserId)
+                    .collection(collectionName)
+                    .document(itemToRemove.getId())
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Log.d("BudgetViewModel", "Xóa thành công từ Firestore: "))
+                    .addOnFailureListener(e -> Log.e("BudgetViewModel", "Lỗi khi xóa từ Firestore", e));
+        }
+
+        for (SalaryItem item : oldList) {
+            if (TenPhanLoai.equals(item.getMainTitle())) {
+                itemToRemove = item;
+                break;
+            }
+        }
+
+        if (itemToRemove == null) {
+            Log.e("BudgetViewModel", "Không tìm thấy mục với tên phân loại: " + TenPhanLoai);
+            return;
+        }
+
+        newList.remove(itemToRemove); // Xóa mục khỏi danh sách cục bộ
+
+
+        // Cập nhật lại danh sách cục bộ
+        if (isIncome) {
+            getThuNhapItemsData().setValue(newList);
+            calculateTotalSum(newList, true);
+        } else {
+            getChiTieuItemsData().setValue(newList);
+            calculateTotalSum(newList, false);
+        }
+    }
+
 
     public void removeSalaryItem(boolean isIncome, int position) {
         // 1) Lấy danh sách cục bộ
@@ -730,7 +786,7 @@ public class BudgetViewModel extends ViewModel {
 
     public void loadDanhSachPhanLoaiFirebase() {
         if (UserId == null || UserId.trim().isEmpty()) {
-            Log.e("BudgetViewModel", "loadDanhSachPhanLoaiFirebase: UserId is empty");
+            Log.e("BudgetViewModel", "UserId is empty");
             return;
         }
 
@@ -750,13 +806,17 @@ public class BudgetViewModel extends ViewModel {
                             }
                         }
                     }
-                    DanhSachPhanLoai.setValue(result);
-                    Log.d("BudgetViewModel", "loadDanhSachPhanLoaiFirebase: " + result.size() + " items loaded");
+                    // Chỉ cập nhật LiveData nếu dữ liệu mới khác với dữ liệu cũ
+                    if (!result.equals(DanhSachPhanLoai.getValue())) {
+                        DanhSachPhanLoai.setValue(result);
+                    }
+                    Log.d("BudgetViewModel", "Danh sách phân loại tải thành công: " + result.size());
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("BudgetViewModel", "Error loading phan_loai: ", e);
+                    Log.e("BudgetViewModel", "Lỗi khi tải danh sách phân loại: ", e);
                 });
     }
+
 
 
 
@@ -793,40 +853,35 @@ public class BudgetViewModel extends ViewModel {
 
     public void XoaDanhSachPhanLoai(String PhanLoaiXoa) {
         if (PhanLoaiXoa == null || PhanLoaiXoa.trim().isEmpty()) {
+            Log.e("BudgetViewModel", "Phân loại cần xóa không hợp lệ");
             return;
         }
 
-        List<String> currentList = DanhSachPhanLoai.getValue();
-        if (currentList == null || currentList.isEmpty()) {
-            return;
-        }
-
-        boolean removed = currentList.remove(PhanLoaiXoa);
-        if (removed) {
-            DanhSachPhanLoai.setValue(currentList);
-
-            // Nếu bạn muốn xóa từ Firestore:
-            firestore.collection("users").document(UserId)
-                    .collection("ngan_sach").document("myNganSach")
+        // Tìm và xóa trên Firestore
+        firestore.collection("users").document(UserId)
+                .collection("ngan_sach").document("myNganSach")
                 .collection("phan_loai")
                 .whereEqualTo("phan_loai", PhanLoaiXoa)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         doc.getReference().delete()
-                            .addOnSuccessListener(aVoid -> Log.d("BudgetViewModel", "Phân loại đã được xóa từ Firestore"))
-                            .addOnFailureListener(e -> Log.e("BudgetViewModel", "Error xóa phân loại từ Firestore: ", e));
+                                .addOnSuccessListener(aVoid -> {
+                                    // Xóa thành công, cập nhật LiveData
+                                    List<String> currentList = DanhSachPhanLoai.getValue();
+                                    if (currentList != null && currentList.remove(PhanLoaiXoa)) {
+                                        DanhSachPhanLoai.setValue(currentList);
+                                    }
+                                    Log.d("BudgetViewModel", "Phân loại xóa thành công: " + PhanLoaiXoa);
+                                })
+                                .addOnFailureListener(e -> Log.e("BudgetViewModel", "Lỗi khi xóa phân loại: ", e));
                     }
-                    loadDanhSachPhanLoaiFirebase();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("BudgetViewModel", "Error tìm phân loại để xóa: ", e);
+                    Log.e("BudgetViewModel", "Lỗi khi tìm phân loại để xóa: ", e);
                 });
-
-        } else {
-            Log.e("BudgetViewModel", "XoaDanhSachPhanLoai: Phân loại không tồn tại trong danh sách");
-        }
     }
+
 
     public List<String> LayDanhSachPhanLoai() {
 
