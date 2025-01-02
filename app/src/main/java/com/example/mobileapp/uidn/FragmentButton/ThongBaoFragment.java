@@ -12,6 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 
 import android.os.Message;
@@ -28,6 +33,7 @@ import com.example.mobileapp.Class.BusinessNotification;
 import com.example.mobileapp.Custom.BusinessNotificationAdapter;
 import com.example.mobileapp.R;
 import com.example.mobileapp.ViewModel.SharedViewModel;
+import com.example.mobileapp.uidn.ThongBao.DailySummaryWorker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,6 +52,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.transform.Result;
 
@@ -74,7 +81,7 @@ public class ThongBaoFragment extends Fragment {
             }
         }
        notificationListView = view.findViewById(R.id.notification_list_view);
-        calculateFinancial();
+       // calculateFinancial();
 //        // Tạo danh sách thông báo mẫu
 //
 //        notificationList.add(new BusinessNotification("Thông báo 1", "2023-10-28", "Nội dung thông báo 1"));
@@ -87,12 +94,16 @@ public class ThongBaoFragment extends Fragment {
         notificationAdapter = new BusinessNotificationAdapter(requireContext(), notificationList);
         notificationListView.setAdapter(notificationAdapter);
 
+        // Lên lịch gửi thông báo hàng ngày
+        //scheduleDailySummary();
+
         fetchNotifications();
+
 
         return view; // Trả về view đã nén
     }
     private void fetchNotifications() {
-        // Truy vấn dữ liệu thông báo (thay đổi logic để phù hợp với cấu trúc của bạn)
+        // Truy vấn dữ liệu thông báo
         FirebaseFirestore.getInstance().collection("users")
                 .document(userId)
                 .get()
@@ -127,108 +138,6 @@ public class ThongBaoFragment extends Fragment {
 
     }
 
-    public void calculateFinancial () {
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseFirestore.getInstance().collection("users")
-                    .document(userId)
-                    .get()
-                    .addOnSuccessListener(userDoc -> {
-                        if (userDoc.exists()) {
-                            companyId = userDoc.getString("companyId");
-
-                            CollectionReference donhangRef = db.collection("company")
-                                    .document(companyId)
-                                    .collection("donhang");
-
-                            android.icu.util.Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                            String today = dateFormat.format(calendar.getTime());
-
-                            donhangRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-                                int totalDonHangToday = 0;
-                                int totalRevenueToday = 0;
-                                int TongLoiNhan = 0;
-
-                                for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                    Map<String, Object> data = document.getData();
-                                    String date = (String) data.get("Date");
-                                    Number total = (Number) data.get("Total");
-                                    Number loiNhuan = data.get("TongVon") != null ? (Number) data.get("TongVon") : 0.0;
-                                    String paymentStatus = (String) data.get("Paymentstatus");
-
-                                    // Today's orders
-                                    if (date.equals(today)) {
-                                        totalDonHangToday++;
-                                        totalRevenueToday += total.intValue();
-                                        TongLoiNhan += loiNhuan.intValue();
-                                    }
-                                    TongLoiNhan = totalRevenueToday - TongLoiNhan;
-                                }
-                                // Gửi thông báo hoặc hiển thị kết quả
-                                sendNotification(totalDonHangToday, totalRevenueToday, TongLoiNhan);
-
-                            });
-                        }
-        });
-    }
-
-
-
-    private void sendNotification(int orderCountToday, double revenueToday, double profitToday) {
-
-
-        // Chuẩn bị dữ liệu
-        String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String title = "Báo cáo tài chính ";
-        String content = String.format(
-                "Hôm nay có %d đơn hàng, doanh thu: %.0f VND, lợi nhuận: %.0f VND",
-                orderCountToday, revenueToday, profitToday);
-
-
-        Map<String, Object> notification = new HashMap<>();
-        notification.put("title", title);
-        notification.put("date", today);
-        notification.put("content", content);
-
-        //Gui email
-        FirebaseFirestore dbf = FirebaseFirestore.getInstance();
-        dbf.collection("users")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot document : task.getResult()) {
-                            String email = document.getString("email");
-                            sendEmail(email, title, content);
-                        }
-                    } else {
-                        Log.e("ThongBaoFragment", "Lỗi khi lấy email từ Firebase", task.getException());
-                    }
-                });
-
-        // Gửi dữ liệu lên Firestore
-        FirebaseFirestore.getInstance().collection("users")
-                .document(userId)
-                .get()
-                .addOnSuccessListener(userDoc -> {
-                    if (userDoc.exists()) {
-                        companyId = userDoc.getString("companyId");
-
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        db.collection("company")
-                                .document(companyId)
-                                .collection("thongbao")
-                                .add(notification) // Sử dụng add() để tạo tài liệu mới
-                                .addOnSuccessListener(documentReference -> {
-                                    Log.d("Firebase", "Thông báo đã được gửi: " + documentReference.getId());
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e("Firebase", "Lỗi khi gửi thông báo", e);
-                                });
-                    }
-                });
-    }
-
 
 
 
@@ -243,6 +152,43 @@ public class ThongBaoFragment extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void scheduleDailySummary() {
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        // Thời gian chạy lại hàng ngày
+        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
+                DailySummaryWorker.class,
+                1, TimeUnit.DAYS
+        )
+                .setConstraints(constraints)
+                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+                .build();
+
+        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+                "DailySummaryWorker",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                dailyWorkRequest
+        );
+    }
+
+    // Tính thời gian delay để bắt đầu vào 23:59
+    private long calculateInitialDelay() {
+        Calendar current = Calendar.getInstance();
+        Calendar target = Calendar.getInstance();
+
+        target.set(Calendar.HOUR_OF_DAY, 17);
+        target.set(Calendar.MINUTE, 30);
+        target.set(Calendar.SECOND, 0);
+
+        if (current.after(target)) {
+            target.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        return target.getTimeInMillis() - current.getTimeInMillis();
     }
 
 
