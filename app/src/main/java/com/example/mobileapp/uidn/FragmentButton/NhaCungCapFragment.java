@@ -102,6 +102,44 @@ public class NhaCungCapFragment extends Fragment {
 
         // Ánh xạ các thành phần giao diện
         EditText etMaNhaCC = dialogView.findViewById(R.id.et_supplier_edit_manhacc);
+        etMaNhaCC.setFocusable(false); // Không cho người dùng chỉnh sửa mã
+        etMaNhaCC.setClickable(false);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("company")
+                .document(companyId) // companyId được đảm bảo không null
+                .collection("nhacungcap")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> existingOrderIds = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            existingOrderIds.add(document.getId());
+                        }
+
+                        // Tìm mã đơn hàng lớn nhất hiện có
+                        int maxId = 0;
+                        for (String orderId : existingOrderIds) {
+                            if (orderId.startsWith("CC")) {
+                                try {
+                                    int id = Integer.parseInt(orderId.substring(2));
+                                    maxId = Math.max(maxId, id);
+                                } catch (NumberFormatException e) {
+                                    Log.e("OrderID", "Không thể parse mã NCC: " + orderId);
+                                }
+                            }
+                        }
+
+                        // Tạo mã đơn hàng mới
+                        String maDonHang = "CC" + String.format("%02d", maxId + 1);
+                        etMaNhaCC.setText(maDonHang);
+                    } else {
+                        Log.e("Firebase", "Lỗi khi lấy danh sách mã đơn hàng", task.getException());
+                        Toast.makeText(requireContext(), "Không thể tạo mã đơn hàng mới!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
         EditText etDaDien = dialogView.findViewById(R.id.et_supplier_edit_daidien);
         EditText etGhiChu = dialogView.findViewById(R.id.et_supplier_edit_ghichu);
         EditText etNgay = dialogView.findViewById(R.id.et_supplier_edit_ngay);
@@ -369,9 +407,9 @@ public class NhaCungCapFragment extends Fragment {
         textView.setVisibility(View.GONE);
         listView.setVisibility(View.GONE);
 
-
         // Pre-fill fields with existing data
         etMaNhaCC.setText(provider.getProviderId());
+        etMaNhaCC.setEnabled(false);
         etTenNCC.setText(provider.getProviderName());
         etDaDien.setText(provider.getProviderStatus());
         etGhiChu.setText(provider.getProviderNote());
