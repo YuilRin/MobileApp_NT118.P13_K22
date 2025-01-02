@@ -217,12 +217,60 @@ public class SanPhamFragment extends Fragment {
         productAdapter.notifyDataSetChanged();
     }
 
+
     private void showAddProductDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_product_edit_item, null);
         builder.setView(dialogView);
 
         EditText etMaSP = dialogView.findViewById(R.id.et_product_edit_masp);
+        etMaSP.setFocusable(false); // Không cho người dùng chỉnh sửa mã
+        etMaSP.setClickable(false);
+
+
+        fetchCompanyId(new FetchCompanyIdCallback() {
+            @Override
+            public void onSuccess(String companyId) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("company")
+                        .document(companyId)
+                        .collection("khohang") // Thay đổi tên collection nếu cần
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                List<String> existingOrderIds = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    existingOrderIds.add(document.getId());
+                                }
+
+                                // Tìm mã đơn hàng lớn nhất hiện có
+                                int maxId = 0;
+                                for (String orderId : existingOrderIds) {
+                                    if (orderId.startsWith("Ma")) {
+                                        try {
+                                            int id = Integer.parseInt(orderId.substring(2)); // Lấy phần số từ "DHXXX"
+                                            maxId = Math.max(maxId, id);
+                                        } catch (NumberFormatException e) {
+                                            Log.e("OrderID", "Không thể parse mã sp: " + orderId);
+                                        }
+                                    }
+                                }
+
+                                // Tạo mã đơn hàng mới
+                                String maSP = "Ma" + String.format("%02d", maxId + 1); // Định dạng DHXXX
+                                etMaSP.setText(maSP);
+                            } else {
+                                Log.e("Firebase", "Lỗi khi lấy danh sách mã đơn hàng", task.getException());
+                                Toast.makeText(requireContext(), "Không thể tạo mã đơn hàng mới!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(requireContext(), "Lỗi khi lấy companyId!", Toast.LENGTH_SHORT).show();
+            }
+        });
         EditText etTenSP = dialogView.findViewById(R.id.et_product_edit_tensp);
         EditText etGiaVon = dialogView.findViewById(R.id.et_product_edit_giavon);
         EditText etGiaBan = dialogView.findViewById(R.id.et_product_edit_giaban);
@@ -254,7 +302,36 @@ public class SanPhamFragment extends Fragment {
         builder.create().show();
     }
 
-    private void addProduct(EditText etMaSP, EditText etTenSP, EditText etGiaVon, EditText etGiaBan, EditText etGhiChu, Spinner spPhanLoai) {
+    // Interface callback để xử lý bất đồng bộ
+    private interface FetchCompanyIdCallback {
+        void onSuccess(String companyId);
+        void onFailure(Exception e);
+    }
+    private void fetchCompanyId(FetchCompanyIdCallback callback) {
+        FirebaseFirestore.getInstance().collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    if (userDoc.exists()) {
+                        companyId = userDoc.getString("companyId");
+                        if (callback != null) {
+                            callback.onSuccess(companyId);
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Không tìm thấy thông tin công ty!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Lỗi khi lấy thông tin công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (callback != null) {
+                        callback.onFailure(e);
+                    }
+                });
+    }
+
+
+
+            private void addProduct(EditText etMaSP, EditText etTenSP, EditText etGiaVon, EditText etGiaBan, EditText etGhiChu, Spinner spPhanLoai) {
         String maSP = etMaSP.getText().toString().trim();
         String tenSP = etTenSP.getText().toString().trim();
         double giaVon = Double.parseDouble(etGiaVon.getText().toString().trim());
