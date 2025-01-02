@@ -81,8 +81,6 @@ public class HomeFragment extends Fragment {
         currentMonth = getCurrentMonth();
 
 
-
-
         TextView tvName =binding.idCustomer;
         userName = getUserName();
         if (userName!= null) {

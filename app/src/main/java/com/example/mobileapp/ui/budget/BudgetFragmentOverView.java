@@ -104,7 +104,8 @@ public class BudgetFragmentOverView extends Fragment {
                     .setMessage("Bạn có chắc muốn thực hiện thao tác này?")
                     .setPositiveButton("OK", (dialog, which) -> {
                         budgetViewModel.removeChiTieuTrenPhanLoai(item.getMainTitle());
-
+                        budgetViewModel.updateSalaryItem(false, item);
+                        budgetViewModel.XoaDanhSachPhanLoai(item.getMainTitle());
                         dialog.dismiss(); // đóng dialog
                     })
                     .setNegativeButton("Hủy", (dialog, which) -> {
@@ -119,7 +120,8 @@ public class BudgetFragmentOverView extends Fragment {
                     .setMessage("Bạn có chắc muốn thực hiện thao tác này?")
                     .setPositiveButton("OK", (dialog, which) -> {
                         budgetViewModel.removeThuNhapTrenPhanLoai(item.getMainTitle());
-
+                        budgetViewModel.removeSalaryItem(true, item);
+                        budgetViewModel.XoaDanhSachPhanLoai(item.getMainTitle());
                         dialog.dismiss(); // đóng dialog
                     })
                     .setNegativeButton("Hủy", (dialog, which) -> {
