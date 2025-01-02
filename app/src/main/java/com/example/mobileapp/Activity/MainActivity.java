@@ -41,57 +41,57 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        createNotificationChannel(); // Tạo kênh thông báo
+        //createNotificationChannel(); // Tạo kênh thông báo
         //scheduleDailySummary();
     }
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Daily Summary";
-            String description = "Channel for daily summary notifications";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("daily_summary_channel", name, importance);
-            channel.setDescription(description);
+//    private void createNotificationChannel() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            CharSequence name = "Daily Summary";
+//            String description = "Channel for daily summary notifications";
+//            int importance = NotificationManager.IMPORTANCE_HIGH;
+//            NotificationChannel channel = new NotificationChannel("daily_summary_channel", name, importance);
+//            channel.setDescription(description);
+//
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-    }
-
-    public void scheduleDailySummary() {
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
-
-        // Thời gian chạy lại hàng ngày
-        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
-                DailySummaryWorker.class,
-                1, TimeUnit.DAYS
-        )
-                .setConstraints(constraints)
-                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
-                .build();
-
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "DailySummaryWorker",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                dailyWorkRequest
-        );
-    }
-
-    // Tính thời gian delay để bắt đầu vào 23:59
-    private long calculateInitialDelay() {
-        android.icu.util.Calendar current = android.icu.util.Calendar.getInstance();
-        android.icu.util.Calendar target = android.icu.util.Calendar.getInstance();
-
-        target.set(android.icu.util.Calendar.HOUR_OF_DAY, 18);
-        target.set(android.icu.util.Calendar.MINUTE,16);
-        target.set(android.icu.util.Calendar.SECOND, 0);
-
-        if (current.after(target)) {
-            target.add(android.icu.util.Calendar.DAY_OF_MONTH, 1);
-        }
-
-        return target.getTimeInMillis() - current.getTimeInMillis();
-    }
+//    public void scheduleDailySummary() {
+//        Constraints constraints = new Constraints.Builder()
+//                .setRequiredNetworkType(NetworkType.CONNECTED)
+//                .build();
+//
+//        // Thời gian chạy lại hàng ngày
+//        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
+//                DailySummaryWorker.class,
+//                1, TimeUnit.DAYS
+//        )
+//                .setConstraints(constraints)
+//                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+//                .build();
+//
+//        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+//                "DailySummaryWorker",
+//                ExistingPeriodicWorkPolicy.REPLACE,
+//                dailyWorkRequest
+//        );
+//    }
+//
+//    // Tính thời gian delay để bắt đầu vào 23:59
+//    private long calculateInitialDelay() {
+//        android.icu.util.Calendar current = android.icu.util.Calendar.getInstance();
+//        android.icu.util.Calendar target = android.icu.util.Calendar.getInstance();
+//
+//        target.set(android.icu.util.Calendar.HOUR_OF_DAY, 18);
+//        target.set(android.icu.util.Calendar.MINUTE,16);
+//        target.set(android.icu.util.Calendar.SECOND, 0);
+//
+//        if (current.after(target)) {
+//            target.add(android.icu.util.Calendar.DAY_OF_MONTH, 1);
+//        }
+//
+//        return target.getTimeInMillis() - current.getTimeInMillis();
+//    }
 
 }

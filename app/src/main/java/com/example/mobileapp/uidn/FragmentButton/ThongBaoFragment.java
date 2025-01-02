@@ -154,42 +154,42 @@ public class ThongBaoFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void scheduleDailySummary() {
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
-
-        // Thời gian chạy lại hàng ngày
-        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
-                DailySummaryWorker.class,
-                1, TimeUnit.DAYS
-        )
-                .setConstraints(constraints)
-                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
-                .build();
-
-        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
-                "DailySummaryWorker",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                dailyWorkRequest
-        );
-    }
-
-    // Tính thời gian delay để bắt đầu vào 23:59
-    private long calculateInitialDelay() {
-        Calendar current = Calendar.getInstance();
-        Calendar target = Calendar.getInstance();
-
-        target.set(Calendar.HOUR_OF_DAY, 17);
-        target.set(Calendar.MINUTE, 30);
-        target.set(Calendar.SECOND, 0);
-
-        if (current.after(target)) {
-            target.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        return target.getTimeInMillis() - current.getTimeInMillis();
-    }
+//    public void scheduleDailySummary() {
+//        Constraints constraints = new Constraints.Builder()
+//                .setRequiredNetworkType(NetworkType.CONNECTED)
+//                .build();
+//
+//        // Thời gian chạy lại hàng ngày
+//        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
+//                DailySummaryWorker.class,
+//                1, TimeUnit.DAYS
+//        )
+//                .setConstraints(constraints)
+//                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+//                .build();
+//
+//        WorkManager.getInstance(requireContext()).enqueueUniquePeriodicWork(
+//                "DailySummaryWorker",
+//                ExistingPeriodicWorkPolicy.REPLACE,
+//                dailyWorkRequest
+//        );
+//    }
+//
+//    // Tính thời gian delay để bắt đầu vào 23:59
+//    private long calculateInitialDelay() {
+//        Calendar current = Calendar.getInstance();
+//        Calendar tar  get = Calendar.getInstance();
+//
+//        target.set(Calendar.HOUR_OF_DAY, 20);
+//        target.set(Calendar.MINUTE, 0);
+//        target.set(Calendar.SECOND, 0);
+//
+//        if (current.after(target)) {
+//            target.add(Calendar.DAY_OF_MONTH, 1);
+//        }
+//
+//        return target.getTimeInMillis() - current.getTimeInMillis();
+//    }
 
 
 
