@@ -66,7 +66,7 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder
         Debt debt = debtList.get(position);
 
         holder.tvTitle.setText(debt.getTitle());
-        holder.tvAmount.setText(debt.getSoTien());
+        holder.tvAmount.setText("Số tiền: " + debt.getSoTien());
         holder.tvNgayNo.setText("Ngày nợ: " + debt.getNgayNo());
         holder.tvNgayDenHan.setText("Ngày đến hạn: " + debt.getNgayDenHan());
 

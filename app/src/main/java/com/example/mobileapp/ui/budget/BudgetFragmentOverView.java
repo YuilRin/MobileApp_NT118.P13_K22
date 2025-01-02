@@ -608,8 +608,8 @@ public class BudgetFragmentOverView extends Fragment {
                     TenNganSach,
                     Sotien,
                     isIncome ? "Thu nhập: " : "Chi tiêu: ",
-                    Ngay
-
+                    Ngay,
+                    getCurrentDate1()
             );
 
             // Kiểm tra phân loại có tồn tại hay không
@@ -633,7 +633,8 @@ public class BudgetFragmentOverView extends Fragment {
                                 salaryItem.getMainTitle(),
                                 updatedAllowanceItems,
                                 salaryItem.getColor(),
-                                getCurrentDate()
+                                getCurrentDate(),
+                                getCurrentDate1()
                         );
                         // Cập nhật danh sách AllowanceItems mới
                         currentList.set(i, updatedSalaryItem);
@@ -651,7 +652,8 @@ public class BudgetFragmentOverView extends Fragment {
                         TenPhanLoai,
                         Collections.singletonList(newItem),
                         isIncome ? 0xFF85C88A : 0xFFD9534F, // Xanh lá hoặc đỏ
-                        getCurrentDate()
+                        getCurrentDate(),
+                        getCurrentDate1()
                 );
                 budgetViewModel.addSalaryItem(isIncome, newSalaryItem);
             }
@@ -691,6 +693,19 @@ public class BudgetFragmentOverView extends Fragment {
         return currentDate;
     }
 
+
+    public String getCurrentDate1() {
+        // Lấy đối tượng Calendar hiện tại
+        Calendar calendar = Calendar.getInstance();
+
+        // Định dạng ngày theo mẫu mong muốn, ví dụ: "dd/MM/yyyy"
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+
+        // Chuyển đổi Calendar thành Date và định dạng thành String
+        String currentDate = sdf.format(calendar.getTime());
+
+        return currentDate;
+    }
 
 
     private void dialogXoaPhanLoai(AlertDialog dialog, Spinner spinnerPhanLoai){

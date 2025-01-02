@@ -147,7 +147,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getMainTitle(),
                 childList,
                 parentItem.getColor(),
-                date
+                date,
+                getCurrentDate1()
         );
 
         newList.set(parentIndex, updatedParentItem);
@@ -314,7 +315,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getMainTitle(),
                 childList,
                 parentItem.getColor(),
-                date
+                date,
+                getCurrentDate1()
         );
 
         // Cập nhật lại vào newList
@@ -375,7 +377,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getMainTitle(),
                 childList,
                 parentItem.getColor(),
-                date
+                date,
+                getCurrentDate1()
         );
 
         // Gán lại vào newList
@@ -508,7 +511,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getMainTitle(),
                 childList,
                 parentItem.getColor(),
-                date
+                date,
+                getCurrentDate1()
         );
 
         newList.set(parentIndex, updatedParentItem);
@@ -549,7 +553,7 @@ public class BudgetViewModel extends ViewModel {
                 }
                     // Gán tổng riêng này vào SalaryItem (nếu bạn có setter phù hợp)
 
-                    salaryItem.setTongSoTien(dinhDangLaiSoTien(itemSum));
+                    salaryItem.setTongSoTien(itemSum);
 
                     // Đồng thời, cộng dồn vào tổng "toàn bộ"
                     sum += itemSum;
@@ -569,6 +573,19 @@ public class BudgetViewModel extends ViewModel {
 
         // Định dạng ngày theo mẫu mong muốn, ví dụ: "dd/MM/yyyy"
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        // Chuyển đổi Calendar thành Date và định dạng thành String
+        String currentDate = sdf.format(calendar.getTime());
+
+        return currentDate;
+    }
+
+    public String getCurrentDate1() {
+        // Lấy đối tượng Calendar hiện tại
+        Calendar calendar = Calendar.getInstance();
+
+        // Định dạng ngày theo mẫu mong muốn, ví dụ: "dd/MM/yyyy"
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
 
         // Chuyển đổi Calendar thành Date và định dạng thành String
         String currentDate = sdf.format(calendar.getTime());
