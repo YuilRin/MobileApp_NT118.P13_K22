@@ -1,5 +1,8 @@
 package com.example.mobileapp.Activity;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -8,16 +11,23 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.example.mobileapp.Activity.LoginFragment.InfoDialogFragment;
 import com.example.mobileapp.R;
 
 import com.example.mobileapp.databinding.BusinessActivityMainBinding;
+import com.example.mobileapp.uidn.ThongBao.DailySummaryWorker;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class MainDnActivity extends AppCompatActivity {
 
@@ -85,6 +95,45 @@ public class MainDnActivity extends AppCompatActivity {
             return false;
         });
 
+        scheduleDailySummary();
+
+    }
+
+    public void scheduleDailySummary() {
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        // Thời gian chạy lại hàng ngày
+        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
+                DailySummaryWorker.class,
+                1, TimeUnit.DAYS
+        )
+                .setConstraints(constraints)
+                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+                .build();
+
+        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
+                "DailySummaryWorker",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                dailyWorkRequest
+        );
+    }
+
+    // Tính thời gian delay để bắt đầu vào 23:59
+    private long calculateInitialDelay() {
+        Calendar current = Calendar.getInstance();
+        Calendar target = Calendar.getInstance();
+
+        target.set(Calendar.HOUR_OF_DAY, 18);
+        target.set(Calendar.MINUTE, 27);
+        target.set(Calendar.SECOND, 0);
+
+        if (current.after(target)) {
+            target.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        return target.getTimeInMillis() - current.getTimeInMillis();
     }
 
 }
