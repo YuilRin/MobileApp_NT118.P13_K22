@@ -103,12 +103,14 @@
         android:layout_marginBottom="8dp" />
 
     <!-- Danh sách ListView -->
-           <ListView
-            android:id="@+id/List"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"/>
+       <ListView
+        android:id="@+id/List"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+           android:layout_marginBottom="20dp"/>
     <Button
         android:id="@+id/btnAddExpense"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
