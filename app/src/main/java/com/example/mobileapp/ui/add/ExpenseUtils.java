@@ -71,7 +71,92 @@ public class ExpenseUtils {
                 }
             }
         });
+
+//        fetchDataDif(key, new OnExpensesLoadedListener() {
+//            @Override
+//            public void onExpensesLoaded(List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
+//                // Thêm thu nhập vào danh sách chung
+//                allItems.addAll(listItems);
+//                allPieEntries.addAll(pieEntries);
+//
+//                // Tăng biến cờ
+//                count[0]++;
+//
+//                // Kiểm tra xem cả chi tiêu và thu nhập đã được tải chưa
+//                if (count[0] == 2) {
+//                    // Gọi listener khi cả chi tiêu và thu nhập đã được tải xong
+//                    listener.onExpensesLoaded(allItems, allPieEntries);
+//                }
+//            }
+//        });
+
+
+        db.collection("users")
+                .document(userId)
+                .collection("expenses")
+                .document(monthKey)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String daysString = documentSnapshot.getString("days");
+                        if (daysString != null) {
+                            String[] dayKeys = daysString.split(" ");
+
+                            List<ExpenseItem> listItems = new ArrayList<>();
+                            ArrayList<PieEntry> pieEntries = new ArrayList<>();
+                            List<Task<Void>> tasks = new ArrayList<>();
+
+                            // Lấy chi tiêu cho mỗi ngày và thêm vào danh sách các tasks
+                            for (String dayKey : dayKeys) {
+                                tasks.add(loadDailyExpenses(dayKey, listItems, pieEntries));
+                            }
+
+                            // Chờ tất cả các tác vụ hoàn thành
+                            Tasks.whenAllSuccess(tasks).addOnCompleteListener(task -> {
+                                // Sau khi tất cả các tác vụ hoàn thành, gọi callback để trả về kết quả
+                                listener.onExpensesLoaded(listItems, pieEntries);
+                            });
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("ExpenseUtils", "Error loading expenses", e));
+
     }
+
+
+
+    private void fetchDataDif( String key, final OnExpensesLoadedListener listener) {
+        db.collection("users")
+                .document(userId)
+                .collection("expenses")
+                .document(monthKey)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String daysString = documentSnapshot.getString("days");
+                        if (daysString != null) {
+                            String[] dayKeys = daysString.split(" ");
+
+                            List<ExpenseItem> listItems = new ArrayList<>();
+                            ArrayList<PieEntry> pieEntries = new ArrayList<>();
+                            List<Task<Void>> tasks = new ArrayList<>();
+
+                            // Lấy chi tiêu cho mỗi ngày và thêm vào danh sách các tasks
+                            for (String dayKey : dayKeys) {
+                                tasks.add(loadDailyExpenses(dayKey, listItems, pieEntries));
+                            }
+
+                            // Chờ tất cả các tác vụ hoàn thành
+                            Tasks.whenAllSuccess(tasks).addOnCompleteListener(task -> {
+                                // Sau khi tất cả các tác vụ hoàn thành, gọi callback để trả về kết quả
+                                listener.onExpensesLoaded(listItems, pieEntries);
+                            });
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("ExpenseUtils", "Error loading expenses", e));
+    }
+
 
     private void fetchData(String collectionName, String key, boolean isIncome, final OnExpensesLoadedListener listener) {
         db.collection("users")
