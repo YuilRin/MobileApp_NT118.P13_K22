@@ -133,7 +133,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="Loi nhuan"
+                                android:text="Lợi nhuận"
                                 android:textAlignment="center"
                                 android:textColor="@color/black" />
 
@@ -217,7 +217,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:text="So luong ban ra"
+                                android:text="Số lượng bán ra"
                                 android:textAlignment="center"
                                 android:textColor="@color/black" />
 
