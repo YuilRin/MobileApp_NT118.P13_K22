@@ -34,11 +34,13 @@ import com.example.mobileapp.ui.budget.Custom.SalaryAdapter;
 import com.example.mobileapp.ui.budget.Custom.SalaryItem;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class BudgetFragmentOverView extends Fragment {
@@ -598,12 +600,16 @@ public class BudgetFragmentOverView extends Fragment {
             double soTien = Double.parseDouble(Sotien);
             Sotien = dinhDangLaiSoTien(soTien) + " đ";
 
+            String Ngay = getCurrentDate();
+
             // Tạo AllowanceItem
             AllowanceItem newItem = new AllowanceItem(
                     ChonAnhDeLuu,
                     TenNganSach,
                     Sotien,
-                    isIncome ? "Thu nhập: " : "Chi tiêu: "
+                    isIncome ? "Thu nhập: " : "Chi tiêu: ",
+                    Ngay
+
             );
 
             // Kiểm tra phân loại có tồn tại hay không
@@ -626,7 +632,8 @@ public class BudgetFragmentOverView extends Fragment {
                                 salaryItem.getId(),
                                 salaryItem.getMainTitle(),
                                 updatedAllowanceItems,
-                                salaryItem.getColor()
+                                salaryItem.getColor(),
+                                getCurrentDate()
                         );
                         // Cập nhật danh sách AllowanceItems mới
                         currentList.set(i, updatedSalaryItem);
@@ -643,7 +650,8 @@ public class BudgetFragmentOverView extends Fragment {
                         uniqueId,
                         TenPhanLoai,
                         Collections.singletonList(newItem),
-                        isIncome ? 0xFF85C88A : 0xFFD9534F // Xanh lá hoặc đỏ
+                        isIncome ? 0xFF85C88A : 0xFFD9534F, // Xanh lá hoặc đỏ
+                        getCurrentDate()
                 );
                 budgetViewModel.addSalaryItem(isIncome, newSalaryItem);
             }
@@ -669,6 +677,21 @@ public class BudgetFragmentOverView extends Fragment {
 
         dialog.show();
     }
+
+    public String getCurrentDate() {
+        // Lấy đối tượng Calendar hiện tại
+        Calendar calendar = Calendar.getInstance();
+
+        // Định dạng ngày theo mẫu mong muốn, ví dụ: "dd/MM/yyyy"
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        // Chuyển đổi Calendar thành Date và định dạng thành String
+        String currentDate = sdf.format(calendar.getTime());
+
+        return currentDate;
+    }
+
+
 
     private void dialogXoaPhanLoai(AlertDialog dialog, Spinner spinnerPhanLoai){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

@@ -13,12 +13,14 @@ public class SalaryItem {
     private List<AllowanceItem> allowanceItems;
     private String TongSoTien;
     private String id;
+    private String date;
 
-    public SalaryItem(String id, String mainTitle, List<AllowanceItem> allowanceItems , int color) {
+    public SalaryItem(String id, String mainTitle, List<AllowanceItem> allowanceItems , int color, String date) {
         this.mainTitle = mainTitle;
         this.color = color;
         this.allowanceItems = allowanceItems;
         this.id = id != null ? id : UUID.randomUUID().toString(); // Tạo ID nếu null
+        this.date = date;
     }
 
     public SalaryItem() {
@@ -53,6 +55,9 @@ public class SalaryItem {
         return allowanceItems;
     }
     public  void setAllowanceItems(List<AllowanceItem> allowanceItems) {this.allowanceItems = allowanceItems;}
+
+    public void setDate(String date) {this.date = date;}
+    public String getDate() {return  this.date;}
 
     @Override
     public boolean equals(Object obj) {
