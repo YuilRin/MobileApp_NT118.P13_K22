@@ -61,7 +61,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:text="Tổng thu nhập: 10,000,000,000 đ"
+                            android:text="Tổng thu nhập: 0 đ"
                             android:textColor="@android:color/white"
                             android:textSize="10sp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="Tổng hao phí: -1,930,000,000 đ"
+                            android:text="Tổng hao phí: 0 đ"
                             android:textColor="#FF0000"
                             android:textSize="10sp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -127,14 +127,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#1A1A1D"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                    <View
-                        android:id="@+id/financial_chart"
-                        android:layout_width="120dp"
-                        android:layout_height="150dp"
-                        android:layout_gravity="center_horizontal"
-                        android:background="#000000" />
 
                     <TextView
                         android:id="@+id/chart_caption"
@@ -142,10 +137,35 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
-                        android:gravity="center"
-                        android:text="Số tiền bạn có thể chi tiêu\n8,070,000,000 đ"
+                        android:text="Số tiền bạn có thể chi tiêu:"
                         android:textColor="@android:color/white"
                         android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/SoTienCoThe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:text="8,070,000,000 đ"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"/>
+
+                    <TextView
+                        android:id="@+id/TrangThai"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:text=" "
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
+
+
+
                 </LinearLayout>
             </LinearLayout>
 

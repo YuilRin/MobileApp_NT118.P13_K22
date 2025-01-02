@@ -36,6 +36,7 @@ import com.example.mobileapp.ui.budget.Custom.SalaryItem;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -51,6 +52,7 @@ public class BudgetFragmentOverView extends Fragment {
     Spinner spinnerPhanLoai, spinnerThuChi;
     RadioButton radioChonPhanLoai, radioTaoPhanLoai;
     EditText edt_NhapPhanLoai, edt_NoiDung, edt_SoTien;
+    TextView tv_TongThuNhap, tv_TongHaoPhi, tv_SoDuHienTai, Tv_DenCuoiThang, tv_SoTienCoThe, tv_TrangThai;
 
     @Nullable
     @Override
@@ -66,6 +68,13 @@ public class BudgetFragmentOverView extends Fragment {
         ThemNganSach = root.findViewById(R.id.add_budget_button);
         recyclerViewThuNhap = root.findViewById(R.id.recyclerView);
         recyclerViewChiTieu = root.findViewById(R.id.recyclerViewExpenditure);
+        tv_TongThuNhap = root.findViewById(R.id.total_income);
+        tv_TongHaoPhi = root.findViewById(R.id.total_expenses);
+        tv_SoDuHienTai = root.findViewById(R.id.current_balance);
+        Tv_DenCuoiThang = root.findViewById(R.id.days_left);
+        tv_SoTienCoThe = root.findViewById(R.id.SoTienCoThe);
+        tv_TrangThai = root.findViewById(R.id.TrangThai);
+
 
         recyclerViewThuNhap.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewChiTieu.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -73,6 +82,7 @@ public class BudgetFragmentOverView extends Fragment {
         adapterThuNhap = new SalaryAdapter();
         adapterChiTieu = new SalaryAdapter();
 
+        HienThiTongQuan();
         recyclerViewThuNhap.setAdapter(adapterThuNhap);
         recyclerViewChiTieu.setAdapter(adapterChiTieu);
 
@@ -126,10 +136,12 @@ public class BudgetFragmentOverView extends Fragment {
 
         budgetViewModel.gettongTatCaSoTienThuNhap().observe(getViewLifecycleOwner(), Tong -> {
             tvTongThuNhap.setText("Tổng thu nhập: " + dinhDangLaiSoTien(Tong) + " đ");
+            HienThiTongQuan();
         });
 
         budgetViewModel.gettongTatCaSoTienChiTieu().observe(getViewLifecycleOwner(), Tong -> {
             tvTongChiPhi.setText("Tổng chi phí: " + dinhDangLaiSoTien(Tong) + " đ");
+            HienThiTongQuan();
         });
 
 
@@ -144,6 +156,70 @@ public class BudgetFragmentOverView extends Fragment {
 
 
         return binding.getRoot();
+    }
+
+
+    private void HienThiTongQuan() {
+        tv_TongThuNhap.setText(tvTongThuNhap.getText());
+        tv_TongHaoPhi.setText(tvTongChiPhi.getText());
+
+        String SoTienThuNhap = tv_TongThuNhap.getText().toString();
+        String SoTienHaoPhi = tv_TongHaoPhi.getText().toString();
+        double thuNhapDouble = ChuyenTienSangDouble(SoTienThuNhap);
+        double chiPhiDouble = ChuyenTienSangDouble(SoTienHaoPhi);
+
+        // Tính số dư
+        double soDu = thuNhapDouble - chiPhiDouble;
+
+        tv_SoDuHienTai.setText("Số dư hiện tại: " + dinhDangLaiSoTien(soDu) + " đ");
+
+        // Tính số ngày còn lại (theo Calendar)
+        Calendar c = Calendar.getInstance();
+        int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);
+        int daysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int daysLeft = daysInMonth - dayOfMonth; // hoặc +1 nếu muốn
+
+        Tv_DenCuoiThang.setText("Số ngày còn lại trong tháng: " + daysLeft);
+
+        String statusKhongThe = "Số dư đã hết, không thể chi tiêu thêm!";
+        String statusCoThe = "Bạn vẫn còn đủ ngân sách để chi!";
+
+        if (soDu <= 0)
+        {
+            tv_SoTienCoThe.setText(dinhDangLaiSoTien(soDu) + " đ");
+            tv_SoTienCoThe.setTextColor(0xFFD9534F);
+            tv_TrangThai.setText(statusKhongThe);
+        }
+        else
+        {
+            tv_SoTienCoThe.setText(dinhDangLaiSoTien(soDu) + " đ");
+            tv_SoTienCoThe.setTextColor(0xFF85C88A);
+            tv_TrangThai.setText(statusCoThe);
+        }
+    }
+
+    private double ChuyenTienSangDouble(String Tien) {
+        if (Tien == null || Tien.trim().isEmpty()) {
+            return 0.0;
+        }
+        Tien = Tien.replace("Tổng thu nhập:", "")
+                .replace("Tổng chi phí:", "")
+                .replace("Tổng:", "")            // nếu có thêm các từ khoá khác
+                .replace("đ", "")
+                .replace(",", "")
+                .replace(".", "")
+                .trim();
+
+        if (Tien.isEmpty()) {
+            return 0.0;
+        }
+
+        try {
+            return Double.parseDouble(Tien);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0.0;
+        }
     }
 
     //chinh sua cho thu nhap
