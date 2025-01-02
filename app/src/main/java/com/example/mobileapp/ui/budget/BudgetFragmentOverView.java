@@ -86,6 +86,36 @@ public class BudgetFragmentOverView extends Fragment {
             showChinhSuaChiTieuDialog(item, VitriCha, VitriCon);
         }));
 
+        adapterChiTieu.setLangNgheClickCha(((item, vitriCha) -> {
+            new AlertDialog.Builder(requireContext())   // Nếu đang ở Fragment
+                    .setTitle("Xác nhận")
+                    .setMessage("Bạn có chắc muốn thực hiện thao tác này?")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        budgetViewModel.removeChiTieuTrenPhanLoai(item.getMainTitle());
+
+                        dialog.dismiss(); // đóng dialog
+                    })
+                    .setNegativeButton("Hủy", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        }));
+
+        adapterThuNhap.setLangNgheClickCha(((item, vitriCha) -> {
+            new AlertDialog.Builder(requireContext())   // Nếu đang ở Fragment
+                    .setTitle("Xác nhận")
+                    .setMessage("Bạn có chắc muốn thực hiện thao tác này?")
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        budgetViewModel.removeThuNhapTrenPhanLoai(item.getMainTitle());
+
+                        dialog.dismiss(); // đóng dialog
+                    })
+                    .setNegativeButton("Hủy", (dialog, which) -> {
+                        dialog.dismiss();
+                    })
+                    .show();
+        }));
+
         budgetViewModel.getThuNhapItemsData().observe(getViewLifecycleOwner(), ThuNhapItems ->{
             adapterThuNhap.submitList(new ArrayList<>(ThuNhapItems));
         });
@@ -110,6 +140,9 @@ public class BudgetFragmentOverView extends Fragment {
 
         budgetViewModel.loadThuNhap();
         budgetViewModel.loadChiTieu();
+
+
+
         return binding.getRoot();
     }
 
@@ -501,7 +534,7 @@ public class BudgetFragmentOverView extends Fragment {
             List<SalaryItem> currentList = isIncome
                     ? new ArrayList<>(budgetViewModel.getThuNhapItemsData().getValue())
                     : new ArrayList<>(budgetViewModel.getChiTieuItemsData().getValue());
-
+            SalaryItem addsalary = new SalaryItem();
             boolean phanLoaiTonTai = false;
 
             if (currentList != null) {
@@ -522,6 +555,7 @@ public class BudgetFragmentOverView extends Fragment {
                         // Cập nhật danh sách AllowanceItems mới
                         currentList.set(i, updatedSalaryItem);
                         phanLoaiTonTai = true;
+                        budgetViewModel.updateSalaryItem(isIncome, updatedSalaryItem);
                         break;
                     }
                 }
@@ -536,20 +570,10 @@ public class BudgetFragmentOverView extends Fragment {
                         isIncome ? 0xFF85C88A : 0xFFD9534F // Xanh lá hoặc đỏ
                 );
                 budgetViewModel.addSalaryItem(isIncome, newSalaryItem);
-
             }
 
+
             // Cập nhật LiveData
-
-//            if (isIncome) {
-//                budgetViewModel.getThuNhapItemsData().setValue(currentList);
-//                budgetViewModel.calculateTotalSum(budgetViewModel.getThuNhapItemsData().getValue(),true);
-//
-//            } else {
-//                budgetViewModel.getChiTieuItemsData().setValue(currentList);
-//                budgetViewModel.calculateTotalSum(budgetViewModel.getChiTieuItemsData().getValue(), false);
-//            }
-
             dialog.dismiss();
 
         });

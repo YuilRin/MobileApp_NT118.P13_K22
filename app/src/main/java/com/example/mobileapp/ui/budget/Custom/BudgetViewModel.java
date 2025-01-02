@@ -231,6 +231,47 @@ public class BudgetViewModel extends ViewModel {
         }
     }
 
+    public void updateSalaryItem(boolean isIncome, SalaryItem updatedItem) {
+        if (updatedItem == null || updatedItem.getId() == null) {
+            return;
+        }
+        // 1) Cập nhật cục bộ
+        List<SalaryItem> oldList = isIncome
+                ? getThuNhapItemsData().getValue()
+                : getChiTieuItemsData().getValue();
+        if (oldList == null) return;
+
+        // Tạo một copy list
+        List<SalaryItem> newList = new ArrayList<>(oldList);
+        for (int i = 0; i < newList.size(); i++) {
+            if (newList.get(i).getId().equals(updatedItem.getId())) {
+                newList.set(i, updatedItem);
+                break;
+            }
+        }
+
+        // 2) setValue để cập nhật UI
+        if (isIncome) {
+            getThuNhapItemsData().setValue(newList);
+            calculateTotalSum(newList, true);
+        } else {
+            getChiTieuItemsData().setValue(newList);
+            calculateTotalSum(newList, false);
+        }
+
+        // 3) Lưu lên Firestore
+        String collectionName = isIncome ? "NganSach_thu_nhap" : "NganSach_chi_tieu";
+        if (!UserId.isEmpty()) {
+            firestore.collection("users")
+                    .document(UserId)
+                    .collection(collectionName)
+                    .document(updatedItem.getId())
+                    .set(updatedItem)
+                    .addOnSuccessListener(aVoid -> Log.d("BudgetViewModel", "updateSalaryItem: success"))
+                    .addOnFailureListener(e -> Log.e("BudgetViewModel", "updateSalaryItem: failed", e));
+        }
+    }
+
 
 
 
