@@ -33,7 +33,7 @@
         android:id="@+id/tv_selected_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ngày đã chon "
+        android:text="Ngày đã chọn "
         android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/et_khoanchi"
@@ -60,9 +60,8 @@
     <!-- Spinner for Phân loại -->
     <Spinner
         android:id="@+id/spinner_phan_loai"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         app:layout_constraintTop_toBottomOf="@id/et_so_tien_chi"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,9 +72,8 @@
     <!-- Spinner for Nguồn tiền -->
     <Spinner
         android:id="@+id/spinner_nguon_tien"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         app:layout_constraintTop_toBottomOf="@id/spinner_phan_loai"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -7,7 +7,8 @@
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     android:layout_marginTop="10dp"
-    android:id="@+id/item_storage">
+    android:id="@+id/item_storage"
+    android:background="@drawable/business_shape_white">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,6 +16,8 @@
         android:text="Tên sản phẩm"
         android:textStyle="bold"
         android:textSize="15dp"
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     <TextView
@@ -22,6 +25,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_storage_ncc"
         android:text="Nhà cung cấp "
+        android:textColor="@color/black"
         android:layout_marginStart="40dp"
         app:layout_constraintStart_toStartOf="@id/tv_storage_tensp"
         app:layout_constraintTop_toBottomOf="@+id/tv_storage_tensp"/>
@@ -30,6 +34,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_storage_phanloaisp"
         android:text="Phân loại"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_storage_ncc"
         />
@@ -38,6 +44,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_storage_dongia"
         android:text="Đơn giá: 0"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/tv_storage_ncc"
         app:layout_constraintTop_toBottomOf="@+id/tv_storage_ncc"/>
 
@@ -46,6 +53,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_storage_ngaynhap"
         android:text="Ngày nhập DD/MM/YYYY"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_storage_dongia"/>
 
@@ -54,6 +63,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_storage_tonkho"
         android:text="Tồn kho: 0"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@id/tv_storage_dongia"
         app:layout_constraintTop_toBottomOf="@+id/tv_storage_dongia"/>
 
@@ -62,6 +72,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_storage_tinhtrangsp"
         android:text="Tình trạng sản phẩm"
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="@id/tv_storage_tensp"
         app:layout_constraintTop_toBottomOf="@+id/tv_storage_tonkho"/>
 
@@ -70,7 +82,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Giá trị tồn: 0"
-        app:layout_constraintStart_toStartOf="@+id/tv_storage_ngaynhap"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_storage_ngaynhap" />
 
     <TextView
@@ -78,6 +92,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_product_masp"
         android:text="Mã sản phẩm"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_storage_tensp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

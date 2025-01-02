@@ -38,12 +38,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
 import java.net.PasswordAuthentication;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -115,6 +119,7 @@ public class ThongBaoFragment extends Fragment {
                         db.collection("company")
                                 .document(companyId)
                                 .collection("thongbao")
+                                .orderBy("date", Query.Direction.DESCENDING) // Sắp xếp theo timestamp giảm dần
                                 .get()
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
@@ -123,10 +128,26 @@ public class ThongBaoFragment extends Fragment {
                                             String date = document.getString("date");
                                             String content = document.getString("content");
 
+
                                             // Thêm vào danh sách thông báo
                                             notificationList.add(new BusinessNotification(title, date, content));
                                         }
 
+                                        // Sắp xếp danh sách thông báo theo ngày tháng năm
+                                        Collections.sort(notificationList, new Comparator<BusinessNotification>() {
+                                            @Override
+                                            public int compare(BusinessNotification n1, BusinessNotification n2) {
+                                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                                                try {
+                                                    Date date1 = sdf.parse(n1.getNotificationDate());
+                                                    Date date2 = sdf.parse(n2.getNotificationDate());
+                                                    return date2.compareTo(date1); // Sắp xếp tăng dần
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                    return 0;
+                                                }
+                                            }
+                                        });
                                         // Cập nhật Adapter sau khi dữ liệu thay đổi
                                         notificationAdapter.notifyDataSetChanged();
                                     } else {
