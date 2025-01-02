@@ -226,7 +226,6 @@ public class DebtViewModel extends ViewModel {
 
                         })
                         .addOnFailureListener(e -> {
-
                         });
             }
         }
