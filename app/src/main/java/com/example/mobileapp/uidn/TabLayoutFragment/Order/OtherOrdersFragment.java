@@ -100,10 +100,11 @@ public class OtherOrdersFragment extends Fragment {
                                     document.getDouble("Productcount"),
                                     document.getDouble("Quantity")
                             );
-                            if(paymentStatus.equals("khác")) {
+                            if (!paymentStatus.equals("Đã thanh toán") && !paymentStatus.equals("Chưa thanh toán")) {
                                 orderList.add(order);
                                 fullOrderList.add(order);
                             }
+
                         }
                         orderAdapter.notifyDataSetChanged();
                     } else {
