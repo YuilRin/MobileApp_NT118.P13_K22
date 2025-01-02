@@ -32,7 +32,6 @@ public class ImageSelectDebtAdapter extends RecyclerView.Adapter<ImageSelectDebt
         this.context = context;
         this.imageList = imageList;
 
-
     }
 
 

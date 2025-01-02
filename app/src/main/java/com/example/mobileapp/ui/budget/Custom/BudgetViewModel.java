@@ -280,6 +280,88 @@ public class BudgetViewModel extends ViewModel {
     }
 
 
+    public void removeSalaryItem(boolean isIncome, SalaryItem itemToRemove) {
+        if (itemToRemove == null) {
+            return;
+        }
+
+
+        String collectionName = isIncome ? "NganSach_thu_nhap" : "NganSach_chi_tieu";
+        if (!UserId.isEmpty()) {
+            firestore.collection("users")
+                    .document(UserId)
+                    .collection(collectionName)
+                    .document(itemToRemove.getId()) // Vẫn cần `itemToRemove.getId()` để xác định tài liệu
+                    .delete()
+                    .addOnSuccessListener(aVoid ->  Log.d("BudgetViewModel", "Item deleted from Firestore: " + itemToRemove.getId()))
+                    .addOnFailureListener(e -> Log.e("BudgetViewModel", "removeSalaryItem: failed", e));
+        }
+
+
+        List<SalaryItem> oldList = isIncome
+                ? getThuNhapItemsData().getValue()
+                : getChiTieuItemsData().getValue();
+        if (oldList == null) return;
+
+        // Tạo một copy của danh sách
+        List<SalaryItem> newList = new ArrayList<>(oldList);
+
+        boolean isRemoved = newList.removeIf(item -> item.equals(itemToRemove));
+
+        if (!isRemoved) return; // Không tìm thấy mục cần xóa
+
+
+        if (isIncome) {
+            getThuNhapItemsData().setValue(newList);
+            calculateTotalSum(newList, true);
+        } else {
+            getChiTieuItemsData().setValue(newList);
+            calculateTotalSum(newList, false);
+        }
+
+
+    }
+
+    public void removeSalaryItem(boolean isIncome, int position) {
+        // 1) Lấy danh sách cục bộ
+        List<SalaryItem> oldList = isIncome
+                ? getThuNhapItemsData().getValue()
+                : getChiTieuItemsData().getValue();
+        if (oldList == null || position < 0 || position >= oldList.size()) {
+            Log.e("BudgetViewModel", "Invalid position or list is null");
+            return; // Vị trí không hợp lệ
+        }
+
+        // 2) Xóa mục khỏi danh sách
+        List<SalaryItem> newList = new ArrayList<>(oldList);
+        SalaryItem itemToRemove = newList.remove(position); // Lấy và xóa mục tại vị trí
+
+        // 3) Cập nhật UI
+        if (isIncome) {
+            getThuNhapItemsData().setValue(newList);
+            calculateTotalSum(newList, true);
+        } else {
+            getChiTieuItemsData().setValue(newList);
+            calculateTotalSum(newList, false);
+        }
+
+        // 4) Xóa mục trên Firestore
+        if (itemToRemove != null && itemToRemove.getId() != null && !itemToRemove.getId().isEmpty()) {
+            String collectionName = isIncome ? "NganSach_thu_nhap" : "NganSach_chi_tieu";
+            firestore.collection("users")
+                    .document(UserId)
+                    .collection(collectionName)
+                    .document(itemToRemove.getId())
+                    .delete()
+                    .addOnSuccessListener(aVoid -> Log.d("BudgetViewModel", "removeSalaryItem: success"))
+                    .addOnFailureListener(e -> Log.e("BudgetViewModel", "Failed to delete item with ID: " + itemToRemove.getId(), e));
+        } else {
+            Log.e("BudgetViewModel", "Item to remove is null or ID is missing");
+        }
+    }
+
+
+
 
 
     public void removeThuNhapItem(int parentIndex, int childIndex) {
