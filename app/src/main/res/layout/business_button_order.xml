@@ -44,8 +44,8 @@
         android:layout_height="120dp"
         android:layout_marginTop="16dp"
         android:clipChildren="true"
-        android:gravity="right"
-        android:background="#2fc5bf">
+        android:gravity="right">
+<!--        android:background="#2fc5bf">-->
 
         <ImageButton
             android:id="@+id/edit_button"

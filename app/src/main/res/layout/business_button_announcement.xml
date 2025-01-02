@@ -13,41 +13,4 @@
         android:layout_weight="1"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="16dp"
-        android:clipChildren="true"
-        android:gravity="right">
-
-        <ImageButton
-            android:id="@+id/edit_button"
-            android:layout_width="60dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackground"
-            android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_edit"
-            android:visibility="gone"/>
-
-        <ImageButton
-            android:id="@+id/search_button"
-            android:layout_width="35dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_search"
-            android:visibility="gone"/>
-
-        <ImageButton
-            android:id="@+id/add_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:scaleType="fitCenter"
-            android:src="@drawable/business_ic_add"
-            android:visibility="gone"/>
-    </LinearLayout>
-
 </LinearLayout>
