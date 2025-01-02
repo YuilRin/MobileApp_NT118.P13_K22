@@ -83,6 +83,7 @@
             <item>December</item>
         </string-array>
 
-
+    <string name="channel_name">Notifications</string>
+    <string name="channel_description">App notification</string>
 
 </resources>

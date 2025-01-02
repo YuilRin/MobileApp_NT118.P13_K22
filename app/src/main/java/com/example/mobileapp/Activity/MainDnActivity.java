@@ -2,7 +2,10 @@ package com.example.mobileapp.Activity;
 
 import static androidx.core.content.ContentProviderCompat.requireContext;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -94,7 +97,7 @@ public class MainDnActivity extends AppCompatActivity {
             }
             return false;
         });
-
+        //createNotificationChannel();
         scheduleDailySummary();
 
     }
@@ -125,8 +128,8 @@ public class MainDnActivity extends AppCompatActivity {
         Calendar current = Calendar.getInstance();
         Calendar target = Calendar.getInstance();
 
-        target.set(Calendar.HOUR_OF_DAY, 18);
-        target.set(Calendar.MINUTE, 27);
+        target.set(Calendar.HOUR_OF_DAY, 23);
+        target.set(Calendar.MINUTE, 59);
         target.set(Calendar.SECOND, 0);
 
         if (current.after(target)) {
@@ -134,6 +137,37 @@ public class MainDnActivity extends AppCompatActivity {
         }
 
         return target.getTimeInMillis() - current.getTimeInMillis();
+    }
+
+//    private void createNotificationChannel() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            CharSequence name = "Daily Summary";
+//            String description = "Channel for daily summary notifications";
+//            int importance = NotificationManager.IMPORTANCE_HIGH;
+//            NotificationChannel channel = new NotificationChannel("i.apps.notifications", name, importance);
+//            channel.setDescription(description);
+//
+//            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+//    }
+
+    String CHANNEL_ID = "notification";
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system. You can't change the importance
+            // or other notification behaviors after this.
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 }

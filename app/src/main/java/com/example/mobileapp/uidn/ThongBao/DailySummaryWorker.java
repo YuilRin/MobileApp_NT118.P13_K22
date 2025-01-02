@@ -1,5 +1,7 @@
 package com.example.mobileapp.uidn.ThongBao;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
@@ -18,6 +21,7 @@ import androidx.work.Worker;
 
 import com.example.mobileapp.Class.BusinessNotification;
 import com.example.mobileapp.Custom.BusinessNotificationAdapter;
+import com.example.mobileapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -267,6 +271,34 @@ public class DailySummaryWorker extends Worker {
                                 });
                     }
                 });
+        String channelId = "notification";
+
+        // Tạo NotificationManager
+        NotificationManager notificationManager = (NotificationManager) getApplicationContext()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//        // Tạo NotificationChannel nếu API >= 26
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            NotificationChannel channel = new NotificationChannel(
+//                    channelId,
+//                    "Daily Summary Notifications",
+//                    NotificationManager.IMPORTANCE_HIGH
+//            );
+//            channel.setDescription("Channel for daily summary notifications");
+//            notificationManager.createNotificationChannel(channel);
+//        }
+
+        // Tạo thông báo
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
+                .setSmallIcon(R.drawable.logo) // Icon thông báo
+                .setContentTitle(title) // Tiêu đề
+                .setContentText(content) // Nội dung
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+
+        // Gửi thông báo
+        notificationManager.notify(1, builder.build());
     }
+
 
 }
