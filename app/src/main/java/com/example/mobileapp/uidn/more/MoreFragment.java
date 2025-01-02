@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 
 import com.example.mobileapp.Activity.LoginActivity;
+import com.example.mobileapp.Activity.LoginFragment.InfoDialogFragment;
 import com.example.mobileapp.Activity.LoginFragment.LoginFragment;
 import com.example.mobileapp.Custom.CustomAdapter;
 import com.example.mobileapp.R;
@@ -87,8 +88,9 @@ public class MoreFragment extends Fragment {
         listItems.add("Giới thiêu bạn bè");
         listItems.add("Đổi tên");
         listItems.add("Đánh giá");
-        listItems.add("Thông tin nhóm");
-        listItems.add("Cài đặt");
+        listItems.add("Thành viên trong công ty");
+        listItems.add("Đổi công ty");
+        listItems.add("Tạo công ty mới");
 
         // Tạo Adapter và gán cho ListView
         CustomAdapter adapter = new CustomAdapter(getContext(), listItems);
@@ -115,6 +117,11 @@ public class MoreFragment extends Fragment {
                 }
                 if (position == 4) {  // "Cài đặt" là mục thứ 5 (index 4)
                     showCompanySelectionDialog();
+                }if(position==5)
+                {
+                        InfoDialogFragment infoDialogFragment = new InfoDialogFragment();
+                        infoDialogFragment.show(getParentFragmentManager(), "InfoDialogFragment");
+
                 }
 
 
@@ -445,6 +452,7 @@ public class MoreFragment extends Fragment {
         EditText editEmail = dialogView.findViewById(R.id.edit_email);
         Button btnAdd = dialogView.findViewById(R.id.btn_add);
 
+
         AlertDialog dialog = builder.create();
         dialog.show();
 
@@ -470,9 +478,4 @@ public class MoreFragment extends Fragment {
             }
         });
     }
-
-
-
-
-
 }

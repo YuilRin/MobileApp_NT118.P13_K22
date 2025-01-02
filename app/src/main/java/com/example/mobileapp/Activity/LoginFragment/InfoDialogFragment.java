@@ -20,11 +20,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class InfoDialogFragment extends DialogFragment {
 
+    private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     private EditText nameEditText, contactEditText, businessNameEditText, addressEditText;
     private Spinner businessTypeSpinner;
     private Button confirmButton, existingCompanyButton;
@@ -81,6 +84,9 @@ public class InfoDialogFragment extends DialogFragment {
         business.put("businessType", businessType);
         business.put("businessName", businessName);
         business.put("address", address);
+        Map<String, String> roles = new HashMap<>();
+        roles.put("boss", userId);
+        business.put("roles", roles);
         /*business.put("boss",userId);*/
 
         firestore.collection("company")
@@ -88,9 +94,6 @@ public class InfoDialogFragment extends DialogFragment {
                 .addOnSuccessListener(documentReference -> {
                     // Get the generated company document ID
                     String companyId = documentReference.getId();
-
-                    // Get the current user's ID (assuming you have access to the current user ID)
-
 
                     // Create a Map to store the company ID reference
                     Map<String, Object> userUpdates = new HashMap<>();
@@ -101,6 +104,7 @@ public class InfoDialogFragment extends DialogFragment {
                             .document(userId)
                             .update(userUpdates)
                             .addOnSuccessListener(aVoid -> {
+
                                 Toast.makeText(getContext(), "Đã thêm thông tin thành công!", Toast.LENGTH_SHORT).show();
                                 dismiss(); // Thoát dialog
                             })
@@ -123,23 +127,95 @@ public class InfoDialogFragment extends DialogFragment {
         }
     }
     private void showExistingCompanyDialog() {
-        // Tạo một dialog mới để nhập thông tin công ty
-        final EditText companyNameEditText = new EditText(getContext());
-        companyNameEditText.setHint("Nhập tên công ty");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        new AlertDialog.Builder(getContext())
-                .setTitle("Nhập tên công ty")
-                .setView(companyNameEditText)
-                .setPositiveButton("Tìm công ty", (dialog, which) -> {
-                    String companyName = companyNameEditText.getText().toString().trim();
-                    if (!companyName.isEmpty()) {
-                        checkIfCompanyExists(companyName);
+        // Lấy công ty hiện tại từ người dùng
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String currentCompanyId = documentSnapshot.getString("companyId");
+
+                    // Lấy danh sách tất cả các công ty
+                    db.collection("company").get()
+                            .addOnSuccessListener(queryDocumentSnapshots -> {
+                                ArrayList<String> companyNames = new ArrayList<>();
+                                ArrayList<String> companyIds = new ArrayList<>();
+
+                                for (DocumentSnapshot doc : queryDocumentSnapshots) { // Use DocumentSnapshot explicitly
+                                    String companyName = doc.getString("businessName");
+                                    String companyId = doc.getId();
+
+                                    if (companyId.equals(currentCompanyId)) {
+                                        companyNames.add(companyName + " (Hiện tại)"); // Đánh dấu công ty hiện tại
+                                    } else {
+                                        companyNames.add(companyName);
+                                    }
+
+                                    companyIds.add(companyId);
+                                }
+
+                                // Hiển thị danh sách công ty trong Dialog
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Chọn Công Ty");
+                                builder.setItems(companyNames.toArray(new String[0]), (dialog, which) -> {
+                                    String selectedCompanyId = companyIds.get(which);
+                                    String selectedCompanyName = companyNames.get(which);
+
+                                    if (!selectedCompanyId.equals(currentCompanyId)) {
+                                        checkUserRoleInCompany(selectedCompanyId, selectedCompanyName);
+                                    } else {
+                                        Toast.makeText(getContext(), "Bạn đã ở công ty này.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                                builder.setNegativeButton("Đóng", (dialog, which) -> dialog.dismiss());
+                                builder.create().show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(getContext(), "Lỗi khi lấy danh sách công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Lỗi khi lấy công ty hiện tại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void checkUserRoleInCompany(String companyId, String companyName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail(); // Lấy email người dùng hiện tại
+
+        db.collection("company").document(companyId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> roles = (Map<String, Object>) documentSnapshot.get("roles");
+                        if (roles != null && roles.containsKey(userEmail) && roles.get(userEmail).equals("member")) {
+                            showConfirmationDialog(companyId, companyName);
+                        }
+                        else
+                        if (roles != null && roles.containsKey("boss") && roles.get("boss").equals(userId)){
+                            showConfirmationDialog(companyId, companyName);
+                        }
+
+                        else {
+                            Toast.makeText(getContext(), "Bạn không phải thành viên của công ty này.", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(getContext(), "Vui lòng nhập tên công ty!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Công ty không tồn tại.", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("Hủy", null)
-                .show();
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Lỗi khi kiểm tra vai trò: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void showConfirmationDialog(String companyId, String companyName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Xác nhận");
+        builder.setMessage("Bạn có muốn chuyển sang công ty " + companyName + " không?");
+
+        builder.setPositiveButton("Yes", (dialog, which) -> updateUserCompanyId(companyId));
+        builder.setNegativeButton("No", null);
+        builder.create().show();
     }
 
     private void checkIfCompanyExists(String companyName) {
@@ -190,7 +266,4 @@ public class InfoDialogFragment extends DialogFragment {
                     Toast.makeText(getContext(), "Cập nhật công ty thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
-
-
-
 }

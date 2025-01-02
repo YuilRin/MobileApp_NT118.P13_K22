@@ -61,6 +61,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DonHangFragment extends Fragment {
     private String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
     private String companyId;
+
+    FirebaseFirestore firestore;
     private EditText searchBar;
     private ImageButton searchButton;
     @Override
@@ -202,6 +204,36 @@ public class DonHangFragment extends Fragment {
     }
 
 
+    // Interface callback để xử lý bất đồng bộ
+    private interface FetchCompanyIdCallback {
+        void onSuccess(String companyId);
+        void onFailure(Exception e);
+    }
+
+    private void fetchCompanyId(FetchCompanyIdCallback callback) {
+        FirebaseFirestore.getInstance().collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener(userDoc -> {
+                    if (userDoc.exists()) {
+                        companyId = userDoc.getString("companyId");
+                        if (callback != null) {
+                            callback.onSuccess(companyId);
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "Không tìm thấy thông tin công ty!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Lỗi khi lấy thông tin công ty: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (callback != null) {
+                        callback.onFailure(e);
+                    }
+                });
+    }
+
+
+
     private void showAddProductDialog(View parentView) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.business_order_edit_item, null, false);
@@ -211,7 +243,56 @@ public class DonHangFragment extends Fragment {
         }
         builder.setView(dialogView);
 
+
         EditText etMaDonHang = dialogView.findViewById(R.id.et_order_edit_madonhang);
+        etMaDonHang.setFocusable(false); // Không cho người dùng chỉnh sửa mã
+        etMaDonHang.setClickable(false);
+
+        fetchCompanyId(new FetchCompanyIdCallback() {
+            @Override
+            public void onSuccess(String companyId) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                db.collection("company")
+                        .document(companyId)
+                        .collection("donhang") // Thay đổi tên collection nếu cần
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                List<String> existingOrderIds = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    existingOrderIds.add(document.getId());
+                                }
+
+                                // Tìm mã đơn hàng lớn nhất hiện có
+                                int maxId = 0;
+                                for (String orderId : existingOrderIds) {
+                                    if (orderId.startsWith("DH")) {
+                                        try {
+                                            int id = Integer.parseInt(orderId.substring(2)); // Lấy phần số từ "DHXXX"
+                                            maxId = Math.max(maxId, id);
+                                        } catch (NumberFormatException e) {
+                                            Log.e("OrderID", "Không thể parse mã đơn hàng: " + orderId);
+                                        }
+                                    }
+                                }
+
+                                // Tạo mã đơn hàng mới
+                                String maDonHang = "DH" + String.format("%03d", maxId + 1); // Định dạng DHXXX
+                                etMaDonHang.setText(maDonHang);
+                            } else {
+                                Log.e("Firebase", "Lỗi khi lấy danh sách mã đơn hàng", task.getException());
+                                Toast.makeText(requireContext(), "Không thể tạo mã đơn hàng mới!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(requireContext(), "Lỗi khi lấy companyId!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         EditText etNgay = dialogView.findViewById(R.id.et_order_edit_ngay);
         EditText etTongCong = dialogView.findViewById(R.id.et_order_edit_tongcong);
         etTongCong.setVisibility(View.GONE);

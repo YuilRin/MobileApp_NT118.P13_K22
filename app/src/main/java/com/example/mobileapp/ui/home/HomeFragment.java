@@ -24,9 +24,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.mobileapp.Custom.CustomAdapter_Expense;
 import com.example.mobileapp.Custom.CustomAdapter_Money;
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentHomeBinding;
+import com.example.mobileapp.ui.add.ExpenseItem;
 import com.example.mobileapp.ui.add.ExpenseManager;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -61,7 +63,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     PieChart pieChart;
     ListView listView;
-    String[] dayKeys = {"23", "25"};
+
     String userId,userName;
 
     String currentMonth;
@@ -78,8 +80,6 @@ public class HomeFragment extends Fragment {
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         currentMonth = getCurrentMonth();
 
-        getDayKeys();
-        loadMonthlyExpenses(userId, currentMonth);
 
         TextView tvName =binding.idCustomer;
         userName = getUserName();
@@ -89,24 +89,8 @@ public class HomeFragment extends Fragment {
 
         listView = binding.List;
 
-        Button btnAddExpense = root.findViewById(R.id.btnAddExpense);
-        btnAddExpense.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ExpenseManager expenseManager = new ExpenseManager(requireContext(), new ExpenseManager.OnExpenseSavedListener() {
-                    @Override
-                    public void onExpenseSaved() {
-                        // This code will run after the expense is saved
-                        getDayKeys();
-                        loadMonthlyExpenses(userId, currentMonth);
-                    }
-                });
-                expenseManager.showAddExpenseDialog();
-            }
-        });
         Spinner spinnerMonth = root.findViewById(R.id.spinner_month);
         Spinner spinnerYear = root.findViewById(R.id.spinner_year);
-
 
         List<String> months = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
@@ -143,7 +127,7 @@ public class HomeFragment extends Fragment {
 
                 // Cập nhật currentMonth và tải dữ liệu
                 currentMonth = selectedYear + "-" + selectedMonth;
-                getDayKeys();
+
                 loadMonthlyExpenses(userId, currentMonth);
             }
 
@@ -161,7 +145,7 @@ public class HomeFragment extends Fragment {
 
                 // Cập nhật currentMonth và tải dữ liệu
                 currentMonth = selectedYear + "-" + selectedMonth;
-                getDayKeys();
+
                 loadMonthlyExpenses(userId, currentMonth);
             }
 
@@ -171,36 +155,10 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-
         return root;
     }
 
-    public void getDayKeys() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users")
-                .document(userId)
-                .collection("expenses")
-                .document(currentMonth)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String daysString = documentSnapshot.getString("days");
-                        if (daysString != null && !daysString.isEmpty()) {
-                            dayKeys = daysString.split(" ");
-                            Log.d("DayKeys", Arrays.toString(dayKeys));
 
-                            // Now that dayKeys is updated, perform actions that rely on it
-                            loadMonthlyExpenses(userId, getCurrentMonth());
-                        }
-                    } else {
-                        Log.d("Firestore", "Document not found!");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error getting document", e);
-                });
-    }
 
 
     @Override
@@ -213,72 +171,74 @@ public class HomeFragment extends Fragment {
         return sharedPreferences.getString("USER_NAME", null);
     }
 
+
     private void loadMonthlyExpenses(String userId, String monthKey) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         Map<String, Float> categoryTotals = new HashMap<>();
-        List<String> listItems = new ArrayList<>();
+        List<ExpenseItem> listItems = new ArrayList<>();
         ArrayList<PieEntry> pieEntries = new ArrayList<>();
 
-        // Flag to track when all data is loaded
-        final int[] remainingDays = {dayKeys.length};
 
-        for (String dayKey : dayKeys) {
-            db.collection("users")
-                    .document(userId)
-                    .collection("expenses")
-                    .document(monthKey)
-                    .collection(dayKey)
-                    .get()
-                    .addOnSuccessListener(querySnapshot -> {
-                        for (DocumentSnapshot docSnapshot : querySnapshot) {
-                            Map<String, Object> dayExpenses = (Map<String, Object>) docSnapshot.getData();
-                            if (dayExpenses != null) {
-                                for (Map.Entry<String, Object> entry : dayExpenses.entrySet()) {
-                                    String category = entry.getKey();
-                                    Object value = entry.getValue();
+        // Gọi hai lần fetch dữ liệu: một cho chi tiêu và một cho thu nhập
+        fetchData("NganSach_chi_tieu", monthKey, false, categoryTotals, listItems, pieEntries);
+        fetchData("NganSach_thu_nhap", monthKey, true, categoryTotals, listItems, pieEntries);
+    }
 
-                                    if (value != null) {
-                                        try {
-                                            float amount = Float.parseFloat(value.toString());
-                                            categoryTotals.put(category, categoryTotals.getOrDefault(category, 0f) + amount);
+    private void fetchData(String collectionName, String key, boolean isIncome, Map<String, Float> categoryTotals,
+                           List<ExpenseItem> listItems, ArrayList<PieEntry> pieEntries) {
 
-                                            String formattedItem = category + " - " + String.format("%.2f", amount) + "k";
-                                            listItems.add(formattedItem);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users")
+                .document(userId)
+                .collection(collectionName)
+                .whereEqualTo("yearMonth", key)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    // Tạo các danh sách tạm thời để lưu trữ dữ liệu
+                    List<ExpenseItem> tempListItems = new ArrayList<>();
+                    ArrayList<PieEntry> tempPieEntries = new ArrayList<>();
 
-                                            // Prepare data for PieChart
-                                            pieEntries.add(new PieEntry(amount, category));
-                                        } catch (NumberFormatException ex) {
-                                            Log.w("LoadExpenses", "Couldn't parse amount for category " + category);
-                                        }
-                                    }
-                                }
-                            }
+                    // Duyệt qua kết quả truy vấn
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        String date = doc.getString("date");
+                        String mainTitle = doc.getString("mainTitle");
+
+                        // Thêm dấu "*" cho thu nhập
+                        if (isIncome) {
+                            mainTitle = "*" + mainTitle;
                         }
 
-                        // Decrease the remaining days counter
-                        remainingDays[0]--;
+                        // Lấy tongSoTien dưới dạng float
+                        Double tongSoTienDouble = doc.getDouble("tongSoTien");
+                        float tongSoTien = (tongSoTienDouble != null) ? tongSoTienDouble.floatValue() : 0f;
 
-                        // If all days have been processed, update ListView and PieChart
-                        if (remainingDays[0] == 0) {
-                            updateListView(listItems);
-                            updatePieChart(pieEntries);
-                        }
+                        // Thêm vào danh sách tạm thời
+                        tempListItems.add(new ExpenseItem(mainTitle, tongSoTien, date));
+                        tempPieEntries.add(new PieEntry(tongSoTien, mainTitle));
+                    }
 
-                    }).addOnFailureListener(e -> {
-                        Log.w("LoadExpenses", "Error fetching data for day " + dayKey + ": " + e.getMessage());
-                    });
-        }
+                    // Sau khi truy vấn xong, cập nhật các danh sách chính
+                    listItems.addAll(tempListItems);
+                    pieEntries.addAll(tempPieEntries);
+
+                    // Cập nhật danh sách hiển thị lên ListView
+                    CustomAdapter_Expense adapter = new CustomAdapter_Expense(getContext(), listItems);
+
+                    // Cập nhật ListView
+                    listView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+
+                    // Cập nhật PieChart nếu cần
+                    updatePieChart(pieEntries);
+
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("LoadExpenses", "Error fetching data: " + e.getMessage());
+                });
     }
 
 
-    private void updateListView(List<String> listItems) {
-        // Create the adapter and set it to the ListView
-        View rootView = getView();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, listItems);
-        ListView listView = rootView.findViewById(R.id.List);  // Make sure to use the correct ListView ID
-        listView.setAdapter(adapter);
-    }
+
 
     private void updatePieChart(ArrayList<PieEntry> pieEntries) {
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "Chi tiêu");

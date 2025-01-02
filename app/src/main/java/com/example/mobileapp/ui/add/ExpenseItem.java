@@ -39,6 +39,17 @@ public class ExpenseItem {
 
     @Override
     public String toString() {
-        return category + " - " + amount + "k - Ngày: " + date;  // Hiển thị ngày trong toString
+        String formattedString = "";
+
+        if (category != null && category.startsWith("*")) {
+            // Nếu category bắt đầu bằng dấu "*", loại bỏ "*" và thêm dấu "+"
+            category = category.substring(1); // Loại bỏ dấu "*"
+            formattedString = category + "    +" + amount + "k - Ngày: " + date;
+        } else {
+            // Nếu không có dấu "*", thêm dấu "-"
+            formattedString = category + "    -" + amount + "k - Ngày: " + date;
+        }
+
+        return formattedString; // Hiển thị ngày trong toString
     }
 }

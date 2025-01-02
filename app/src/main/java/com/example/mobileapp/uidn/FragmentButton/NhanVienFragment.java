@@ -174,6 +174,44 @@ public class NhanVienFragment extends Fragment {
 
         // Ánh xạ các thành phần giao diện
         EditText etMaNhanVien = dialogView.findViewById(R.id.et_employee_edit_manv);
+        etMaNhanVien.setEnabled(false);
+
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("company")
+                .document(companyId) // companyId được đảm bảo không null
+                .collection("nhanvien")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> existingOrderIds = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            existingOrderIds.add(document.getId());
+                        }
+
+                        // Tìm mã đơn hàng lớn nhất hiện có
+                        int maxId = 0;
+                        for (String orderId : existingOrderIds) {
+                            if (orderId.startsWith("EMP")) {
+                                try {
+                                    int id = Integer.parseInt(orderId.substring(3));
+                                    maxId = Math.max(maxId, id);
+                                } catch (NumberFormatException e) {
+                                    Log.e("OrderID", "Không thể parse mã NV: " + orderId);
+                                }
+                            }
+                        }
+
+                        // Tạo mã đơn hàng mới
+                        String maDonHang = "EMP" + String.format("%03d", maxId + 1);
+                        etMaNhanVien.setText(maDonHang);
+                    } else {
+                        Log.e("Firebase", "Lỗi khi lấy danh sách mã đơn hàng", task.getException());
+                        Toast.makeText(requireContext(), "Không thể tạo mã đơn hàng mới!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
         EditText etTenNV = dialogView.findViewById(R.id.et_employee_edit_tennv);
         EditText etSDT = dialogView.findViewById(R.id.et_employee_edit_sdt);
         EditText etNgay = dialogView.findViewById(R.id.et_employee_edit_ngay);

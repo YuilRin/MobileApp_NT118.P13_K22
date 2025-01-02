@@ -149,6 +149,44 @@ public class KhoHangFragment extends Fragment {
         builder.setView(dialogView);
 
         EditText etMaNhap = dialogView.findViewById(R.id.et_storage_edit_manhap);
+        etMaNhap.setFocusable(false); // Không cho người dùng chỉnh sửa mã
+        etMaNhap.setClickable(false);
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("company")
+                .document(companyId) // companyId được đảm bảo không null
+                .collection("phieunhap")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> existingOrderIds = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            existingOrderIds.add(document.getId());
+                        }
+
+                        // Tìm mã đơn hàng lớn nhất hiện có
+                        int maxId = 0;
+                        for (String orderId : existingOrderIds) {
+                            if (orderId.startsWith("NH")) {
+                                try {
+                                    int id = Integer.parseInt(orderId.substring(2));
+                                    maxId = Math.max(maxId, id);
+                                } catch (NumberFormatException e) {
+                                    Log.e("OrderID", "Không thể parse mã NH: " + orderId);
+                                }
+                            }
+                        }
+
+                        // Tạo mã đơn hàng mới
+                        String maDonHang = "NH" + String.format("%02d", maxId + 1);
+                        etMaNhap.setText(maDonHang);
+                    } else {
+                        Log.e("Firebase", "Lỗi khi lấy danh sách mã đơn hàng", task.getException());
+                        Toast.makeText(requireContext(), "Không thể tạo mã đơn hàng mới!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
         EditText etNgayNhap = dialogView.findViewById(R.id.et_storage_edit_ngay);
         EditText etGhiChu = dialogView.findViewById(R.id.et_storage_edit_ghichu);
         ImageButton ibDate = dialogView.findViewById(R.id.ib_storage_date);
@@ -173,7 +211,7 @@ public class KhoHangFragment extends Fragment {
         });
 
         List<ProductMini> productList = new ArrayList<>();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection("company")
                 .document(companyId)
                 .collection("khohang")
