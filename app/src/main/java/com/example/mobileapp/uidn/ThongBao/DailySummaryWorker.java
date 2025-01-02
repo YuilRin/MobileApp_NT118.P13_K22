@@ -52,9 +52,11 @@ public class DailySummaryWorker extends Worker {
     public DailySummaryWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
+
     private void sendEmail(String recipientEmail, String title, String content) {
         EmailSender.sendEmail(recipientEmail, title, content);
     }
+
     @NonNull
     @Override
     public Result doWork() {
@@ -63,67 +65,104 @@ public class DailySummaryWorker extends Worker {
         return Result.success();
     }
 
-    public void scheduleDailySummary() {
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build();
+//    public void scheduleDailySummary() {
+//        Constraints constraints = new Constraints.Builder()
+//                .setRequiredNetworkType(NetworkType.CONNECTED)
+//                .build();
+//
+//        // Thời gian chạy lại hàng ngày
+//        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
+//                DailySummaryWorker.class,
+//                1, TimeUnit.DAYS
+//        )
+//                .setConstraints(constraints)
+//                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+//                .build();
+//
+//        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
+//                "DailySummaryWorker",
+//                ExistingPeriodicWorkPolicy.REPLACE,
+//                dailyWorkRequest
+//        );
+//    }
+//
+//    // Tính thời gian delay để bắt đầu vào 23:59
+//    private long calculateInitialDelay() {
+//        android.icu.util.Calendar current = android.icu.util.Calendar.getInstance();
+//        android.icu.util.Calendar target = android.icu.util.Calendar.getInstance();
+//
+//        target.set(android.icu.util.Calendar.HOUR_OF_DAY, 18);
+//        target.set(android.icu.util.Calendar.MINUTE, 2);
+//        target.set(android.icu.util.Calendar.SECOND, 0);
+//
+//        if (current.after(target)) {
+//            target.add(android.icu.util.Calendar.DAY_OF_MONTH, 1);
+//        }
+//
+//        return target.getTimeInMillis() - current.getTimeInMillis();
+//    }
 
-        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
-                DailySummaryWorker.class,
-                1, TimeUnit.DAYS
-        ).setConstraints(constraints)
-                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
-                .build();
+//    public void scheduleDailySummary() {
+//        Constraints constraints = new Constraints.Builder()
+//                .setRequiredNetworkType(NetworkType.CONNECTED)
+//                .build();
+//
+//        PeriodicWorkRequest dailyWorkRequest = new PeriodicWorkRequest.Builder(
+//                DailySummaryWorker.class,
+//                1, TimeUnit.DAYS
+//        ).setConstraints(constraints)
+//                .setInitialDelay(calculateInitialDelay(), TimeUnit.MILLISECONDS)
+//                .build();
+//
+//        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
+//                "DailySummary",
+//                ExistingPeriodicWorkPolicy.REPLACE,
+//                dailyWorkRequest
+//        );
+//    }
+//
+//     //Tính thời gian delay để bắt đầu vào cuối ngày (ví dụ: 23:59)
+//    private long calculateInitialDelay() {
+//        Calendar current = Calendar.getInstance();
+//        Calendar target = Calendar.getInstance();
+//        target.set(Calendar.HOUR_OF_DAY, 17);
+//        target.set(Calendar.MINUTE, 55);
+//        target.set(Calendar.SECOND, 0);
+//
+//        if (current.after(target)) {
+//            target.add(Calendar.DATE, 1);
+//        }
+//
+//        return target.getTimeInMillis() - current.getTimeInMillis();
+//    }
 
-        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
-                "DailySummary",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                dailyWorkRequest
-        );
-    }
-
-    // Tính thời gian delay để bắt đầu vào cuối ngày (ví dụ: 23:59)
-    private long calculateInitialDelay() {
-        Calendar current = Calendar.getInstance();
-        Calendar target = Calendar.getInstance();
-        target.set(Calendar.HOUR_OF_DAY, 23);
-        target.set(Calendar.MINUTE, 59);
-        target.set(Calendar.SECOND, 0);
-
-        if (current.after(target)) {
-            target.add(Calendar.DATE, 1);
-        }
-
-        return target.getTimeInMillis() - current.getTimeInMillis();
-    }
-
-    private void scheduleDailyNotification() {
-        // Thời gian bắt đầu: 23:59 mỗi ngày
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 0);
-
-        long initialDelay = calendar.getTimeInMillis() - System.currentTimeMillis();
-        if (initialDelay < 0) {
-            // Nếu đã qua thời điểm, lên lịch cho ngày mai
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            initialDelay = calendar.getTimeInMillis() - System.currentTimeMillis();
-        }
-
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
-                DailySummaryWorker.class,
-                1, TimeUnit.DAYS
-        )
-                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
-                .build();
-
-        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
-                "DailyNotification",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-        );
-    }
+//    private void scheduleDailyNotification() {
+//        // Thời gian bắt đầu: 23:59 mỗi ngày
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 16);
+//        calendar.set(Calendar.MINUTE, 45);
+//        calendar.set(Calendar.SECOND, 0);
+//
+//        long initialDelay = calendar.getTimeInMillis() - System.currentTimeMillis();
+//        if (initialDelay < 0) {
+//            // Nếu đã qua thời điểm, lên lịch cho ngày mai
+//            calendar.add(Calendar.DAY_OF_MONTH, 1);
+//            initialDelay = calendar.getTimeInMillis() - System.currentTimeMillis();
+//        }
+//
+//        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(
+//                DailySummaryWorker.class,
+//                1, TimeUnit.DAYS
+//        )
+//                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+//                .build();
+//
+//        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork(
+//                "DailyNotification",
+//                ExistingPeriodicWorkPolicy.REPLACE,
+//                workRequest
+//        );
+//    }
 
     public void calculateFinancial () {
 
@@ -174,20 +213,17 @@ public class DailySummaryWorker extends Worker {
 
 
     private void sendNotification(int orderCountToday, double revenueToday, double profitToday) {
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY); // Giờ (24 giờ)
+        int minute = calendar.get(Calendar.MINUTE);   // Phút
 
 
         // Chuẩn bị dữ liệu
         String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
-        String title = "Báo cáo tài chính ";
+        String title = "Báo cáo tài chính " + "(" + hour + ":" + minute + ")";
         String content = String.format(
                 "Hôm nay có %d đơn hàng, doanh thu: %.0f VND, lợi nhuận: %.0f VND",
                 orderCountToday, revenueToday, profitToday);
-
-
-        Map<String, Object> notification = new HashMap<>();
-        notification.put("title", title);
-        notification.put("date", today);
-        notification.put("content", content);
 
         //Gui email
         FirebaseFirestore dbf = FirebaseFirestore.getInstance();
@@ -203,6 +239,12 @@ public class DailySummaryWorker extends Worker {
                         Log.e("ThongBaoFragment", "Lỗi khi lấy email từ Firebase", task.getException());
                     }
                 });
+
+        Map<String, Object> notification = new HashMap<>();
+        notification.put("title", title);
+        notification.put("date", today);
+        notification.put("content", content);
+
 
         // Gửi dữ liệu lên Firestore
         FirebaseFirestore.getInstance().collection("users")
