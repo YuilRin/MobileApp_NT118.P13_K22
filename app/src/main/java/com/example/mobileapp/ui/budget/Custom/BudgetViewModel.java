@@ -15,9 +15,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class BudgetViewModel extends ViewModel {
@@ -28,6 +32,7 @@ public class BudgetViewModel extends ViewModel {
     private MutableLiveData<List<String>> DanhSachPhanLoai = new MutableLiveData<>();
     private MutableLiveData<Double> tongTatCaSoTienThuNhap;
     private MutableLiveData<Double> tongTatCaSoTienChiTieu;
+    private String date = getCurrentDate();
 
     public BudgetViewModel() {
         ThuNhapItemsData = new MutableLiveData<>(new ArrayList<>());
@@ -141,7 +146,9 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date,
+                getCurrentDate1()
         );
 
         newList.set(parentIndex, updatedParentItem);
@@ -231,6 +238,47 @@ public class BudgetViewModel extends ViewModel {
         }
     }
 
+    public void updateSalaryItem(boolean isIncome, SalaryItem updatedItem) {
+        if (updatedItem == null || updatedItem.getId() == null) {
+            return;
+        }
+        // 1) Cập nhật cục bộ
+        List<SalaryItem> oldList = isIncome
+                ? getThuNhapItemsData().getValue()
+                : getChiTieuItemsData().getValue();
+        if (oldList == null) return;
+
+        // Tạo một copy list
+        List<SalaryItem> newList = new ArrayList<>(oldList);
+        for (int i = 0; i < newList.size(); i++) {
+            if (newList.get(i).getId().equals(updatedItem.getId())) {
+                newList.set(i, updatedItem);
+                break;
+            }
+        }
+
+        // 2) setValue để cập nhật UI
+        if (isIncome) {
+            getThuNhapItemsData().setValue(newList);
+            calculateTotalSum(newList, true);
+        } else {
+            getChiTieuItemsData().setValue(newList);
+            calculateTotalSum(newList, false);
+        }
+
+        // 3) Lưu lên Firestore
+        String collectionName = isIncome ? "NganSach_thu_nhap" : "NganSach_chi_tieu";
+        if (!UserId.isEmpty()) {
+            firestore.collection("users")
+                    .document(UserId)
+                    .collection(collectionName)
+                    .document(updatedItem.getId())
+                    .set(updatedItem)
+                    .addOnSuccessListener(aVoid -> Log.d("BudgetViewModel", "updateSalaryItem: success"))
+                    .addOnFailureListener(e -> Log.e("BudgetViewModel", "updateSalaryItem: failed", e));
+        }
+    }
+
 
 
 
@@ -266,7 +314,9 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date,
+                getCurrentDate1()
         );
 
         // Cập nhật lại vào newList
@@ -326,7 +376,9 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date,
+                getCurrentDate1()
         );
 
         // Gán lại vào newList
@@ -458,7 +510,9 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date,
+                getCurrentDate1()
         );
 
         newList.set(parentIndex, updatedParentItem);
@@ -486,20 +540,62 @@ public class BudgetViewModel extends ViewModel {
 
     public void calculateTotalSum(List<SalaryItem> salaryItems, boolean isThuNhap) {
         double sum = 0.0;
+
         if (salaryItems != null) {
             for (SalaryItem salaryItem : salaryItems) {
+                double itemSum = 0.0;
                 if (salaryItem.getAllowanceItems() != null) {
                     for (AllowanceItem allowanceItem : salaryItem.getAllowanceItems()) {
-                        sum += parseMoneyString(allowanceItem.getMoney());
+                        double moneyVal = parseMoneyString(allowanceItem.getMoney());
+                        itemSum += moneyVal;
+
                     }
                 }
+                    // Gán tổng riêng này vào SalaryItem (nếu bạn có setter phù hợp)
+
+                    salaryItem.setTongSoTien(itemSum);
+
+                    // Đồng thời, cộng dồn vào tổng "toàn bộ"
+                    sum += itemSum;
             }
         }
         if (isThuNhap) {
             tongTatCaSoTienThuNhap.setValue(sum);
+
         } else {
             tongTatCaSoTienChiTieu.setValue(sum);
         }
+    }
+
+    public String getCurrentDate() {
+        // Lấy đối tượng Calendar hiện tại
+        Calendar calendar = Calendar.getInstance();
+
+        // Định dạng ngày theo mẫu mong muốn, ví dụ: "dd/MM/yyyy"
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        // Chuyển đổi Calendar thành Date và định dạng thành String
+        String currentDate = sdf.format(calendar.getTime());
+
+        return currentDate;
+    }
+
+    public String getCurrentDate1() {
+        // Lấy đối tượng Calendar hiện tại
+        Calendar calendar = Calendar.getInstance();
+
+        // Định dạng ngày theo mẫu mong muốn, ví dụ: "dd/MM/yyyy"
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM", Locale.getDefault());
+
+        // Chuyển đổi Calendar thành Date và định dạng thành String
+        String currentDate = sdf.format(calendar.getTime());
+
+        return currentDate;
+    }
+
+    private String dinhDangLaiSoTien(double amount) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(amount);
     }
 
     public void removeChiTieuTrenPhanLoai(String TenPhanLoai) {

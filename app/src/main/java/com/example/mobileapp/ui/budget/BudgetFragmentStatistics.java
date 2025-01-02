@@ -114,14 +114,24 @@ public class BudgetFragmentStatistics extends Fragment {
         // su kien nut bo duyet
         btnBoDuyetAll.setOnClickListener(v -> HuyBoChapNhan());
 
+
+
         debtViewModel.getDebtListNo().observe(getViewLifecycleOwner(), debts -> {
             debtAdapterKhoanNo.updateDebtList(debts); // Cập nhật RecyclerView khi dữ liệu thay đổi
+
         });
+
 
         debtViewModel.getDebtListKhoanThu().observe(getViewLifecycleOwner(), debts -> {
             debtAdapterKhoanThu.updateDebtList(debts);
+
         });
 
+        List<Debt> CapnhaDebtNo = debtViewModel.getDebtListNo().getValue();
+        List<Debt> CapNhatDetThu = debtViewModel.getDebtListKhoanThu().getValue();
+
+        CapNhatTrangThai(true, CapnhaDebtNo);
+        CapNhatTrangThai(false, CapNhatDetThu);
 
         btnThem.setOnClickListener(v -> showThemDiaLog());
 
@@ -159,6 +169,19 @@ public class BudgetFragmentStatistics extends Fragment {
         });
 
         return view;
+    }
+
+    private void CapNhatTrangThai(boolean debtno,List<Debt> debts) {
+        if(debtno)
+        {
+            for (Debt debt : debts) {
+                debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+            }
+        }else {
+            for (Debt debt : debts) {
+                debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+            }
+        }
     }
 
     private void ChapNhanDuyet() {

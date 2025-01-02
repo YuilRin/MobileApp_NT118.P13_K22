@@ -20,13 +20,23 @@ import java.util.Objects;
 public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryViewHolder> {
     private double TongTatCaSoTien = 0.0;
     private OnChildLongClickListener LangNgheClickCon;
+    private OnChaLongClickListener LangNgheClickCha;
 
     public interface OnChildLongClickListener  {
         void onChildLongClick(AllowanceItem item, int vitriCha, int vitriCon);
     }
 
+    public interface OnChaLongClickListener  {
+        void onChaLongClick(SalaryItem item, int vitriCha );
+    }
+
+
     public void setOnChildLongClickListener(OnChildLongClickListener listener) {
         this.LangNgheClickCon = listener;
+    }
+
+    public void setLangNgheClickCha(OnChaLongClickListener listener) {
+        this.LangNgheClickCha = listener;
     }
 
     public SalaryAdapter() {
@@ -38,7 +48,7 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
                 @Override
                 public boolean areItemsTheSame(@NonNull SalaryItem oldItem, @NonNull SalaryItem newItem) {
                     // Chỉ so sánh ID (để xác định có phải cùng item không)
-                    return Objects.equals(oldItem.getId(), newItem.getId());
+                    return false;
                 }
 
                 @Override
@@ -81,6 +91,14 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
         holder.tvResult.setTextColor(salaryItem.getColor());
 
         holder.bind(salaryItem, position);
+
+        // Gán long click cho View cha (nếu cần)
+        holder.itemView.setOnLongClickListener(v -> {
+            if(LangNgheClickCha != null) {
+                LangNgheClickCha.onChaLongClick(salaryItem, position);
+            }
+            return true;
+        });
     }
 
 

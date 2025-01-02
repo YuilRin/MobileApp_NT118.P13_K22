@@ -11,14 +11,18 @@ public class SalaryItem {
     private String mainTitle;
     private int color;
     private List<AllowanceItem> allowanceItems;
-    private String TongSoTien;
+    private double TongSoTien;
     private String id;
+    private String date;
+    private String YearMonth;
 
-    public SalaryItem(String id, String mainTitle, List<AllowanceItem> allowanceItems , int color) {
+    public SalaryItem(String id, String mainTitle, List<AllowanceItem> allowanceItems , int color, String date, String yearMonth) {
         this.mainTitle = mainTitle;
         this.color = color;
         this.allowanceItems = allowanceItems;
         this.id = id != null ? id : UUID.randomUUID().toString(); // Tạo ID nếu null
+        this.date = date;
+        this.YearMonth =  yearMonth;
     }
 
     public SalaryItem() {
@@ -38,10 +42,10 @@ public class SalaryItem {
     }
     public void setMainTitle(String mainTitle) {this.mainTitle = mainTitle;}
 
-    public String getTongSoTien() {
+    public double getTongSoTien() {
         return TongSoTien;
     }
-    public void setTongSoTien(String textResult) {this.TongSoTien = textResult;}
+    public void setTongSoTien(double textResult) {this.TongSoTien = textResult;}
 
     public int getColor() {
         return color; // Mã màu đỏ dưới dangj thập lục phân
@@ -53,6 +57,16 @@ public class SalaryItem {
         return allowanceItems;
     }
     public  void setAllowanceItems(List<AllowanceItem> allowanceItems) {this.allowanceItems = allowanceItems;}
+
+    public void setDate(String date) {this.date = date;}
+    public String getDate() {return  this.date;}
+
+    public void setYearMonth(String yearMonth) {
+        this.YearMonth = yearMonth;
+    }
+    public String getYearMonth() {
+        return YearMonth;
+    }
 
     @Override
     public boolean equals(Object obj) {
