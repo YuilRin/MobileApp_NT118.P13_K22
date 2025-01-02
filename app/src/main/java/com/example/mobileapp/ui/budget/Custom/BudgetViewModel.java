@@ -15,9 +15,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class BudgetViewModel extends ViewModel {
@@ -28,6 +32,7 @@ public class BudgetViewModel extends ViewModel {
     private MutableLiveData<List<String>> DanhSachPhanLoai = new MutableLiveData<>();
     private MutableLiveData<Double> tongTatCaSoTienThuNhap;
     private MutableLiveData<Double> tongTatCaSoTienChiTieu;
+    private String date = getCurrentDate();
 
     public BudgetViewModel() {
         ThuNhapItemsData = new MutableLiveData<>(new ArrayList<>());
@@ -141,7 +146,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date
         );
 
         newList.set(parentIndex, updatedParentItem);
@@ -307,7 +313,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date
         );
 
         // Cập nhật lại vào newList
@@ -367,7 +374,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date
         );
 
         // Gán lại vào newList
@@ -499,7 +507,8 @@ public class BudgetViewModel extends ViewModel {
                 parentItem.getId(),
                 parentItem.getMainTitle(),
                 childList,
-                parentItem.getColor()
+                parentItem.getColor(),
+                date
         );
 
         newList.set(parentIndex, updatedParentItem);
@@ -527,20 +536,49 @@ public class BudgetViewModel extends ViewModel {
 
     public void calculateTotalSum(List<SalaryItem> salaryItems, boolean isThuNhap) {
         double sum = 0.0;
+
         if (salaryItems != null) {
             for (SalaryItem salaryItem : salaryItems) {
+                double itemSum = 0.0;
                 if (salaryItem.getAllowanceItems() != null) {
                     for (AllowanceItem allowanceItem : salaryItem.getAllowanceItems()) {
-                        sum += parseMoneyString(allowanceItem.getMoney());
+                        double moneyVal = parseMoneyString(allowanceItem.getMoney());
+                        itemSum += moneyVal;
+
                     }
                 }
+                    // Gán tổng riêng này vào SalaryItem (nếu bạn có setter phù hợp)
+
+                    salaryItem.setTongSoTien(dinhDangLaiSoTien(itemSum));
+
+                    // Đồng thời, cộng dồn vào tổng "toàn bộ"
+                    sum += itemSum;
             }
         }
         if (isThuNhap) {
             tongTatCaSoTienThuNhap.setValue(sum);
+
         } else {
             tongTatCaSoTienChiTieu.setValue(sum);
         }
+    }
+
+    public String getCurrentDate() {
+        // Lấy đối tượng Calendar hiện tại
+        Calendar calendar = Calendar.getInstance();
+
+        // Định dạng ngày theo mẫu mong muốn, ví dụ: "dd/MM/yyyy"
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        // Chuyển đổi Calendar thành Date và định dạng thành String
+        String currentDate = sdf.format(calendar.getTime());
+
+        return currentDate;
+    }
+
+    private String dinhDangLaiSoTien(double amount) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(amount);
     }
 
     public void removeChiTieuTrenPhanLoai(String TenPhanLoai) {

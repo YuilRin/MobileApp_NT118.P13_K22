@@ -9,15 +9,16 @@ public class AllowanceItem {
     private String money;
     private String moneyTitle;
     private String id;
-
+    private String date;
     public AllowanceItem() {}
 
-    public AllowanceItem(int avatarResId, String content, String money, String moneyTitle) {
+    public AllowanceItem(int avatarResId, String content, String money, String moneyTitle, String date) {
         this.avatarResId = avatarResId;
         this.content = content;
         this.money = money;
         this.moneyTitle = moneyTitle;
         this.id = UUID.randomUUID().toString();
+        this.date = date;
     }
 
     public String getId() {return id;}
@@ -51,6 +52,8 @@ public class AllowanceItem {
         this.moneyTitle = moneyTitle;
     }
 
+    public String getDate() {return date;}
+    public void setDate(String date) {this.date = date;}
 
     @Override
     public boolean equals(Object o) {
