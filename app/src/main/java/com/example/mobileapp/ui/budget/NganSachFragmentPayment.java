@@ -9,10 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentBudgetPaymentBinding;
 
-public class BudgetFragmentPayment extends Fragment {
+public class NganSachFragmentPayment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

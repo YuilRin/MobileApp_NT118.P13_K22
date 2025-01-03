@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient"
-    tools:context=".ui.budget.BudgetFragment">
+    tools:context=".ui.budget.NganSachFragment">
 
     <LinearLayout
         android:id="@+id/horizontalScrollViewOption"
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="?attr/selectableItemBackground"
-                android:text="@string/debt"
+                android:text="@string/thuNo"
                 android:textColor="@android:color/white"
 
                 android:textSize="8sp" />

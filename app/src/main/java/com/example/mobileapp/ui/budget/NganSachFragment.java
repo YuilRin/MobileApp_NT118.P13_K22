@@ -16,7 +16,7 @@ import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentBudgetBinding;
 
 // Đây là activity của trang budget mọi tính năng activity đều được thực hiện tại đây
-public class BudgetFragment extends Fragment {
+public class NganSachFragment extends Fragment {
     private FragmentBudgetBinding binding;
     private final Button[] selectedButton = {null};
     private Button btn_Budget, btn_Statistics ;
@@ -46,15 +46,15 @@ public class BudgetFragment extends Fragment {
 
         // Hiển thị giao diện overview
         if (savedInstanceState == null) {
-            currentFragment = new BudgetFragmentOverView();
+            currentFragment = new NganSachFragmentOverView();
             getChildFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, currentFragment)
                     .commit();
         }
         else {
             currentFragment = getChildFragmentManager().findFragmentById(R.id.fragment_container);
-            if (!(currentFragment  instanceof BudgetFragmentOverView)) //Nếu fragment hiện tại Không phải là budgetoverview ta phải hoàn lại
-                SwitchFragment(new BudgetFragmentOverView());
+            if (!(currentFragment  instanceof NganSachFragmentOverView)) //Nếu fragment hiện tại Không phải là budgetoverview ta phải hoàn lại
+                SwitchFragment(new NganSachFragmentOverView());
         }
 
 
@@ -62,7 +62,7 @@ public class BudgetFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(btn_Budget.isEnabled())
-                    SwitchFragment(new BudgetFragmentOverView());
+                    SwitchFragment(new NganSachFragmentOverView());
                 changeButtonState(view, btn_Budget);
 
 
@@ -72,7 +72,7 @@ public class BudgetFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(btn_Statistics.isEnabled())
-                    SwitchFragment(new BudgetFragmentStatistics());
+                    SwitchFragment(new NganSachFragmentStatistics());
                 changeButtonState(view, btn_Statistics);
 
             }

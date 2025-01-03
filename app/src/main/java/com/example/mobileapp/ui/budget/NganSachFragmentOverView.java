@@ -27,8 +27,8 @@ import android.widget.Toast;
 
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentBudgetOverviewBinding;
-import com.example.mobileapp.ui.budget.Custom.AllowanceItem;
-import com.example.mobileapp.ui.budget.Custom.BudgetViewModel;
+import com.example.mobileapp.ui.budget.Custom.DanhMucItem;
+import com.example.mobileapp.ui.budget.Custom.NganSachViewModel;
 import com.example.mobileapp.ui.budget.Custom.ImageSelectDebtAdapter;
 import com.example.mobileapp.ui.budget.Custom.SalaryAdapter;
 import com.example.mobileapp.ui.budget.Custom.SalaryItem;
@@ -43,13 +43,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class BudgetFragmentOverView extends Fragment {
+public class NganSachFragmentOverView extends Fragment {
     private FragmentBudgetOverviewBinding binding;
     private RecyclerView recyclerViewThuNhap, recyclerViewChiTieu;
     private SalaryAdapter adapterThuNhap;
     private SalaryAdapter adapterChiTieu;
     private TextView tvTongThuNhap, tvTongChiPhi;
-    private BudgetViewModel budgetViewModel;
+    private NganSachViewModel nganSachViewModel;
     private Button ThemNganSach;
     private Spinner spinnerPhanLoai, spinnerThuChi;
     private RadioButton radioChonPhanLoai, radioTaoPhanLoai;
@@ -64,7 +64,7 @@ public class BudgetFragmentOverView extends Fragment {
         binding = FragmentBudgetOverviewBinding.inflate(inflater,container,false);
         View root = binding.getRoot();
 
-        budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
+        nganSachViewModel = new ViewModelProvider(this).get(NganSachViewModel.class);
 
         tvTongThuNhap = root.findViewById(R.id.TvTongThuNhap);
         tvTongChiPhi = root.findViewById(R.id.TvTongChiPhi);
@@ -104,9 +104,9 @@ public class BudgetFragmentOverView extends Fragment {
                     .setTitle("Xác nhận")
                     .setMessage("Bạn có chắc muốn thực hiện thao tác này?")
                     .setPositiveButton("OK", (dialog, which) -> {
-                        budgetViewModel.removeChiTieuTrenPhanLoai(item.getMainTitle());
-                        budgetViewModel.updateSalaryItem(false, item);
-                        budgetViewModel.XoaDanhSachPhanLoai(item.getMainTitle());
+                        nganSachViewModel.removeChiTieuTrenPhanLoai(item.getMainTitle());
+                        nganSachViewModel.updateSalaryItem(false, item);
+                        nganSachViewModel.XoaDanhSachPhanLoai(item.getMainTitle());
                         dialog.dismiss(); // đóng dialog
                     })
                     .setNegativeButton("Hủy", (dialog, which) -> {
@@ -120,9 +120,9 @@ public class BudgetFragmentOverView extends Fragment {
                     .setTitle("Xác nhận")
                     .setMessage("Bạn có chắc muốn thực hiện thao tác này?")
                     .setPositiveButton("OK", (dialog, which) -> {
-                        budgetViewModel.removeThuNhapTrenPhanLoai(item.getMainTitle());
-                        budgetViewModel.removeSalaryItem(true, item);
-                        budgetViewModel.XoaDanhSachPhanLoai(item.getMainTitle());
+                        nganSachViewModel.removeThuNhapTrenPhanLoai(item.getMainTitle());
+                        nganSachViewModel.removeSalaryItem(true, item);
+                        nganSachViewModel.XoaDanhSachPhanLoai(item.getMainTitle());
                         dialog.dismiss(); // đóng dialog
                     })
                     .setNegativeButton("Hủy", (dialog, which) -> {
@@ -131,25 +131,25 @@ public class BudgetFragmentOverView extends Fragment {
                     .show();
         }));
 
-        budgetViewModel.getThuNhapItemsData().observe(getViewLifecycleOwner(), ThuNhapItems ->{
+        nganSachViewModel.getThuNhapItemsData().observe(getViewLifecycleOwner(), ThuNhapItems ->{
             adapterThuNhap.submitList(new ArrayList<>(ThuNhapItems));
         });
 
-        budgetViewModel.getChiTieuItemsData().observe(getViewLifecycleOwner(), ChiTieuItems ->{
+        nganSachViewModel.getChiTieuItemsData().observe(getViewLifecycleOwner(), ChiTieuItems ->{
             adapterChiTieu.submitList(new ArrayList<>(ChiTieuItems));
         });
 
-        budgetViewModel.gettongTatCaSoTienThuNhap().observe(getViewLifecycleOwner(), Tong -> {
+        nganSachViewModel.gettongTatCaSoTienThuNhap().observe(getViewLifecycleOwner(), Tong -> {
             tvTongThuNhap.setText("Tổng thu nhập: " + dinhDangLaiSoTien(Tong) + " đ");
             HienThiTongQuan();
         });
 
-        budgetViewModel.gettongTatCaSoTienChiTieu().observe(getViewLifecycleOwner(), Tong -> {
+        nganSachViewModel.gettongTatCaSoTienChiTieu().observe(getViewLifecycleOwner(), Tong -> {
             tvTongChiPhi.setText("Tổng chi phí: " + dinhDangLaiSoTien(Tong) + " đ");
             HienThiTongQuan();
         });
 
-        budgetViewModel.getDanhSachPhanLoai().observe(getViewLifecycleOwner(), DanhSach->{
+        nganSachViewModel.getDanhSachPhanLoai().observe(getViewLifecycleOwner(), DanhSach->{
 
         });
 
@@ -159,8 +159,8 @@ public class BudgetFragmentOverView extends Fragment {
         });
 
 
-        budgetViewModel.loadThuNhap();
-        budgetViewModel.loadChiTieu();
+        nganSachViewModel.loadThuNhap();
+        nganSachViewModel.loadChiTieu();
 
 
 
@@ -232,7 +232,7 @@ public class BudgetFragmentOverView extends Fragment {
     }
 
     //chinh sua cho thu nhap
-    private void showChinhSuaThuNhapDialog(AllowanceItem item, int VitriCha, int VitrCon) {
+    private void showChinhSuaThuNhapDialog(DanhMucItem item, int VitriCha, int VitrCon) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_budget_personal, null);
@@ -264,7 +264,7 @@ public class BudgetFragmentOverView extends Fragment {
         spinnerThuChi.setAdapter(adapterThamChieu);
 
         SalaryItem thamchieuphanloai = new SalaryItem();
-        thamchieuphanloai = budgetViewModel.getThuNhapItemsData().getValue().get(VitriCha);
+        thamchieuphanloai = nganSachViewModel.getThuNhapItemsData().getValue().get(VitriCha);
         List<String> ThamChieuPhanLoai = new ArrayList<>();
         ThamChieuPhanLoai.add(thamchieuphanloai.getMainTitle());
         ArrayAdapter<String> adapterThamChieuPhanLoai = new ArrayAdapter<>(
@@ -299,7 +299,7 @@ public class BudgetFragmentOverView extends Fragment {
                     .setTitle("Xóa thu nhập này?")
                     .setMessage("Bạn có chắc muốn xóa mục này?")
                     .setPositiveButton("Xóa", (dialogInterface, i) -> {
-                        budgetViewModel.removeThuNhapItem(VitriCha, VitrCon);
+                        nganSachViewModel.removeThuNhapItem(VitriCha, VitrCon);
                         dialog.dismiss();
                     })
                     .setNegativeButton("Hủy", null)
@@ -341,7 +341,7 @@ public class BudgetFragmentOverView extends Fragment {
             item.setMoney(newMoney);
             item.setAvatarResId(ChonAnhDeLuu);
             //budgetViewModel.updateThuNhapItem(VitriCha, VitrCon, item);
-            budgetViewModel.updateAllowanceItem(true, VitriCha, VitrCon, item);
+            nganSachViewModel.updateAllowanceItem(true, VitriCha, VitrCon, item);
 
             ChonAnhDeLuu = null;
             dialog.dismiss();
@@ -351,7 +351,7 @@ public class BudgetFragmentOverView extends Fragment {
     }
 
     //chinh suaw cho chi tieu
-    private void showChinhSuaChiTieuDialog(AllowanceItem item, int VitriCha, int VitrCon) {
+    private void showChinhSuaChiTieuDialog(DanhMucItem item, int VitriCha, int VitrCon) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_budget_personal, null);
@@ -385,7 +385,7 @@ public class BudgetFragmentOverView extends Fragment {
 
         //thiet lap spinner cho phan loai
         SalaryItem thamchieuphanloai = new SalaryItem();
-        thamchieuphanloai = budgetViewModel.getThuNhapItemsData().getValue().get(VitriCha);
+        thamchieuphanloai = nganSachViewModel.getThuNhapItemsData().getValue().get(VitriCha);
         List<String> ThamChieuPhanLoai = new ArrayList<>();
         ThamChieuPhanLoai.add(thamchieuphanloai.getMainTitle());
         ArrayAdapter<String> adapterThamChieuPhanLoai = new ArrayAdapter<>(
@@ -402,7 +402,7 @@ public class BudgetFragmentOverView extends Fragment {
                     .setTitle("Xóa chi tiêu này?")
                     .setMessage("Bạn có chắc muốn xóa mục này?")
                     .setPositiveButton("Xóa", (dialogInterface, i) -> {
-                       budgetViewModel.removeChiTieuItem(VitriCha, VitrCon);
+                       nganSachViewModel.removeChiTieuItem(VitriCha, VitrCon);
                        dialog.dismiss();
                     })
                     .setNegativeButton("Hủy", null)
@@ -444,7 +444,7 @@ public class BudgetFragmentOverView extends Fragment {
             item.setMoney(newMoney);
             item.setAvatarResId(ChonAnhDeLuu);
             //budgetViewModel.updateChiTieuItem(VitriCha, VitrCon, item);
-            budgetViewModel.updateAllowanceItem(false, VitriCha, VitrCon, item);
+            nganSachViewModel.updateAllowanceItem(false, VitriCha, VitrCon, item);
             ChonAnhDeLuu = null;
             dialog.dismiss();
         });
@@ -453,7 +453,7 @@ public class BudgetFragmentOverView extends Fragment {
         dialog.show();
     }
 
-    private void ShowChonAnhDialog(BudgetFragmentStatistics.GoiLaiLuaChonAnh callback) {
+    private void ShowChonAnhDialog(NganSachFragmentStatistics.GoiLaiLuaChonAnh callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View dialogVew = LayoutInflater.from(getContext()).inflate(R.layout.dialog_select_image_debt, null);
         builder.setView(dialogVew);
@@ -570,9 +570,9 @@ public class BudgetFragmentOverView extends Fragment {
         adapterHinhThuc.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerThuChi.setAdapter(adapterHinhThuc);
 
-        budgetViewModel.loadDanhSachPhanLoaiFirebase();
+        nganSachViewModel.loadDanhSachPhanLoaiFirebase();
 
-        budgetViewModel.getDanhSachPhanLoai().observe(getViewLifecycleOwner(), Danhsach ->{
+        nganSachViewModel.getDanhSachPhanLoai().observe(getViewLifecycleOwner(), Danhsach ->{
             ArrayAdapter<String> adapter = new ArrayAdapter<>(
                     requireContext(),
                     android.R.layout.simple_spinner_item,
@@ -582,7 +582,7 @@ public class BudgetFragmentOverView extends Fragment {
             spinnerPhanLoai.setAdapter(adapter);
         });
 
-        budgetViewModel.loadDanhSachPhanLoaiFirebase();
+        nganSachViewModel.loadDanhSachPhanLoaiFirebase();
 
         btnXoaPhanLoai.setOnClickListener(v ->{
             dialogXoaPhanLoai(dialog, spinnerPhanLoai);
@@ -600,7 +600,7 @@ public class BudgetFragmentOverView extends Fragment {
                      Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                      return;
                  }
-                 budgetViewModel.ThemDanhSachPhanLoai(TenPhanLoai);
+                 nganSachViewModel.ThemDanhSachPhanLoai(TenPhanLoai);
             }else {
                 Object selectedItem = spinnerPhanLoai.getSelectedItem();
                 TenPhanLoai = selectedItem != null ? selectedItem.toString() : "";
@@ -626,7 +626,7 @@ public class BudgetFragmentOverView extends Fragment {
             String Ngay = getCurrentDate();
 
             // Tạo AllowanceItem
-            AllowanceItem newItem = new AllowanceItem(
+            DanhMucItem newItem = new DanhMucItem(
                     ChonAnhDeLuu,
                     TenNganSach,
                     Sotien,
@@ -637,8 +637,8 @@ public class BudgetFragmentOverView extends Fragment {
 
             // Kiểm tra phân loại có tồn tại hay không
             List<SalaryItem> currentList = isIncome
-                    ? new ArrayList<>(budgetViewModel.getThuNhapItemsData().getValue())
-                    : new ArrayList<>(budgetViewModel.getChiTieuItemsData().getValue());
+                    ? new ArrayList<>(nganSachViewModel.getThuNhapItemsData().getValue())
+                    : new ArrayList<>(nganSachViewModel.getChiTieuItemsData().getValue());
             SalaryItem addsalary = new SalaryItem();
             boolean phanLoaiTonTai = false;
 
@@ -647,14 +647,14 @@ public class BudgetFragmentOverView extends Fragment {
                     SalaryItem salaryItem = currentList.get(i);
                     if (salaryItem.getMainTitle().equals(TenPhanLoai)) {
                         // Sao chép danh sách AllowanceItems hiện tại
-                        List<AllowanceItem> updatedAllowanceItems = new ArrayList<>(salaryItem.getAllowanceItems());
+                        List<DanhMucItem> updatedDanhMucItems = new ArrayList<>(salaryItem.getAllowanceItems());
 
                         // Thêm mục mới
-                        updatedAllowanceItems.add(newItem);
+                        updatedDanhMucItems.add(newItem);
                         SalaryItem updatedSalaryItem = new SalaryItem(
                                 salaryItem.getId(),
                                 salaryItem.getMainTitle(),
-                                updatedAllowanceItems,
+                                updatedDanhMucItems,
                                 salaryItem.getColor(),
                                 getCurrentDate(),
                                 getCurrentDate1()
@@ -662,7 +662,7 @@ public class BudgetFragmentOverView extends Fragment {
                         // Cập nhật danh sách AllowanceItems mới
                         currentList.set(i, updatedSalaryItem);
                         phanLoaiTonTai = true;
-                        budgetViewModel.updateSalaryItem(isIncome, updatedSalaryItem);
+                        nganSachViewModel.updateSalaryItem(isIncome, updatedSalaryItem);
                         break;
                     }
                 }
@@ -678,7 +678,7 @@ public class BudgetFragmentOverView extends Fragment {
                         getCurrentDate(),
                         getCurrentDate1()
                 );
-                budgetViewModel.addSalaryItem(isIncome, newSalaryItem);
+                nganSachViewModel.addSalaryItem(isIncome, newSalaryItem);
             }
 
 
@@ -691,7 +691,7 @@ public class BudgetFragmentOverView extends Fragment {
         spinnerPhanLoai.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = budgetViewModel.LayDanhSachPhanLoai().get(position);
+                String selectedItem = nganSachViewModel.LayDanhSachPhanLoai().get(position);
             }
 
             @Override
@@ -751,7 +751,7 @@ public class BudgetFragmentOverView extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //thuc hien xoa di moi noi dung trong phan loai do
-                budgetViewModel.XoaDanhSachPhanLoai(phanloai);
+                nganSachViewModel.XoaDanhSachPhanLoai(phanloai);
             }
         });
 

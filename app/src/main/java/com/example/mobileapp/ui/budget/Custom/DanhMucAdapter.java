@@ -1,6 +1,5 @@
 package com.example.mobileapp.ui.budget.Custom;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,19 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobileapp.R;
 
-import java.util.List;
-import java.util.Objects;
-
-public class AllowanceAdapter extends ListAdapter<AllowanceItem ,AllowanceAdapter.AllowanceViewHolder> {
+public class DanhMucAdapter extends ListAdapter<DanhMucItem, DanhMucAdapter.AllowanceViewHolder> {
 
     private OnItemLongClickListener longClickListener;
 
-    protected AllowanceAdapter() {
+    protected DanhMucAdapter() {
         super(DIFF_CALLBACK);
     }
 
     public interface OnItemLongClickListener {
-        void onItemLongClick(AllowanceItem item, int position);
+        void onItemLongClick(DanhMucItem item, int position);
     }
 
     public void setOnItemLongClickListener(OnItemLongClickListener listener) {
@@ -36,16 +32,16 @@ public class AllowanceAdapter extends ListAdapter<AllowanceItem ,AllowanceAdapte
     }
 
 
-    private static final DiffUtil.ItemCallback<AllowanceItem> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<AllowanceItem>() {
+    private static final DiffUtil.ItemCallback<DanhMucItem> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<DanhMucItem>() {
                 @Override
-                public boolean areItemsTheSame(@NonNull AllowanceItem oldItem, @NonNull AllowanceItem newItem) {
+                public boolean areItemsTheSame(@NonNull DanhMucItem oldItem, @NonNull DanhMucItem newItem) {
                     // So sánh ID duy nhất
                     return false;
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull AllowanceItem oldItem, @NonNull AllowanceItem newItem) {
+                public boolean areContentsTheSame(@NonNull DanhMucItem oldItem, @NonNull DanhMucItem newItem) {
                     // So sánh nội dung
                     return false;
                 }
@@ -61,14 +57,14 @@ public class AllowanceAdapter extends ListAdapter<AllowanceItem ,AllowanceAdapte
 
     @Override
     public void onBindViewHolder(@NonNull AllowanceViewHolder holder, int position) {
-        AllowanceItem allowanceItem = getItem(position);
-        if (allowanceItem == null) {
+        DanhMucItem danhMucItem = getItem(position);
+        if (danhMucItem == null) {
             return; // Bỏ qua nếu item null
         }
-        holder.imgAvatar.setImageResource(allowanceItem.getAvatarResId());
-        holder.tvContent.setText(allowanceItem.getContent());
-        holder.tvMoney.setText(allowanceItem.getMoney());
-        holder.tvMoneyTitle.setText(allowanceItem.getmoneyTitle());
+        holder.imgAvatar.setImageResource(danhMucItem.getAvatarResId());
+        holder.tvContent.setText(danhMucItem.getContent());
+        holder.tvMoney.setText(danhMucItem.getMoney());
+        holder.tvMoneyTitle.setText(danhMucItem.getmoneyTitle());
 
         if(position % 2 == 0) {
             holder.llSubItemSalary.setBackgroundColor(
@@ -88,7 +84,7 @@ public class AllowanceAdapter extends ListAdapter<AllowanceItem ,AllowanceAdapte
 
         holder.itemView.setOnLongClickListener(v ->{
             if(longClickListener != null) {
-                longClickListener.onItemLongClick(allowanceItem, position);
+                longClickListener.onItemLongClick(danhMucItem, position);
             }
             return true;
         });

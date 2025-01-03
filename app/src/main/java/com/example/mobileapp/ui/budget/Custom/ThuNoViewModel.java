@@ -1,17 +1,10 @@
 package com.example.mobileapp.ui.budget.Custom;
 
-import static java.security.AccessController.getContext;
-
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.mobileapp.R;
-
-import java.io.Flushable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,15 +13,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
-public class DebtViewModel extends ViewModel {
-    private MutableLiveData<List<Debt>> debtListNo;
-    private MutableLiveData<List<Debt>> debtListKhoanThu;
+public class ThuNoViewModel extends ViewModel {
+    private MutableLiveData<List<ThuNo>> debtListNo;
+    private MutableLiveData<List<ThuNo>> debtListKhoanThu;
     private FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private String UserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
 
-    public MutableLiveData<List<Debt>> getDebtListNo() {
+    public MutableLiveData<List<ThuNo>> getDebtListNo() {
         if (debtListNo == null) {
             debtListNo = new MutableLiveData<>(new ArrayList<>());
             loadDebtNo();
@@ -36,7 +29,7 @@ public class DebtViewModel extends ViewModel {
         return  debtListNo;
     }
 
-    public MutableLiveData<List<Debt>> getDebtListKhoanThu() {
+    public MutableLiveData<List<ThuNo>> getDebtListKhoanThu() {
         if (debtListKhoanThu == null) {
             debtListKhoanThu = new MutableLiveData<>(new ArrayList<>());
             loadDebtsKhoanThu();
@@ -51,12 +44,12 @@ public class DebtViewModel extends ViewModel {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        List<Debt> debts = new ArrayList<>();
+                        List<ThuNo> thuNos = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Debt debt = document.toObject(Debt.class);
-                            debts.add(debt);
+                            ThuNo thuNo = document.toObject(ThuNo.class);
+                            thuNos.add(thuNo);
                         }
-                        debtListNo.setValue(debts);
+                        debtListNo.setValue(thuNos);
                     }else {
                         debtListNo.setValue(new ArrayList<>());
                     }
@@ -71,12 +64,12 @@ public class DebtViewModel extends ViewModel {
                .get()
                .addOnCompleteListener(task -> {
                   if(task.isSuccessful()) {
-                      List<Debt> debts = new ArrayList<>();
+                      List<ThuNo> thuNos = new ArrayList<>();
                       for (QueryDocumentSnapshot document : task.getResult()) {
-                          Debt debt = document.toObject(Debt.class);
-                          debts.add(debt);
+                          ThuNo thuNo = document.toObject(ThuNo.class);
+                          thuNos.add(thuNo);
                       }
-                      debtListKhoanThu.setValue(debts);
+                      debtListKhoanThu.setValue(thuNos);
                   } else {
                       debtListKhoanThu.setValue(new ArrayList<>());
                   }
@@ -84,12 +77,12 @@ public class DebtViewModel extends ViewModel {
     }
 
     public void updateDebtSelectedStatus(int position, boolean isSelected, boolean isDebtNo) {
-        List<Debt> currentList = isDebtNo ? debtListNo.getValue() : debtListKhoanThu.getValue();
+        List<ThuNo> currentList = isDebtNo ? debtListNo.getValue() : debtListKhoanThu.getValue();
         if (currentList != null && position >= 0 && position < currentList.size()) {
             currentList.get(position).setSelected(isSelected);
 
             // Tạo danh sách mới để kích hoạt LiveData
-            List<Debt> updatedList = new ArrayList<>(currentList);
+            List<ThuNo> updatedList = new ArrayList<>(currentList);
             if (isDebtNo) {
                 debtListNo.setValue(updatedList);
             } else {
@@ -99,20 +92,20 @@ public class DebtViewModel extends ViewModel {
     }
 
 
-    public void addDebtNo(Debt debt) {
+    public void addDebtNo(ThuNo thuNo) {
 
         firestore.collection("users")
                .document(UserId)
                .collection("debt_no")
-               .add(debt)
+               .add(thuNo)
                .addOnSuccessListener(documentReference -> {
                    Log.d("Success", "Debt added successfully: " + documentReference.getId());
-                  List<Debt> DanhSachHientai = debtListNo.getValue();
+                  List<ThuNo> DanhSachHientai = debtListNo.getValue();
                   if(DanhSachHientai != null) {
                       String docID = documentReference.getId();
-                      debt.setDDocId(docID);
+                      thuNo.setDDocId(docID);
 
-                      DanhSachHientai.add(debt);
+                      DanhSachHientai.add(thuNo);
                       debtListNo.setValue(DanhSachHientai);
                   }
                }).addOnFailureListener(e -> {
@@ -120,19 +113,19 @@ public class DebtViewModel extends ViewModel {
                });
     }
 
-    public void addDebtKhoanThu(Debt debt) {
+    public void addDebtKhoanThu(ThuNo thuNo) {
         firestore.collection("users")
                 .document(UserId)
                 .collection("debt_khoan_thu")
-                .add(debt)
+                .add(thuNo)
                 .addOnSuccessListener(documentReference -> {
-                    List<Debt> Danhsachhientai = debtListKhoanThu.getValue();
+                    List<ThuNo> Danhsachhientai = debtListKhoanThu.getValue();
                     if( Danhsachhientai != null) {
                         String docID = documentReference.getId();
-                        debt.setDDocId(docID);
+                        thuNo.setDDocId(docID);
 
 
-                        Danhsachhientai.add(debt);
+                        Danhsachhientai.add(thuNo);
                         debtListKhoanThu.setValue(Danhsachhientai);
                     }
                 }).addOnFailureListener(e -> {
@@ -154,13 +147,13 @@ public class DebtViewModel extends ViewModel {
 //                });
 //    }
 
-    public void CapNhatDebtKhoanThuLenFireBase(String debtId, Debt debt) {
-        if (debtId == null || debt == null) return;
+    public void CapNhatDebtKhoanThuLenFireBase(String debtId, ThuNo thuNo) {
+        if (debtId == null || thuNo == null) return;
         firestore.collection("users")
                 .document(UserId)
                 .collection("debt_khoan_thu")
                 .document(debtId)
-                .set(debt)
+                .set(thuNo)
                 .addOnSuccessListener(aVoid -> loadDebtsKhoanThu())
                 .addOnFailureListener(e -> {
                     e.printStackTrace();
@@ -168,23 +161,23 @@ public class DebtViewModel extends ViewModel {
                 });
     }
 
-    public void CapNhatDebtNoLenFireBase(String debtId, Debt debt) {
-        if (debtId == null || debt == null) return;
+    public void CapNhatDebtNoLenFireBase(String debtId, ThuNo thuNo) {
+        if (debtId == null || thuNo == null) return;
         firestore.collection("users")
                 .document(UserId)
                 .collection("debt_no")
                 .document(debtId)
-                .set(debt)
+                .set(thuNo)
                 .addOnSuccessListener(aVoid -> loadDebtNo())
                 .addOnFailureListener(e -> {
                     e.printStackTrace();
                 });
     }
 
-    public void updateDebtNo(int position, Debt debt) {
-        List<Debt> currentList = debtListNo.getValue();
+    public void updateDebtNo(int position, ThuNo thuNo) {
+        List<ThuNo> currentList = debtListNo.getValue();
         if (currentList != null && position >= 0 && position < currentList.size()) {
-            currentList.set(position, debt);
+            currentList.set(position, thuNo);
             debtListNo.setValue(currentList);
         }
     }
@@ -203,10 +196,10 @@ public class DebtViewModel extends ViewModel {
 //                });
 //    }
 
-    public void updateDebtKhoanThu(int position, Debt debt) {
-        List<Debt> currentList = debtListKhoanThu.getValue();
+    public void updateDebtKhoanThu(int position, ThuNo thuNo) {
+        List<ThuNo> currentList = debtListKhoanThu.getValue();
         if (currentList != null && position >= 0 && position < currentList.size()) {
-            currentList.set(position, debt);
+            currentList.set(position, thuNo);
             debtListKhoanThu.setValue(currentList);
         }
     }
@@ -214,12 +207,12 @@ public class DebtViewModel extends ViewModel {
 
 
     public void removeDebtNo(int position) {
-        List<Debt> currentList = debtListNo.getValue();
+        List<ThuNo> currentList = debtListNo.getValue();
         if (currentList != null && position >= 0 && position < currentList.size()) {
 
-            Debt debt = currentList.get(position);
+            ThuNo thuNo = currentList.get(position);
 
-            String debtId = debt.getDDocId(); // Lưu lại DDocId để xử lý rollback nếu cần.
+            String debtId = thuNo.getDDocId(); // Lưu lại DDocId để xử lý rollback nếu cần.
             currentList.remove(position);
             debtListNo.setValue(currentList); // Cập nhật danh sách trong ViewModel.
 
@@ -234,7 +227,7 @@ public class DebtViewModel extends ViewModel {
                         })
                         .addOnFailureListener(e -> {
                             // Nếu xóa thất bại, thêm lại vào danh sách.
-                            currentList.add(position, debt);
+                            currentList.add(position, thuNo);
                             debtListNo.setValue(currentList);
 
                         });
@@ -247,12 +240,12 @@ public class DebtViewModel extends ViewModel {
 
     // Similarly, for khoan thu:
     public void removeDebtKhoanThu(int position) {
-        List<Debt> currentList = debtListKhoanThu.getValue();
+        List<ThuNo> currentList = debtListKhoanThu.getValue();
         if (currentList != null && position >= 0 && position < currentList.size()) {
 
-            Debt debt = currentList.get(position);
+            ThuNo thuNo = currentList.get(position);
 
-            String debtId = debt.getDDocId(); // Lưu lại DDocId để xử lý rollback nếu cần.
+            String debtId = thuNo.getDDocId(); // Lưu lại DDocId để xử lý rollback nếu cần.
             currentList.remove(position);
             debtListKhoanThu.setValue(currentList); // Cập nhật danh sách trong ViewModel.
 
@@ -267,7 +260,7 @@ public class DebtViewModel extends ViewModel {
                         })
                         .addOnFailureListener(e -> {
                             // Nếu xóa thất bại, thêm lại vào danh sách.
-                            currentList.add(position, debt);
+                            currentList.add(position, thuNo);
                             debtListKhoanThu.setValue(currentList);
 
                         });

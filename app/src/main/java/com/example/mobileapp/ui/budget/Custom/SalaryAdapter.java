@@ -23,7 +23,7 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
     private OnChaLongClickListener LangNgheClickCha;
 
     public interface OnChildLongClickListener  {
-        void onChildLongClick(AllowanceItem item, int vitriCha, int vitriCon);
+        void onChildLongClick(DanhMucItem item, int vitriCha, int vitriCon);
     }
 
     public interface OnChaLongClickListener  {
@@ -58,8 +58,8 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
                     if (oldItem.getColor() != newItem.getColor()) return false;
 
                     // So sánh danh sách AllowanceItem
-                    List<AllowanceItem> oldAllowances = oldItem.getAllowanceItems();
-                    List<AllowanceItem> newAllowances = newItem.getAllowanceItems();
+                    List<DanhMucItem> oldAllowances = oldItem.getAllowanceItems();
+                    List<DanhMucItem> newAllowances = newItem.getAllowanceItems();
                     if (oldAllowances.size() != newAllowances.size()) return false;
                     for (int i = 0; i < oldAllowances.size(); i++) {
                         if (!oldAllowances.get(i).equals(newAllowances.get(i))) {
@@ -115,8 +115,8 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
         if (salaryItems != null) {
             for (SalaryItem salaryItem : salaryItems) {
                 if (salaryItem.getAllowanceItems() != null) {
-                    for (AllowanceItem allowanceItem : salaryItem.getAllowanceItems()) {
-                        sum += parseMoneyString(allowanceItem.getMoney());
+                    for (DanhMucItem danhMucItem : salaryItem.getAllowanceItems()) {
+                        sum += parseMoneyString(danhMucItem.getMoney());
                     }
                 }
             }
@@ -153,7 +153,7 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
     public class SalaryViewHolder extends RecyclerView.ViewHolder {
         TextView tvMainTitle, tvResult;
         RecyclerView rvAllowance;
-        AllowanceAdapter allowanceAdapter;
+        DanhMucAdapter allowanceAdapter;
 
         public SalaryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -162,7 +162,7 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
             tvResult = itemView.findViewById(R.id.income_amount);
 
             // Khởi tạo AllowanceAdapter và thiết lập cho RecyclerView bên trong
-            allowanceAdapter = new AllowanceAdapter();
+            allowanceAdapter = new DanhMucAdapter();
             rvAllowance.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
             rvAllowance.setAdapter(allowanceAdapter);
 
@@ -173,8 +173,8 @@ public class SalaryAdapter extends ListAdapter<SalaryItem,SalaryAdapter.SalaryVi
 
             double TongSoTien = 0.0;
 
-            for (AllowanceItem allowanceItem : salaryItem.getAllowanceItems()) {
-                double moneyValue = parseMoneyString(allowanceItem.getMoney());
+            for (DanhMucItem danhMucItem : salaryItem.getAllowanceItems()) {
+                double moneyValue = parseMoneyString(danhMucItem.getMoney());
                 TongSoTien += moneyValue;
             }
 

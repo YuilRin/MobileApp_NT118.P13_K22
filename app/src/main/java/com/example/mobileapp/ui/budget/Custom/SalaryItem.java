@@ -1,8 +1,5 @@
 package com.example.mobileapp.ui.budget.Custom;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DiffUtil;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -10,16 +7,16 @@ import java.util.UUID;
 public class SalaryItem {
     private String mainTitle;
     private int color;
-    private List<AllowanceItem> allowanceItems;
+    private List<DanhMucItem> danhMucItems;
     private double TongSoTien;
     private String id;
     private String date;
     private String YearMonth;
 
-    public SalaryItem(String id, String mainTitle, List<AllowanceItem> allowanceItems , int color, String date, String yearMonth) {
+    public SalaryItem(String id, String mainTitle, List<DanhMucItem> danhMucItems, int color, String date, String yearMonth) {
         this.mainTitle = mainTitle;
         this.color = color;
-        this.allowanceItems = allowanceItems;
+        this.danhMucItems = danhMucItems;
         this.id = id != null ? id : UUID.randomUUID().toString(); // Tạo ID nếu null
         this.date = date;
         this.YearMonth =  yearMonth;
@@ -52,11 +49,11 @@ public class SalaryItem {
     }
     public void setColor(int color) {this.color = color;}
 
-    public List<AllowanceItem> getAllowanceItems ()
+    public List<DanhMucItem> getAllowanceItems ()
     {
-        return allowanceItems;
+        return danhMucItems;
     }
-    public  void setAllowanceItems(List<AllowanceItem> allowanceItems) {this.allowanceItems = allowanceItems;}
+    public  void setAllowanceItems(List<DanhMucItem> danhMucItems) {this.danhMucItems = danhMucItems;}
 
     public void setDate(String date) {this.date = date;}
     public String getDate() {return  this.date;}
@@ -75,13 +72,13 @@ public class SalaryItem {
         SalaryItem that = (SalaryItem) obj;
         return Objects.equals(id, that.id) &&
                 Objects.equals(mainTitle, that.mainTitle) &&
-                Objects.equals(allowanceItems, that.allowanceItems) &&
+                Objects.equals(danhMucItems, that.danhMucItems) &&
                 color == that.color;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, mainTitle, allowanceItems, color);
+        return Objects.hash(id, mainTitle, danhMucItems, color);
     }
 
 

@@ -3,7 +3,7 @@ package com.example.mobileapp.ui.budget.Custom;
 import java.util.Objects;
 import java.util.UUID;
 
-public class AllowanceItem {
+public class DanhMucItem {
     private int avatarResId;
     private String content;
     private String money;
@@ -12,9 +12,9 @@ public class AllowanceItem {
     private String date;
     private String YearMonth;
 
-    public AllowanceItem() {}
+    public DanhMucItem() {}
 
-    public AllowanceItem(int avatarResId, String content, String money, String moneyTitle, String date, String YearMonth ) {
+    public DanhMucItem(int avatarResId, String content, String money, String moneyTitle, String date, String YearMonth ) {
         this.avatarResId = avatarResId;
         this.content = content;
         this.money = money;
@@ -70,7 +70,7 @@ public class AllowanceItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AllowanceItem that = (AllowanceItem) o;
+        DanhMucItem that = (DanhMucItem) o;
 
         if (this.avatarResId != that.avatarResId) return false;
         if (!Objects.equals(this.id, that.id)) return false;

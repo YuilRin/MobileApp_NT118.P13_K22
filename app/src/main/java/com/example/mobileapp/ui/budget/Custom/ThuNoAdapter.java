@@ -2,14 +2,10 @@ package com.example.mobileapp.ui.budget.Custom;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,78 +25,78 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder> {
+public class ThuNoAdapter extends RecyclerView.Adapter<ThuNoAdapter.DebtViewHolder> {
 
-    private List<Debt> debtList;
+    private List<ThuNo> thuNoList;
     private Context context;
     public  boolean isKhoanNo;
 
     public interface  OnItemLongClickListener{
-        void onItemLongClicked(int position, Debt debt);
+        void onItemLongClicked(int position, ThuNo thuNo);
     }
 
     private OnItemLongClickListener longClickListener;
 
-    public DebtAdapter(Context context, List<Debt> debtList,OnItemLongClickListener listener, boolean isKhoanNo) {
+    public ThuNoAdapter(Context context, List<ThuNo> thuNoList, OnItemLongClickListener listener, boolean isKhoanNo) {
         this.context = context;
-        this.debtList = debtList;
+        this.thuNoList = thuNoList;
         this.longClickListener = listener;
         this.isKhoanNo = isKhoanNo;
     }
 
-    public void setDebt(List<Debt> debts) {
-        this.debtList = debts;
+    public void setDebt(List<ThuNo> thuNos) {
+        this.thuNoList = thuNos;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public DebtViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_debt, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_no, parent, false);
         return new DebtViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DebtViewHolder holder, int position) {
 
-        Debt debt = debtList.get(position);
+        ThuNo thuNo = thuNoList.get(position);
 
-        holder.tvTitle.setText(debt.getTitle());
-        holder.tvAmount.setText("Số tiền: " + debt.getSoTien());
-        holder.tvNgayNo.setText("Ngày nợ: " + debt.getNgayNo());
-        holder.tvNgayDenHan.setText("Ngày đến hạn: " + debt.getNgayDenHan());
+        holder.tvTitle.setText(thuNo.getTitle());
+        holder.tvAmount.setText("Số tiền: " + thuNo.getSoTien());
+        holder.tvNgayNo.setText("Ngày nợ: " + thuNo.getNgayNo());
+        holder.tvNgayDenHan.setText("Ngày đến hạn: " + thuNo.getNgayDenHan());
 
         //
-        if (debt.getImgeResId() != -1) {
-            holder.imgIcon.setImageResource(debt.getImgeResId());
+        if (thuNo.getImgeResId() != -1) {
+            holder.imgIcon.setImageResource(thuNo.getImgeResId());
         }else {
             holder.imgIcon.setImageResource(R.drawable.rounded_corners_debt_item);
         }
 
-        if (isKhoanNo) holder.tvNguonNo.setText("Nguồn nợ: " + debt.getNguonNo());
-        else holder.tvNguonNo.setText("Nguồn thu: " + debt.getNguonNo());
+        if (isKhoanNo) holder.tvNguonNo.setText("Nguồn nợ: " + thuNo.getNguonNo());
+        else holder.tvNguonNo.setText("Nguồn thu: " + thuNo.getNguonNo());
 
 
         // Gọi hàm isOverDue -> xác định quaHan
-        boolean isDebtOverDue = isOverDue(debt.getNgayDenHan());
-        debt.setQuaHan(isDebtOverDue);
+        boolean isDebtOverDue = isOverDue(thuNo.getNgayDenHan());
+        thuNo.setQuaHan(isDebtOverDue);
 
         holder.btntick.setOnCheckedChangeListener(null);
-        holder.btntick.setChecked(debt.isSelected());
+        holder.btntick.setChecked(thuNo.isSelected());
         holder.btntick.setOnCheckedChangeListener(((buttonView , isChecked) -> {
-            debt.setSelected(isChecked);
+            thuNo.setSelected(isChecked);
 
         }
         ));
 
         // Cập nhật checkbox hiển thị
 
-        if (debt.isDaTra())
+        if (thuNo.isDaTra())
         {
             holder.tvTrangThai.setText("Trạng thái: Đã trả");
             holder.btntick.setChecked(false);
             holder.tvNgayTra.setVisibility(View.VISIBLE);
-            holder.tvNgayTra.setText("Ngày trả: " + debt.getNgayTra());
+            holder.tvNgayTra.setText("Ngày trả: " + thuNo.getNgayTra());
 
         }
         else
@@ -110,17 +106,17 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder
             holder.tvNgayTra.setVisibility(View.GONE);
         }
 
-        boolean quaHan = debt.isQuaHan();
-        if (quaHan && !debt.isSelected())
+        boolean quaHan = thuNo.isQuaHan();
+        if (quaHan && !thuNo.isSelected())
         {
             // Nợ trễ
             holder.tvTrangThai.setText("Trạng thái: Trễ hạn");
             holder.container.setBackground(ContextCompat.getDrawable(context,R.drawable.rounded_corners_debt_item_red));
         }
-        else if (!quaHan && debt.isDaTra())
+        else if (!quaHan && thuNo.isDaTra())
         {
             holder.container.setBackground(ContextCompat.getDrawable(context,R.drawable.rounded_corners_debt_item_green));
-        }else if (quaHan && debt.isDaTra())
+        }else if (quaHan && thuNo.isDaTra())
         {
 
             holder.container.setBackground(ContextCompat.getDrawable(context,R.drawable.rounded_corners_debt_item_green));
@@ -135,7 +131,7 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder
 
         holder.itemView.setOnLongClickListener(v -> {
             if (longClickListener != null) {
-                longClickListener.onItemLongClicked(position, debt);
+                longClickListener.onItemLongClicked(position, thuNo);
             }
             return true;
         });
@@ -144,11 +140,11 @@ public class DebtAdapter extends RecyclerView.Adapter<DebtAdapter.DebtViewHolder
 
     @Override
     public int getItemCount() {
-        return debtList.size();
+        return thuNoList.size();
     }
 
-    public void updateDebtList(List<Debt> newDebtList) {
-        this.debtList = newDebtList; // Cập nhật danh sách dữ liệu
+    public void updateDebtList(List<ThuNo> newThuNoList) {
+        this.thuNoList = newThuNoList; // Cập nhật danh sách dữ liệu
         notifyDataSetChanged();      // Làm mới toàn bộ RecyclerView
     }
 

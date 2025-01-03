@@ -27,9 +27,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobileapp.R;
 import com.example.mobileapp.databinding.FragmentBudgetStatisticsBinding;
-import com.example.mobileapp.ui.budget.Custom.Debt;
-import com.example.mobileapp.ui.budget.Custom.DebtAdapter;
-import com.example.mobileapp.ui.budget.Custom.DebtViewModel;
+import com.example.mobileapp.ui.budget.Custom.ThuNo;
+import com.example.mobileapp.ui.budget.Custom.ThuNoAdapter;
+import com.example.mobileapp.ui.budget.Custom.ThuNoViewModel;
 import com.example.mobileapp.ui.budget.Custom.ImageSelectDebtAdapter;
 
 import java.text.SimpleDateFormat;
@@ -39,19 +39,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 
-public class BudgetFragmentStatistics extends Fragment {
+public class NganSachFragmentStatistics extends Fragment {
 
     private FragmentBudgetStatisticsBinding binding;
     private RecyclerView recyclerViewKhoanNo;
     private RecyclerView recylerKhoanThu;
-    private DebtAdapter debtAdapterKhoanNo;
-    private DebtAdapter debtAdapterKhoanThu;
+    private ThuNoAdapter thuNoAdapterKhoanNo;
+    private ThuNoAdapter thuNoAdapterKhoanThu;
     private TextView tabNo;
     private TextView tabKhoanThu, tvNgayHienTai, tvTieuDe;
     private AppCompatButton btnDuyetAll, btnBoDuyetAll, btnThem;
-    private DebtViewModel debtViewModel;
+    private ThuNoViewModel thuNoViewModel;
     private EditText ThanhTimKiem;
 
     @Nullable
@@ -62,7 +61,7 @@ public class BudgetFragmentStatistics extends Fragment {
         View view = binding.getRoot();
 
         // Khởi tạo ViewModel
-        debtViewModel = new ViewModelProvider(this).get(DebtViewModel.class);
+        thuNoViewModel = new ViewModelProvider(this).get(ThuNoViewModel.class);
         ThanhTimKiem = view.findViewById(R.id.search_edit_text);
 
 
@@ -90,14 +89,14 @@ public class BudgetFragmentStatistics extends Fragment {
 
 
         // Khởi tạo Adapter và set cho RecyclerView
-        debtAdapterKhoanNo = new DebtAdapter(getContext(), new ArrayList<>(), (position, debt) ->
-            showEditDebtDialog(debt.getDDocId(), position, debt, "no") , true);
-        recyclerViewKhoanNo.setAdapter(debtAdapterKhoanNo);
+        thuNoAdapterKhoanNo = new ThuNoAdapter(getContext(), new ArrayList<>(), (position, thuNo) ->
+            showEditDebtDialog(thuNo.getDDocId(), position, thuNo, "no") , true);
+        recyclerViewKhoanNo.setAdapter(thuNoAdapterKhoanNo);
 
 
-        debtAdapterKhoanThu = new DebtAdapter(getContext(), new ArrayList<>(), ((position, debt) ->
-                showEditDebtDialog(debt.getDDocId(), position, debt, "khoan_thu")), false);
-        recylerKhoanThu.setAdapter(debtAdapterKhoanThu);
+        thuNoAdapterKhoanThu = new ThuNoAdapter(getContext(), new ArrayList<>(), ((position, thuNo) ->
+                showEditDebtDialog(thuNo.getDDocId(), position, thuNo, "khoan_thu")), false);
+        recylerKhoanThu.setAdapter(thuNoAdapterKhoanThu);
 
         // Đặt mặc định tab "Nợ" là tab được chọn
         ChonTab(tabNo);
@@ -115,21 +114,21 @@ public class BudgetFragmentStatistics extends Fragment {
         btnBoDuyetAll.setOnClickListener(v -> HuyBoChapNhan());
 
 
-        debtViewModel.getDebtListNo().observe(getViewLifecycleOwner(), debts -> {
-            debtAdapterKhoanNo.updateDebtList(debts); // Cập nhật RecyclerView khi dữ liệu thay đổi
+        thuNoViewModel.getDebtListNo().observe(getViewLifecycleOwner(), debts -> {
+            thuNoAdapterKhoanNo.updateDebtList(debts); // Cập nhật RecyclerView khi dữ liệu thay đổi
 
         });
 
 
-        debtViewModel.getDebtListKhoanThu().observe(getViewLifecycleOwner(), debts -> {
-            debtAdapterKhoanThu.updateDebtList(debts);
+        thuNoViewModel.getDebtListKhoanThu().observe(getViewLifecycleOwner(), debts -> {
+            thuNoAdapterKhoanThu.updateDebtList(debts);
 
         });
 
-        List<Debt> CapnhaDebtNo = debtViewModel.getDebtListNo().getValue();
-        List<Debt> CapNhatDetThu = debtViewModel.getDebtListKhoanThu().getValue();
+        List<ThuNo> capnhaThuNoNo = thuNoViewModel.getDebtListNo().getValue();
+        List<ThuNo> CapNhatDetThu = thuNoViewModel.getDebtListKhoanThu().getValue();
 
-        CapNhatTrangThai(true, CapnhaDebtNo);
+        CapNhatTrangThai(true, capnhaThuNoNo);
         CapNhatTrangThai(false, CapNhatDetThu);
 
         btnThem.setOnClickListener(v -> showThemDiaLog());
@@ -151,15 +150,15 @@ public class BudgetFragmentStatistics extends Fragment {
 
                 //kiem tra tab dang hien thi
                 boolean isDebtab = (recyclerViewKhoanNo.getVisibility() == TextView.VISIBLE);
-                List<Debt> DanhsachHienTai = isDebtab ? debtViewModel.getDebtListNo().getValue() : debtViewModel.getDebtListKhoanThu().getValue();
-                DebtAdapter AdapterHienTai = isDebtab ? debtAdapterKhoanNo : debtAdapterKhoanThu;
-                List<Debt> DanhSachLoc = new ArrayList<>();
+                List<ThuNo> DanhsachHienTai = isDebtab ? thuNoViewModel.getDebtListNo().getValue() : thuNoViewModel.getDebtListKhoanThu().getValue();
+                ThuNoAdapter AdapterHienTai = isDebtab ? thuNoAdapterKhoanNo : thuNoAdapterKhoanThu;
+                List<ThuNo> DanhSachLoc = new ArrayList<>();
 
 
-                List<Debt> LocKhoanNo = new ArrayList<>();
-                for(Debt debt : DanhsachHienTai) {
-                    if (debt.getTitle().toLowerCase(Locale.getDefault()).contains(truyvan)) {
-                        DanhSachLoc.add(debt);
+                List<ThuNo> LocKhoanNo = new ArrayList<>();
+                for(ThuNo thuNo : DanhsachHienTai) {
+                    if (thuNo.getTitle().toLowerCase(Locale.getDefault()).contains(truyvan)) {
+                        DanhSachLoc.add(thuNo);
                     }
                 }
                 AdapterHienTai.updateDebtList(DanhSachLoc);
@@ -172,23 +171,23 @@ public class BudgetFragmentStatistics extends Fragment {
         return view;
     }
 
-    private void CapNhatTrangThai(boolean debtno,List<Debt> debts) {
+    private void CapNhatTrangThai(boolean debtno,List<ThuNo> thuNos) {
         if(debtno)
         {
-            for (Debt debt : debts) {
-                debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+            for (ThuNo thuNo : thuNos) {
+                thuNoViewModel.CapNhatDebtNoLenFireBase(thuNo.getDDocId(), thuNo);
             }
         }else {
-            for (Debt debt : debts) {
-                debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+            for (ThuNo thuNo : thuNos) {
+                thuNoViewModel.CapNhatDebtNoLenFireBase(thuNo.getDDocId(), thuNo);
             }
         }
     }
 
     private void ChapNhanDuyet() {
         boolean isDebtTab = recyclerViewKhoanNo.getVisibility() == View.VISIBLE;
-        List<Debt> currentList = isDebtTab ? debtViewModel.getDebtListNo().getValue() : debtViewModel.getDebtListKhoanThu().getValue();
-        DebtAdapter AdapterHienTai = isDebtTab ? debtAdapterKhoanNo : debtAdapterKhoanThu;
+        List<ThuNo> currentList = isDebtTab ? thuNoViewModel.getDebtListNo().getValue() : thuNoViewModel.getDebtListKhoanThu().getValue();
+        ThuNoAdapter AdapterHienTai = isDebtTab ? thuNoAdapterKhoanNo : thuNoAdapterKhoanThu;
 
         if (currentList == null || AdapterHienTai == null) {
             Toast.makeText(getContext(), "Dữ liệu không khả dụng", Toast.LENGTH_SHORT).show();
@@ -199,26 +198,26 @@ public class BudgetFragmentStatistics extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
         String ngayTra;
 
-        for (Debt debt : currentList) {
-            if (debt != null && debt.isSelected()) {
+        for (ThuNo thuNo : currentList) {
+            if (thuNo != null && thuNo.isSelected()) {
                 try {
                     ngayTra = sdf.format(new Date());
-                    debt.setNgayTra(ngayTra); // Cập nhật ngày trả
+                    thuNo.setNgayTra(ngayTra); // Cập nhật ngày trả
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Không thể định dạng ngày cho khoản nợ: " + debt.getTitle(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Không thể định dạng ngày cho khoản nợ: " + thuNo.getTitle(), Toast.LENGTH_SHORT).show();
                     continue; // Tiếp tục xử lý các mục khác
                 }
 
-                debt.setDaTra(true); // Đánh dấu là đã trả
-                debt.setSelected(false); // Bỏ chọn
+                thuNo.setDaTra(true); // Đánh dấu là đã trả
+                thuNo.setSelected(false); // Bỏ chọn
 
                 // Cập nhật Firestore
-                if (debt.getDDocId() != null) {
+                if (thuNo.getDDocId() != null) {
                     if (isDebtTab) {
-                        debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+                        thuNoViewModel.CapNhatDebtNoLenFireBase(thuNo.getDDocId(), thuNo);
                     } else {
-                        debtViewModel.CapNhatDebtKhoanThuLenFireBase(debt.getDDocId(), debt);
+                        thuNoViewModel.CapNhatDebtKhoanThuLenFireBase(thuNo.getDDocId(), thuNo);
                     }
                 }
 
@@ -238,18 +237,18 @@ public class BudgetFragmentStatistics extends Fragment {
 
     private void HuyBoChapNhan() {
         boolean isDebtTab = recyclerViewKhoanNo.getVisibility() == View.VISIBLE;
-        List<Debt> currentList = isDebtTab ? debtViewModel.getDebtListNo().getValue() : debtViewModel.getDebtListKhoanThu().getValue();
-        DebtAdapter currentAdapter = isDebtTab ? debtAdapterKhoanNo : debtAdapterKhoanThu;
+        List<ThuNo> currentList = isDebtTab ? thuNoViewModel.getDebtListNo().getValue() : thuNoViewModel.getDebtListKhoanThu().getValue();
+        ThuNoAdapter currentAdapter = isDebtTab ? thuNoAdapterKhoanNo : thuNoAdapterKhoanThu;
 
         if (currentList == null) return;
 
         boolean anySelected = false;
-        for (Debt debt : currentList) {
-            if (debt.isSelected()) {
-                debt.setDaTra(false);
-                debt.setSelected(false);
-                if( isDebtTab ) debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
-                else debtViewModel.CapNhatDebtKhoanThuLenFireBase(debt.getDDocId(), debt);
+        for (ThuNo thuNo : currentList) {
+            if (thuNo.isSelected()) {
+                thuNo.setDaTra(false);
+                thuNo.setSelected(false);
+                if( isDebtTab ) thuNoViewModel.CapNhatDebtNoLenFireBase(thuNo.getDDocId(), thuNo);
+                else thuNoViewModel.CapNhatDebtKhoanThuLenFireBase(thuNo.getDDocId(), thuNo);
                 anySelected = true;
             }
         }
@@ -332,6 +331,15 @@ public class BudgetFragmentStatistics extends Fragment {
         Button btnHuy = dialogView.findViewById(R.id.btnDelete);
         btnHuy.setText("Hủy");
 
+        // Điều chỉnh giao diện theo tab
+        if (!isDebtTab) {
+            etNoiDungNo.setHint("Nội dung khoản thu");
+            etSoTienNo.setHint("Số tiền khoản thu");
+            etNguonNo.setHint("Nguồn thu");
+            etNgayNo.setHint("Ngày bắt đầu");
+            etNgayDenHan.setHint("Ngày hết hạn");
+        }
+
 
         AlertDialog dialog = builder.create();
 
@@ -354,11 +362,11 @@ public class BudgetFragmentStatistics extends Fragment {
             if(!noidung.isEmpty() && !SoTien.isEmpty() && !NguonNo.isEmpty() && !NgayNo.isEmpty() && !NgayDenHan.isEmpty() && ChonAnhDeLuu != null)
             {
                 //
-                Debt newDebt = new Debt(ChonAnhDeLuu, noidung, SoTien, NguonNo, NgayNo, NgayDenHan, false, false, null);
+                ThuNo newThuNo = new ThuNo(ChonAnhDeLuu, noidung, SoTien, NguonNo, NgayNo, NgayDenHan, false, false, null);
                 if (isDebtTab) {
-                    debtViewModel.addDebtNo(newDebt);
+                    thuNoViewModel.addDebtNo(newThuNo);
                 } else {
-                    debtViewModel.addDebtKhoanThu(newDebt);
+                    thuNoViewModel.addDebtKhoanThu(newThuNo);
                 }
                 Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
@@ -445,7 +453,7 @@ public class BudgetFragmentStatistics extends Fragment {
     }
 
 
-    private void showEditDebtDialog(String docID, int position, Debt debt, String Type) {
+    private void showEditDebtDialog(String docID, int position, ThuNo thuNo, String Type) {
         boolean isDebtTab = recyclerViewKhoanNo.getVisibility() == View.VISIBLE;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -473,13 +481,13 @@ public class BudgetFragmentStatistics extends Fragment {
         }
 
         // Gán giá trị ban đầu từ Debt
-        if (debt != null) {
-            imageView.setBackgroundResource(debt.getImgeResId());
-            etNoiDungNo.setText(debt.getTitle());
-            etSoTienNo.setText(debt.getSoTien());
-            etNguonNo.setText(debt.getNguonNo());
-            etNgayNo.setText(debt.getNgayNo());
-            etNgayDenHan.setText(debt.getNgayDenHan());
+        if (thuNo != null) {
+            imageView.setBackgroundResource(thuNo.getImgeResId());
+            etNoiDungNo.setText(thuNo.getTitle());
+            etSoTienNo.setText(thuNo.getSoTien());
+            etNguonNo.setText(thuNo.getNguonNo());
+            etNgayNo.setText(thuNo.getNgayNo());
+            etNgayDenHan.setText(thuNo.getNgayDenHan());
         }
 
         AlertDialog dialog = builder.create();
@@ -488,7 +496,7 @@ public class BudgetFragmentStatistics extends Fragment {
         chonAnhDaiDien.setOnClickListener(v -> {
             ShowChonAnhDialog(imageResId -> {
                 imageView.setImageResource(imageResId);
-                debt.setImgeResId(imageResId);
+                thuNo.setImgeResId(imageResId);
             });
         });
 
@@ -501,20 +509,20 @@ public class BudgetFragmentStatistics extends Fragment {
             String ngayDenHan = etNgayDenHan.getText().toString().trim();
 
             if (!noidung.isEmpty() && !soTien.isEmpty() && !nguonNo.isEmpty() && !ngayNo.isEmpty() && !ngayDenHan.isEmpty()) {
-                debt.setTitle(noidung);
-                debt.setSoTien(soTien);
-                debt.setNguonNo(nguonNo);
-                debt.setNgayNo(ngayNo);
-                debt.setNgayDenHan(ngayDenHan);
+                thuNo.setTitle(noidung);
+                thuNo.setSoTien(soTien);
+                thuNo.setNguonNo(nguonNo);
+                thuNo.setNgayNo(ngayNo);
+                thuNo.setNgayDenHan(ngayDenHan);
 
                 if (Type.equals("no")) {
-                    debtViewModel.updateDebtNo(position, debt);
-                    debtAdapterKhoanNo.notifyItemChanged(position);
-                    debtViewModel.CapNhatDebtNoLenFireBase(docID, debt);
+                    thuNoViewModel.updateDebtNo(position, thuNo);
+                    thuNoAdapterKhoanNo.notifyItemChanged(position);
+                    thuNoViewModel.CapNhatDebtNoLenFireBase(docID, thuNo);
                 } else {
-                    debtViewModel.updateDebtKhoanThu(position, debt);
-                    debtAdapterKhoanThu.notifyItemChanged(position);
-                    debtViewModel.CapNhatDebtKhoanThuLenFireBase(docID, debt);
+                    thuNoViewModel.updateDebtKhoanThu(position, thuNo);
+                    thuNoAdapterKhoanThu.notifyItemChanged(position);
+                    thuNoViewModel.CapNhatDebtKhoanThuLenFireBase(docID, thuNo);
                 }
 
                 Toast.makeText(getContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
@@ -531,11 +539,11 @@ public class BudgetFragmentStatistics extends Fragment {
                     .setMessage("Bạn có chắc muốn xóa khoản nợ này không?")
                     .setPositiveButton("Xóa", (dialogInterface, i) -> {
                         if (Type.equals("no")) {
-                            debtViewModel.removeDebtNo(position);
-                            debtAdapterKhoanNo.notifyItemRemoved(position);
+                            thuNoViewModel.removeDebtNo(position);
+                            thuNoAdapterKhoanNo.notifyItemRemoved(position);
                         } else {
-                            debtViewModel.removeDebtKhoanThu(position);
-                            debtAdapterKhoanThu.notifyItemRemoved(position);
+                            thuNoViewModel.removeDebtKhoanThu(position);
+                            thuNoAdapterKhoanThu.notifyItemRemoved(position);
                         }
                         Toast.makeText(getContext(), "Đã xóa thành công", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();

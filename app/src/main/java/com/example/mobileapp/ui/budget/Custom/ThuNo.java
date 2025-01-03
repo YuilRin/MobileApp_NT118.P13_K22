@@ -1,8 +1,6 @@
 package com.example.mobileapp.ui.budget.Custom;
 
-import android.widget.ImageView;
-
-public class Debt {
+public class ThuNo {
     private String title;
     private String soTien;
     private String nguonNo;
@@ -16,7 +14,7 @@ public class Debt {
     private String DDocId;
 
     // Hàm khởi tạo mặc định
-    public Debt() {
+    public ThuNo() {
         this.title = "";
         this.soTien = "0";
         this.nguonNo = "";
@@ -31,7 +29,7 @@ public class Debt {
     }
 
     // Hàm khởi tạo đầy đủ
-    public Debt(int imgeResId, String title, String soTien, String nguonNo, String ngayNo, String ngayDenHan, boolean daTra, boolean quaHan, String ngayTra) {
+    public ThuNo(int imgeResId, String title, String soTien, String nguonNo, String ngayNo, String ngayDenHan, boolean daTra, boolean quaHan, String ngayTra) {
         this.DDocId = DDocId;
         this.imgeResId = imgeResId;
         this.title = title;

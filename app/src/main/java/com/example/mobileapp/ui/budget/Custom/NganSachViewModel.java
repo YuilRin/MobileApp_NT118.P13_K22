@@ -3,13 +3,10 @@ package com.example.mobileapp.ui.budget.Custom;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.airbnb.lottie.L;
-import com.example.mobileapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -24,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-public class BudgetViewModel extends ViewModel {
+public class NganSachViewModel extends ViewModel {
     private MutableLiveData<List<SalaryItem>> ThuNhapItemsData = new MutableLiveData<>();
     private MutableLiveData<List<SalaryItem>> ChiTieuItemsData = new MutableLiveData<>();
     private FirebaseFirestore firestore;
@@ -34,7 +31,7 @@ public class BudgetViewModel extends ViewModel {
     private MutableLiveData<Double> tongTatCaSoTienChiTieu;
     private String date = getCurrentDate();
 
-    public BudgetViewModel() {
+    public NganSachViewModel() {
         ThuNhapItemsData = new MutableLiveData<>(new ArrayList<>());
         ChiTieuItemsData = new MutableLiveData<>(new ArrayList<>());
         DanhSachPhanLoai = new MutableLiveData<>(new ArrayList<>());
@@ -117,7 +114,7 @@ public class BudgetViewModel extends ViewModel {
 
 
 
-    public void updateAllowanceItem(boolean isIncome, int parentIndex, int childIndex, AllowanceItem updatedChild) {
+    public void updateAllowanceItem(boolean isIncome, int parentIndex, int childIndex, DanhMucItem updatedChild) {
         if (updatedChild == null) return;
 
         List<SalaryItem> oldList = isIncome ? getThuNhapItemsData().getValue() : getChiTieuItemsData().getValue();
@@ -131,7 +128,7 @@ public class BudgetViewModel extends ViewModel {
             return;
         }
 
-        List<AllowanceItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
+        List<DanhMucItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
         if (childIndex < 0 || childIndex >= childList.size()) {
             return;
         }
@@ -439,7 +436,7 @@ public class BudgetViewModel extends ViewModel {
         }
 
         // Copy danh sách con
-        List<AllowanceItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
+        List<DanhMucItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
         if (childIndex < 0 || childIndex >= childList.size()) {
             return;
         }
@@ -484,7 +481,7 @@ public class BudgetViewModel extends ViewModel {
     }
 
 
-    public void updateThuNhapItem(int parentIndex, int childIndex, @NonNull AllowanceItem updatedChild) {
+    public void updateThuNhapItem(int parentIndex, int childIndex, @NonNull DanhMucItem updatedChild) {
         // Lấy danh sách Thu Nhập hiện tại
         List<SalaryItem> oldList = getThuNhapItemsData().getValue();
         if (oldList == null || parentIndex < 0 || parentIndex >= oldList.size()) {
@@ -501,7 +498,7 @@ public class BudgetViewModel extends ViewModel {
         }
 
         // Copy danh sách AllowanceItem để chỉnh sửa
-        List<AllowanceItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
+        List<DanhMucItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
         if (childIndex < 0 || childIndex >= childList.size()) {
             return;
         }
@@ -590,7 +587,7 @@ public class BudgetViewModel extends ViewModel {
     }
 
 
-    public void updateChiTieuItem(int parentIndex, int childIndex, AllowanceItem updatedChild) {
+    public void updateChiTieuItem(int parentIndex, int childIndex, DanhMucItem updatedChild) {
         if (updatedChild == null) {
             return;
         }
@@ -604,7 +601,7 @@ public class BudgetViewModel extends ViewModel {
             return;
         }
 
-        List<AllowanceItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
+        List<DanhMucItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
         if (childIndex < 0 || childIndex >= childList.size()) {
             return;
         }
@@ -637,7 +634,7 @@ public class BudgetViewModel extends ViewModel {
             return;
         }
 
-        List<AllowanceItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
+        List<DanhMucItem> childList = new ArrayList<>(parentItem.getAllowanceItems());
         if (childIndex < 0 || childIndex >= childList.size()) {
             return;
         }
@@ -683,8 +680,8 @@ public class BudgetViewModel extends ViewModel {
             for (SalaryItem salaryItem : salaryItems) {
                 double itemSum = 0.0;
                 if (salaryItem.getAllowanceItems() != null) {
-                    for (AllowanceItem allowanceItem : salaryItem.getAllowanceItems()) {
-                        double moneyVal = parseMoneyString(allowanceItem.getMoney());
+                    for (DanhMucItem danhMucItem : salaryItem.getAllowanceItems()) {
+                        double moneyVal = parseMoneyString(danhMucItem.getMoney());
                         itemSum += moneyVal;
 
                     }
