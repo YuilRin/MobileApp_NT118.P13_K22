@@ -117,13 +117,13 @@ public class BudgetFragmentStatistics extends Fragment {
 
         debtViewModel.getDebtListNo().observe(getViewLifecycleOwner(), debts -> {
             debtAdapterKhoanNo.updateDebtList(debts); // Cập nhật RecyclerView khi dữ liệu thay đổi
-
+            debtViewModel.loadDebtNo();
         });
 
 
         debtViewModel.getDebtListKhoanThu().observe(getViewLifecycleOwner(), debts -> {
             debtAdapterKhoanThu.updateDebtList(debts);
-
+            debtViewModel.loadDebtsKhoanThu();
         });
 
         List<Debt> CapnhaDebtNo = debtViewModel.getDebtListNo().getValue();
@@ -166,6 +166,8 @@ public class BudgetFragmentStatistics extends Fragment {
 
             }
         });
+
+
 
         return view;
     }
