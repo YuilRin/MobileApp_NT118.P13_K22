@@ -115,7 +115,6 @@ public class BudgetFragmentStatistics extends Fragment {
         btnBoDuyetAll.setOnClickListener(v -> HuyBoChapNhan());
 
 
-
         debtViewModel.getDebtListNo().observe(getViewLifecycleOwner(), debts -> {
             debtAdapterKhoanNo.updateDebtList(debts); // Cập nhật RecyclerView khi dữ liệu thay đổi
 
@@ -188,23 +187,43 @@ public class BudgetFragmentStatistics extends Fragment {
         boolean isDebtTab = recyclerViewKhoanNo.getVisibility() == View.VISIBLE;
         List<Debt> currentList = isDebtTab ? debtViewModel.getDebtListNo().getValue() : debtViewModel.getDebtListKhoanThu().getValue();
         DebtAdapter AdapterHienTai = isDebtTab ? debtAdapterKhoanNo : debtAdapterKhoanThu;
-        if (currentList == null) return;
+
+        if (currentList == null || AdapterHienTai == null) {
+            Toast.makeText(getContext(), "Dữ liệu không khả dụng", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         boolean anySelected = false;
-        for (int i = 0; i < currentList.size(); i++) {
-            Debt debt = currentList.get(i);
-            if (debt.isSelected()) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
+        String ngayTra;
+
+        for (Debt debt : currentList) {
+            if (debt != null && debt.isSelected()) {
+                try {
+                    ngayTra = sdf.format(new Date());
+                    debt.setNgayTra(ngayTra); // Cập nhật ngày trả
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Không thể định dạng ngày cho khoản nợ: " + debt.getTitle(), Toast.LENGTH_SHORT).show();
+                    continue; // Tiếp tục xử lý các mục khác
+                }
+
                 debt.setDaTra(true); // Đánh dấu là đã trả
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm dd/MM/yyyy", Locale.getDefault());
-                debt.setNgayTra(sdf.format(new Date())); // Cập nhật ngày trả
                 debt.setSelected(false); // Bỏ chọn
 
-               if( isDebtTab ) debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
-               else debtViewModel.CapNhatDebtKhoanThuLenFireBase(debt.getDDocId(), debt);
+                // Cập nhật Firestore
+                if (debt.getDDocId() != null) {
+                    if (isDebtTab) {
+                        debtViewModel.CapNhatDebtNoLenFireBase(debt.getDDocId(), debt);
+                    } else {
+                        debtViewModel.CapNhatDebtKhoanThuLenFireBase(debt.getDDocId(), debt);
+                    }
+                }
 
-               anySelected = true;
+                anySelected = true;
             }
         }
+
         AdapterHienTai.notifyDataSetChanged();
 
         if (anySelected) {
@@ -424,13 +443,14 @@ public class BudgetFragmentStatistics extends Fragment {
     }
 
 
-    private void showEditDebtDialog(String docID ,int position, Debt debt, String Type) {
-        boolean isDebtTab  = recyclerViewKhoanNo.getVisibility() == View.VISIBLE;
+    private void showEditDebtDialog(String docID, int position, Debt debt, String Type) {
+        boolean isDebtTab = recyclerViewKhoanNo.getVisibility() == View.VISIBLE;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_debt_personal, null);
         builder.setView(dialogView);
 
+        // Khởi tạo các View
         ImageView imageView = dialogView.findViewById(R.id.imv_show_image);
         EditText etNoiDungNo = dialogView.findViewById(R.id.etNoiDungNo);
         EditText etSoTienNo = dialogView.findViewById(R.id.etSoTienNo);
@@ -441,44 +461,44 @@ public class BudgetFragmentStatistics extends Fragment {
         Button btnXoa = dialogView.findViewById(R.id.btnDelete);
         AppCompatButton chonAnhDaiDien = dialogView.findViewById(R.id.btn_ChonAnh);
 
+        // Điều chỉnh giao diện theo tab
         if (!isDebtTab) {
             etNoiDungNo.setHint("Nội dung khoản thu");
             etSoTienNo.setHint("Số tiền khoản thu");
-            etNgayNo.setHint("Nguồn thu");
+            etNguonNo.setHint("Nguồn thu");
             etNgayNo.setHint("Ngày bắt đầu");
             etNgayDenHan.setHint("Ngày hết hạn");
         }
 
-        // Gán giá trị ban đầu
-        imageView.setBackgroundResource(debt.getImgeResId());
-        etNoiDungNo.setText(debt.getTitle());
-        etSoTienNo.setText(debt.getSoTien());
-        etNgayNo.setText(debt.getNgayNo());
-        etNgayDenHan.setText(debt.getNgayDenHan());
-        etNguonNo.setText(debt.getNguonNo());
+        // Gán giá trị ban đầu từ Debt
+        if (debt != null) {
+            imageView.setBackgroundResource(debt.getImgeResId());
+            etNoiDungNo.setText(debt.getTitle());
+            etSoTienNo.setText(debt.getSoTien());
+            etNguonNo.setText(debt.getNguonNo());
+            etNgayNo.setText(debt.getNgayNo());
+            etNgayDenHan.setText(debt.getNgayDenHan());
+        }
 
         AlertDialog dialog = builder.create();
 
-        chonAnhDaiDien.setOnClickListener( v -> {
-            ShowChonAnhDialog(imageResId ->
-            {
+        // Xử lý chọn ảnh đại diện
+        chonAnhDaiDien.setOnClickListener(v -> {
+            ShowChonAnhDialog(imageResId -> {
                 imageView.setImageResource(imageResId);
-                ChonAnhDeLuu = imageResId;
+                debt.setImgeResId(imageResId);
             });
         });
 
-
+        // Xử lý nút Sửa
         btnSua.setOnClickListener(v -> {
-
             String noidung = etNoiDungNo.getText().toString().trim();
             String soTien = etSoTienNo.getText().toString().trim();
             String nguonNo = etNguonNo.getText().toString().trim();
             String ngayNo = etNgayNo.getText().toString().trim();
             String ngayDenHan = etNgayDenHan.getText().toString().trim();
 
-            if ( ChonAnhDeLuu != null && !noidung.isEmpty() && !soTien.isEmpty() && !ngayNo.isEmpty() && !ngayDenHan.isEmpty() && !nguonNo.isEmpty()) {
-                // Cập nhật đối tượng Debt
-                debt.setImgeResId(ChonAnhDeLuu);
+            if (!noidung.isEmpty() && !soTien.isEmpty() && !nguonNo.isEmpty() && !ngayNo.isEmpty() && !ngayDenHan.isEmpty()) {
                 debt.setTitle(noidung);
                 debt.setSoTien(soTien);
                 debt.setNguonNo(nguonNo);
@@ -486,18 +506,15 @@ public class BudgetFragmentStatistics extends Fragment {
                 debt.setNgayDenHan(ngayDenHan);
 
                 if (Type.equals("no")) {
-                    debtViewModel.updateDebtNo(position,debt);
+                    debtViewModel.updateDebtNo(position, debt);
                     debtAdapterKhoanNo.notifyItemChanged(position);
-
                     debtViewModel.CapNhatDebtNoLenFireBase(docID, debt);
                 } else {
-                    debtViewModel.updateDebtKhoanThu(position,debt);
+                    debtViewModel.updateDebtKhoanThu(position, debt);
                     debtAdapterKhoanThu.notifyItemChanged(position);
-
                     debtViewModel.CapNhatDebtKhoanThuLenFireBase(docID, debt);
                 }
 
-                ChonAnhDeLuu = null; // Xài xong trả
                 Toast.makeText(getContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
@@ -505,30 +522,31 @@ public class BudgetFragmentStatistics extends Fragment {
             }
         });
 
+        // Xử lý nút Xóa
         btnXoa.setOnClickListener(v -> {
-          new AlertDialog.Builder(getContext())
-                  .setTitle("Xóa khoản nợ")
-                  .setMessage("Bạn có chắc muốn xóa khoản nợ này không?")
-                  .setPositiveButton("Xóa", (dialogInterface, i) -> {
-                      if (Type.equals("no"))
-                      {
-                          debtViewModel.removeDebtNo(position);
-                          debtAdapterKhoanNo.notifyItemRemoved(position);
-                          //
-
-                      }else {
-                          debtViewModel.removeDebtKhoanThu(position);
-                          debtAdapterKhoanThu.notifyItemRemoved(position);
-                      }
-                      dialog.dismiss();
-                  })
-                  .setNegativeButton("Hủy", (dialogInterface, i) ->
-                      dialogInterface.dismiss()).show();
+            new AlertDialog.Builder(getContext())
+                    .setTitle("Xóa khoản nợ")
+                    .setMessage("Bạn có chắc muốn xóa khoản nợ này không?")
+                    .setPositiveButton("Xóa", (dialogInterface, i) -> {
+                        if (Type.equals("no")) {
+                            debtViewModel.removeDebtNo(position);
+                            debtAdapterKhoanNo.notifyItemRemoved(position);
+                        } else {
+                            debtViewModel.removeDebtKhoanThu(position);
+                            debtAdapterKhoanThu.notifyItemRemoved(position);
+                        }
+                        Toast.makeText(getContext(), "Đã xóa thành công", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("Hủy", (dialogInterface, i) -> dialogInterface.dismiss())
+                    .show();
         });
 
+        // Xử lý chọn ngày
         etNgayNo.setOnClickListener(v -> showDatePickerDialog(etNgayNo));
         etNgayDenHan.setOnClickListener(v -> showDatePickerDialog(etNgayDenHan));
 
         dialog.show();
     }
+
 }
