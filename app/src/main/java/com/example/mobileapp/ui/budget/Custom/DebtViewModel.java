@@ -44,7 +44,7 @@ public class DebtViewModel extends ViewModel {
         return debtListKhoanThu;
     }
 
-    private void loadDebtNo() {
+    public void loadDebtNo() {
         firestore.collection("users")
                 .document(UserId)
                 .collection("debt_no")
@@ -64,7 +64,7 @@ public class DebtViewModel extends ViewModel {
 
     }
 
-    private void loadDebtsKhoanThu() {
+    public void loadDebtsKhoanThu() {
        firestore.collection("users")
                .document(UserId)
                .collection("debt_khoan_thu")
@@ -128,6 +128,10 @@ public class DebtViewModel extends ViewModel {
                 .addOnSuccessListener(documentReference -> {
                     List<Debt> Danhsachhientai = debtListKhoanThu.getValue();
                     if( Danhsachhientai != null) {
+                        String docID = documentReference.getId();
+                        debt.setDDocId(docID);
+
+
                         Danhsachhientai.add(debt);
                         debtListKhoanThu.setValue(Danhsachhientai);
                     }
