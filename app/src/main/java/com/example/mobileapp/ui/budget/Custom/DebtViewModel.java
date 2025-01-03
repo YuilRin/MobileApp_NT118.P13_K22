@@ -1,6 +1,9 @@
 package com.example.mobileapp.ui.budget.Custom;
 
+import static java.security.AccessController.getContext;
+
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
@@ -133,17 +136,44 @@ public class DebtViewModel extends ViewModel {
                 });
     }
 
+//    public void CapNhatDebtNoLenFireBase(String debtId, Debt debt) {
+//        firestore.collection("users")
+//                .document(UserId)
+//                .collection("debt_no")
+//                .document(debtId)
+//                .set(debt)
+//                .addOnFailureListener(aVoid -> {
+//                    loadDebtNo();
+//                })
+//                .addOnFailureListener(e -> {
+//
+//                });
+//    }
+
+    public void CapNhatDebtKhoanThuLenFireBase(String debtId, Debt debt) {
+        if (debtId == null || debt == null) return;
+        firestore.collection("users")
+                .document(UserId)
+                .collection("debt_khoan_thu")
+                .document(debtId)
+                .set(debt)
+                .addOnSuccessListener(aVoid -> loadDebtsKhoanThu())
+                .addOnFailureListener(e -> {
+                    e.printStackTrace();
+
+                });
+    }
+
     public void CapNhatDebtNoLenFireBase(String debtId, Debt debt) {
+        if (debtId == null || debt == null) return;
         firestore.collection("users")
                 .document(UserId)
                 .collection("debt_no")
                 .document(debtId)
                 .set(debt)
-                .addOnFailureListener(aVoid -> {
-                    loadDebtNo();
-                })
+                .addOnSuccessListener(aVoid -> loadDebtNo())
                 .addOnFailureListener(e -> {
-
+                    e.printStackTrace();
                 });
     }
 
@@ -155,19 +185,19 @@ public class DebtViewModel extends ViewModel {
         }
     }
 
-    public void CapNhatDebtKhoanThuLenFireBase(String debtId, Debt debt) {
-        firestore.collection("users")
-                .document(UserId)
-                .collection("debt_khoan_thu")
-                .document(debtId)
-                .set(debt)
-                .addOnFailureListener(aVoid -> {
-                    loadDebtsKhoanThu();
-                })
-                .addOnFailureListener(e ->{
-
-                });
-    }
+//    public void CapNhatDebtKhoanThuLenFireBase(String debtId, Debt debt) {
+//        firestore.collection("users")
+//                .document(UserId)
+//                .collection("debt_khoan_thu")
+//                .document(debtId)
+//                .set(debt)
+//                .addOnFailureListener(aVoid -> {
+//                    loadDebtsKhoanThu();
+//                })
+//                .addOnFailureListener(e ->{
+//
+//                });
+//    }
 
     public void updateDebtKhoanThu(int position, Debt debt) {
         List<Debt> currentList = debtListKhoanThu.getValue();
@@ -185,25 +215,31 @@ public class DebtViewModel extends ViewModel {
 
             Debt debt = currentList.get(position);
 
+            String debtId = debt.getDDocId(); // Lưu lại DDocId để xử lý rollback nếu cần.
             currentList.remove(position);
-            debtListNo.setValue(currentList);
+            debtListNo.setValue(currentList); // Cập nhật danh sách trong ViewModel.
 
-
-            if (debt.getDDocId() != null && !debt.getDDocId().isEmpty()) {
+            if (debtId != null && !debtId.isEmpty()) {
                 firestore.collection("users")
                         .document(UserId)
                         .collection("debt_no")
-                        .document(debt.getDDocId())
+                        .document(debtId)
                         .delete()
                         .addOnSuccessListener(aVoid -> {
-
+                            // Xóa thành công, không cần thêm logic.
                         })
                         .addOnFailureListener(e -> {
+                            // Nếu xóa thất bại, thêm lại vào danh sách.
+                            currentList.add(position, debt);
+                            debtListNo.setValue(currentList);
 
                         });
             }
+        } else {
+
         }
     }
+
 
     // Similarly, for khoan thu:
     public void removeDebtKhoanThu(int position) {
@@ -212,24 +248,30 @@ public class DebtViewModel extends ViewModel {
 
             Debt debt = currentList.get(position);
 
+            String debtId = debt.getDDocId(); // Lưu lại DDocId để xử lý rollback nếu cần.
             currentList.remove(position);
-            debtListKhoanThu.setValue(currentList);
+            debtListKhoanThu.setValue(currentList); // Cập nhật danh sách trong ViewModel.
 
-
-            if (debt.getDDocId() != null && !debt.getDDocId().isEmpty()) {
+            if (debtId != null && !debtId.isEmpty()) {
                 firestore.collection("users")
                         .document(UserId)
-                        .collection("debt_khoan_thu") // Tùy tên subcollection của bạn
-                        .document(debt.getDDocId())
+                        .collection("debt_khoan_thu")
+                        .document(debtId)
                         .delete()
                         .addOnSuccessListener(aVoid -> {
-
+                            // Xóa thành công, không cần thêm logic.
                         })
                         .addOnFailureListener(e -> {
+                            // Nếu xóa thất bại, thêm lại vào danh sách.
+                            currentList.add(position, debt);
+                            debtListKhoanThu.setValue(currentList);
+
                         });
             }
+        } else {
         }
     }
+
 
 
 }
