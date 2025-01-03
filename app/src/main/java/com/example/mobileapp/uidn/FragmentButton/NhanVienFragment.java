@@ -69,8 +69,34 @@ public class NhanVienFragment extends Fragment {
         fetchCompanyId(() ->UpdateList(view));
 
         ImageButton Add;
-        Add=view.findViewById(R.id.add_button);
-        Add.setOnClickListener(v -> openAddEmployeeDialog(view));
+        Add = view.findViewById(R.id.add_button);
+        Add.setOnClickListener(v -> {
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail(); // Lấy email người dùng hiện tại
+
+                    db.collection("company").document(companyId).get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    Map<String, Object> roles = (Map<String, Object>) documentSnapshot.get("roles");
+
+                                    if (roles != null && roles.containsKey("boss") && roles.get("boss").equals(userId)){
+
+                                        openAddEmployeeDialog(view);
+                                    }
+                                    else
+                                    {
+                                    Toast.makeText(view.getContext(), "Bạn không có quyền thực hiện thao tác này!", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else
+                                {
+                                    Toast.makeText(view.getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                    Toast.makeText(view.getContext(), "Lỗi khi kiểm tra vai trò: " + e, Toast.LENGTH_SHORT).show();
+                             });
+        });
         return view; // Trả về view đã nén
     }
 
@@ -150,18 +176,46 @@ public class NhanVienFragment extends Fragment {
                     });
         }
         EMPListView.setOnItemLongClickListener((parent, view1, position, id) -> {
+
             BusinessEmployee selectedEmployee = EMPList.get(position);
 
-            new AlertDialog.Builder(requireContext())
-                    .setTitle("Lựa chọn hành động")
-                    .setItems(new String[]{"Sửa", "Xóa"}, (dialog, which) -> {
-                        if (which == 0) { // Sửa
-                            openEditEmployeeDialog(selectedEmployee, () -> UpdateList(view));
-                        } else if (which == 1) { // Xóa
-                            deleteEmployee(selectedEmployee, () -> UpdateList(view));
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail(); // Lấy email người dùng hiện tại
+
+            db.collection("company")
+                    .document(companyId.get()).get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Map<String, Object> roles = (Map<String, Object>) documentSnapshot.get("roles");
+
+                            if (roles != null && roles.containsKey("boss") && roles.get("boss").equals(userId)){
+
+                                new AlertDialog.Builder(requireContext())
+                                        .setTitle("Lựa chọn hành động")
+                                        .setItems(new String[]{"Sửa", "Xóa"}, (dialog, which) -> {
+                                            if (which == 0) { // Sửa
+                                                openEditEmployeeDialog(selectedEmployee, () -> UpdateList(view));
+                                            } else if (which == 1) { // Xóa
+                                                deleteEmployee(selectedEmployee, () -> UpdateList(view));
+                                            }
+                                        })
+                                        .show();
+                            }
+                            else
+                            {
+                                Toast.makeText(view.getContext(), "Bạn không có quyền thực hiện thao tác này!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else
+                        {
+                            Toast.makeText(view.getContext(), "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
                         }
                     })
-                    .show();
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(view.getContext(), "Lỗi khi kiểm tra vai trò: " + e, Toast.LENGTH_SHORT).show();
+                    });
+
+
 
             return true; // Đánh dấu sự kiện đã được xử lý
         });
