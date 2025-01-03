@@ -332,6 +332,15 @@ public class BudgetFragmentStatistics extends Fragment {
         Button btnHuy = dialogView.findViewById(R.id.btnDelete);
         btnHuy.setText("Hủy");
 
+        // Điều chỉnh giao diện theo tab
+        if (!isDebtTab) {
+            etNoiDungNo.setHint("Nội dung khoản thu");
+            etSoTienNo.setHint("Số tiền khoản thu");
+            etNguonNo.setHint("Nguồn thu");
+            etNgayNo.setHint("Ngày bắt đầu");
+            etNgayDenHan.setHint("Ngày hết hạn");
+        }
+
 
         AlertDialog dialog = builder.create();
 
