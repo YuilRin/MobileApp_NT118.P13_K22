@@ -39,7 +39,8 @@ public class CaiDatFragment extends Fragment {
     private EditText nameEditText,contactEditText,addressEditText,BusinessNameEditText;
     private Button saveButton;
     private FirebaseFirestore db;
-    private String userId; // Lấy userId từ đăng nhập hoặc truyền vào
+
+    private String userId,ownerId="ko"; // Lấy userId từ đăng nhập hoặc truyền vào
     private String companyId;
 
     @Override
@@ -114,8 +115,14 @@ public class CaiDatFragment extends Fragment {
                         String contact = documentSnapshot.getString("contact");
                         String address = documentSnapshot.getString("address");
                         String Business = documentSnapshot.getString("businessName");
+                        // Lấy map "rules"
+                        Map<String, Object> rulesMap = (Map<String, Object>) documentSnapshot.get("rules");
 
-                        // Đặt vào EditText
+                        if (rulesMap != null) {
+                           ownerId = (String) rulesMap.get("ownerId");
+                        }
+
+                            // Đặt vào EditText
                         nameEditText.setText(companyName);
                         contactEditText.setText(contact);
                         addressEditText.setText(address);
@@ -132,7 +139,11 @@ public class CaiDatFragment extends Fragment {
         String updatedContact = contactEditText.getText().toString().trim();
         String updatedAddress = addressEditText.getText().toString().trim();
         String updatedNameBusiness = BusinessNameEditText.getText().toString().trim();
+        if(ownerId=="ko") {
 
+            Toast.makeText(getContext(), "Bạn ko có quyền thay đổi", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (!updatedName.isEmpty() && !updatedContact.isEmpty() && !updatedAddress.isEmpty()) {
             // Cập nhật lại thông tin công ty trong Firestore
@@ -169,6 +180,11 @@ public class CaiDatFragment extends Fragment {
 
         // Xử lý sửa và xóa
         listView.setOnItemClickListener((parent, view1, position, id) -> {
+            if(ownerId=="ko") {
+
+                Toast.makeText(getContext(), "Bạn ko có quyền thay đổi", Toast.LENGTH_SHORT).show();
+                return;
+            }
             String selectedItem = editableList.get(position);
             showSubEditDialog(buttonId, editableList, selectedItem, position, listAdapter);
         });
@@ -183,6 +199,11 @@ public class CaiDatFragment extends Fragment {
     }
 
     private void showAddDialog(int buttonId, ArrayList<String> list, ArrayAdapter<String> adapter) {
+        if(ownerId=="ko") {
+
+            Toast.makeText(getContext(), "Bạn ko có quyền thay đổi", Toast.LENGTH_SHORT).show();
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Thêm mục mới");
 
